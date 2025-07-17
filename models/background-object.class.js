@@ -1,11 +1,12 @@
 class BackgroundObject extends MovableObject{
-    constructor() {
+   constructor(imagePath, x, y, width, height) {
+    
         super();
-        this.loadImage('img\\5_background\\layers\\3_third_layer\\1.png');
+        this.loadImage(imagePath);
         this.x = 0;
         this.y = 0;
-        this.width = 600; // Assuming full width of the canvas
-        this.height = 350; // Assuming full height of the canvas
+        this.width = 500;
+        this.height = 720;
     }
 
 }

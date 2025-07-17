@@ -1,6 +1,6 @@
 class MovableObject {
    x = 120;
-   y =200;
+   y =250;
    img;
    height = 150;
    width = 200;
