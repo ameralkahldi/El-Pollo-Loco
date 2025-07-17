@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 body{
     display: flex;
     flex-direction: column;
@@ -8,15 +8,4 @@ body{
 
 canvas{
     background-color: black;
-=======
-body{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-
-canvas{
-    background-color: black;
->>>>>>> 31c2fefb3a840d730f2d8f5eb3cb484aeadcfbd1
 }
