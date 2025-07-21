@@ -29,6 +29,7 @@ class World {
   }
 
   draw() {
+    
     this.ctx.clearRect(0, 0, this.canvas.height, this.canvas.width);
 
     // Draw all background objects
@@ -69,6 +70,35 @@ class World {
         cloud.width
       );
     });
+
+if (this.character.otherDirection) {
+      this.ctx.save();
+      this.ctx.scale(-1, 1);
+      //this.ctx.translate(-this.character.x - this.character.width / 2, 0);
+      this.ctx.drawImage(
+        this.character.img,
+        -this.character.x - this.character.width,
+        this.character.y,
+        this.character.height,
+        this.character.width
+      );
+      this.ctx.restore();
+    }
+  if(this.character.otherDirection ) {
+    this.flipImage(this.character.img);
+
+  }
+  flipImage(image) {
+    this.ctx.save();
+    this.ctx.scale(-1, 1);
+    this.ctx.drawImage(
+      image,
+      -this.character.x - this.character.width,
+      this.character.y,
+      this.character.height,
+      this.character.width
+    );
+    this.ctx.restore();
 
     // Draw all chickens
     let self = this;

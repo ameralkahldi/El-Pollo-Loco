@@ -5,7 +5,9 @@ class MovableObject {
    height = 150;
    width = 200;
    imageCache = {};
-   speed = 0.15; // Default speed for movement
+   speed = 0.15; // Default speed for movement 
+   otherDirection = false; // Default direction for movement
+   
 
    loadImage(path) {
     this.img = new Image();
