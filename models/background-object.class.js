@@ -5,6 +5,6 @@ class BackgroundObject extends MovableObject {
     this.x = x;
     this.y = 0;
     this.width = 719; // oder die echte Breite deiner Hintergrundbilder
-    this.height = 480;
+    this.height = 500;
   }
 }
