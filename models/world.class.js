@@ -1,11 +1,7 @@
 class World {
   character = new Character();
 
-  enemises = level1.enemises
-
-  clouds = level1.clouds;
-
-backgroundobjects = level1.backgroundobjects;
+  level=level1;
 
 
   canvas;
@@ -30,6 +26,21 @@ updateCamera() {
   let newCameraX = -this.character.x + 0;
   // begrenzt nach links
 }
+showWinScreen() {
+  // Schwarzer Hintergrund
+  this.ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
+  this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+  // Text
+  this.ctx.fillStyle = "#fff";
+  this.ctx.font = "48px Comic Sans MS";
+  this.ctx.textAlign = "center";
+  this.ctx.fillText("🎉 Du hast gewonnen!", this.canvas.width / 2, this.canvas.height / 2);
+
+  // Optional: Animation stoppen (z. B. keine Gegner mehr)
+  cancelAnimationFrame(this.animationFrameId);
+}
+
 
 
 
@@ -43,7 +54,7 @@ updateCamera() {
   this.ctx.translate(this.camera_x, 0); // Kamera-Verschiebung aktivieren
 
   // 🖼 Hintergrund zeichnen
-  this.backgroundobjects.forEach((background) => {
+  this.level.backgroundobjects.forEach((background) => {
     this.ctx.drawImage(
       background.img,
       background.x,
@@ -77,7 +88,7 @@ updateCamera() {
   this.ctx.restore();
 
   // 🐔 Gegner zeichnen
-  this.enemises.forEach((enemy) => {
+  this.level.enemises.forEach((enemy) => {
     this.ctx.drawImage(
       enemy.img,
       enemy.x,
@@ -88,7 +99,7 @@ updateCamera() {
   });
 
   // ☁️ Wolken zeichnen
-  this.clouds.forEach((cloud) => {
+  this.level.clouds.forEach((cloud) => {
     this.ctx.drawImage(
       cloud.img,
       cloud.x,

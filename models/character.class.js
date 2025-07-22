@@ -18,44 +18,54 @@ class Character extends MovableObject {
 
   IMAGE_STANDING = "img/2_character_pepe/2_walk/W-21.png";
 
- constructor() {
-  super().loadImage("img/2_character_pepe/2_walk/W-21.png"); // erstes Bild
-  this.loadImages(this.IMAGE_WALKING); // alle Laufbilder
-  this.imageCache[this.IMAGE_STANDING] = new Image(); // auch Standbild sichern
-  this.imageCache[this.IMAGE_STANDING].src = this.IMAGE_STANDING;
-  this.world = world; // wichtig!
-  this.animate();
-}
-
+  constructor() {
+    super().loadImage("img/2_character_pepe/2_walk/W-21.png");
+    this.loadImages(this.IMAGE_WALKING);
+    this.imageCache[this.IMAGE_STANDING] = new Image();
+    this.imageCache[this.IMAGE_STANDING].src = this.IMAGE_STANDING;
+    this.world = world;
+    this.animate();
+  }
 
   animate() {
-  // Bewegung
-  setInterval(() => {
-    if (this.world.keyboard.RIGHT) {
-      this.x += this.speed;
-      this.otherDirection = false;
-    } else if (this.world.keyboard.LEFT) {
-      this.x -= this.speed;
-      this.otherDirection = true;
-    }
-    this.world.camera_x=-this.x;
-  }, 1000 / 60); // 60 FPS
+    // Bewegung
+   let levelEnd = 5000;
 
-  // Animation (Bilderwechsel)
-  setInterval(() => {
-    if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
-      let i = this.currentImage % this.IMAGE_WALKING.length;
-      let path = this.IMAGE_WALKING[i];
-      let img = this.imageCache[path];
+setInterval(() => {
+  if (this.world.keyboard.RIGHT && this.x < levelEnd) {
+    this.x += this.speed;
+    this.otherDirection = false;
+  } else if (this.world.keyboard.LEFT && this.x >-1000) {
+    this.x -= this.speed;
+    this.otherDirection = true;
+  }
 
-      if (img) {
-        this.img = img;
-        this.currentImage++;
+  this.world.camera_x = -this.x + 100;
+
+  // 🏁 Siegbedingung prüfen
+  if (this.x >= levelEnd && !this.levelCompleted) {
+    this.levelCompleted = true; // nur einmal zeigen
+    this.world.showWinScreen();
+  }
+}, 2000 / 60);
+ // 60 FPS
+
+    // Animation (Bilderwechsel)
+    setInterval(() => {
+      if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
+        let i = this.currentImage % this.IMAGE_WALKING.length;
+        let path = this.IMAGE_WALKING[i];
+        let img = this.imageCache[path];
+
+        if (img) {
+          this.img = img;
+          this.currentImage++;
+        } else {
+          console.warn("Bild nicht geladen:", path);
+        }
       } else {
-        console.warn("Bild nicht geladen:", path);
+        this.img = this.imageCache[this.IMAGE_STANDING];
       }
-    } else {
-      this.img = this.imageCache[this.IMAGE_STANDING];
-    }
-  }, 100);
-}}
+    }, 100);
+  }
+}
