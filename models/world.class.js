@@ -1,7 +1,7 @@
 class World {
   character = new Character();
 
-  level=level1;
+ level=level1;
 
 
   canvas;
@@ -18,31 +18,20 @@ class World {
   }
 
   setWorld() {
-    this.character.world = this;
-  }
+  this.character.world = this;
+  this.character.animate(); // <- WICHTIG!
+  
+}
 
 
 updateCamera() {
-  let newCameraX = -this.character.x + 0;
-  // begrenzt nach links
+  // Kamera bewegt sich nur, wenn der Charakter nach rechts läuft
+  if (this.character.x > 100) {
+    this.camera_x = -this.character.x + 100;
+  } else {
+    this.camera_x = 0; // Kamera bleibt am linken Rand stehen
+  }
 }
-showWinScreen() {
-  // Schwarzer Hintergrund
-  this.ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
-  this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-
-  // Text
-  this.ctx.fillStyle = "#fff";
-  this.ctx.font = "48px Comic Sans MS";
-  this.ctx.textAlign = "center";
-  this.ctx.fillText("🎉 Du hast gewonnen!", this.canvas.width / 2, this.canvas.height / 2);
-
-  // Optional: Animation stoppen (z. B. keine Gegner mehr)
-  cancelAnimationFrame(this.animationFrameId);
-}
-
-
-
 
 
 
