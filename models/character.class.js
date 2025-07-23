@@ -6,6 +6,8 @@ class Character extends MovableObject {
   currentImage = 0;
   world;
   otherDirection = false;
+  energy =100;
+
 
   IMAGE_WALKING = [
     "img/2_character_pepe/2_walk/W-21.png",
@@ -29,10 +31,24 @@ class Character extends MovableObject {
 
   ];
 
+ IMAGEs_DEAD = [
+   "img/2_character_pepe/5_dead/D-51.png",
+   "img/2_character_pepe/5_dead/D-52.png",
+    "img/2_character_pepe/5_dead/D-53.png",
+   "img/2_character_pepe/5_dead/D-54.png",
+   "img/2_character_pepe/5_dead/D-55.png",
+   "img/2_character_pepe/5_dead/D-56.png",
+   "img/2_character_pepe/5_dead/D-57.png"
+
+
+      
+ ];
+
   constructor() {
     super().loadImage(this.IMAGE_WALKING[0]); // Startbild
     this.loadImages(this.IMAGE_WALKING); // Alle Bilder cachen
     this.loadImages(this.IMAGEs_JUMPING);
+    this.loadImages(this.IMAGEs_DEAD);
     this.applyGravity();
     
   }
@@ -62,21 +78,22 @@ class Character extends MovableObject {
     }, 1000 / 60);
 
     // Bildanimation (alle 50 ms)
-    setInterval(() => {
-      if(this.isAboveGround())
-      {
-        this.playWalkingAnimation(this.IMAGEs_JUMPING);
-      }else{
-      if (this.world?.keyboard.RIGHT || this.world?.keyboard.LEFT) {
-        this.playWalkingAnimation(this.IMAGE_WALKING);
-      }}
-    }, 50);
+setInterval(() => {
+  if (this.isDead()) {
+    this.playWalkingAnimation(this.IMAGEs_DEAD);
+  } else if (this.isAboveGround()) {
+    this.playWalkingAnimation(this.IMAGEs_JUMPING);
+  } else if (this.world?.keyboard.RIGHT || this.world?.keyboard.LEFT) {
+    this.playWalkingAnimation(this.IMAGE_WALKING);
   }
+  }, 50);}
 
-  playWalkingAnimation() {
-    let i = this.currentImage % this.IMAGE_WALKING.length;
-    let path = this.IMAGE_WALKING[i];
-    this.img = this.imageCache[path]; // Ändert sichtbares Bild
-    this.currentImage++;
-  }
+
+ playWalkingAnimation(images) {
+    let i = this.currentImage % images.length;
+  let path = images[i];
+  this.img = this.imageCache[path];
+  this.currentImage++;
 }
+
+  }

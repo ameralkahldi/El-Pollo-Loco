@@ -4,6 +4,7 @@ class World {
   canvas;
   ctx;
   keyboard;
+  camera_x = 0;
  // Initial camera position
 
   constructor(canvas, keyboard) {
@@ -12,12 +13,26 @@ class World {
     this.keyboard = keyboard;
     this.draw();
     this.setWorld();
+    this.checkCollisions();
   }
 
   setWorld() {
   this.character.world = this;
   this.character.animate(); // <- WICHTIG!
   
+}
+
+
+checkCollisions(){
+  setInterval(() =>{
+    this.level.enemises.forEach((enemy) =>{
+      if(this.character.isColliding(enemy)){
+       this.character.hit();
+         console.log('Collision with Character , energy ' , this.character.energy);
+
+      }
+    })
+  },200);
 }
 
 
@@ -113,13 +128,6 @@ draw() {
       cloud.width,
       cloud.height
     );
-
-    // 🔷 Blauer Rahmen um Wolke
-    this.ctx.beginPath();
-    this.ctx.lineWidth = 2;
-    this.ctx.strokeStyle = "red";
-    this.ctx.rect(cloud.x, cloud.y, cloud.width, cloud.height);
-    this.ctx.stroke();
   });
 
   // Kamera zurücksetzen
