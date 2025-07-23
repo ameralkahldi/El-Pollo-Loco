@@ -16,9 +16,23 @@ class Character extends MovableObject {
     "img/2_character_pepe/2_walk/W-26.png",
   ];
 
+  IMAGEs_JUMPING =[
+    "img/2_character_pepe/3_jump/J-31.png",
+    "img/2_character_pepe/3_jump/J-32.png",
+    "img/2_character_pepe/3_jump/J-33.png",
+    "img/2_character_pepe/3_jump/J-34.png",
+    "img/2_character_pepe/3_jump/J-35.png",
+    "img/2_character_pepe/3_jump/J-36.png",
+    "img/2_character_pepe/3_jump/J-37.png",
+    "img/2_character_pepe/3_jump/J-38.png",
+    "img/2_character_pepe/3_jump/J-39.png"
+
+  ];
+
   constructor() {
     super().loadImage(this.IMAGE_WALKING[0]); // Startbild
     this.loadImages(this.IMAGE_WALKING); // Alle Bilder cachen
+    this.loadImages(this.IMAGEs_JUMPING);
     this.applyGravity();
     
   }
@@ -32,7 +46,8 @@ class Character extends MovableObject {
       if (this.world.keyboard.RIGHT && this.x < levelEnd) {
         this.x += this.speed;
         this.otherDirection = false;
-      } else if (this.world.keyboard.LEFT && this.x > 0) {
+      } 
+       if (this.world.keyboard.LEFT && this.x > 0) {
         this.x -= this.speed;
         this.otherDirection = true;
       }
@@ -41,13 +56,23 @@ class Character extends MovableObject {
         this.levelCompleted = true;
         this.world.showWinScreen();
       }
+
+  
+      if(this.world.keyboard.UP){
+        this.speedY =20;
+
+      }
     }, 1000 / 60);
 
     // Bildanimation (alle 50 ms)
     setInterval(() => {
+      if(this.isAboveGround())
+      {
+        this.playWalkingAnimation(this.IMAGEs_JUMPING);
+      }else{
       if (this.world?.keyboard.RIGHT || this.world?.keyboard.LEFT) {
         this.playWalkingAnimation(this.IMAGE_WALKING);
-      }
+      }}
     }, 50);
   }
 
