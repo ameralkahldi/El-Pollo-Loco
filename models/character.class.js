@@ -1,5 +1,5 @@
 class Character extends MovableObject {
-  y = 235;
+  y = 150;
   height = 200;
   width = 120;
   speed = 7;
@@ -19,7 +19,8 @@ class Character extends MovableObject {
   constructor() {
     super().loadImage(this.IMAGE_WALKING[0]); // Startbild
     this.loadImages(this.IMAGE_WALKING); // Alle Bilder cachen
-   
+    this.applyGravity();
+    
   }
 
   animate() {
@@ -27,8 +28,7 @@ class Character extends MovableObject {
 
     // Bewegung
     setInterval(() => {
-      if (!this.world) return;
-
+   
       if (this.world.keyboard.RIGHT && this.x < levelEnd) {
         this.x += this.speed;
         this.otherDirection = false;
@@ -43,7 +43,7 @@ class Character extends MovableObject {
       }
     }, 1000 / 60);
 
-    // Bildanimation (alle 100 ms)
+    // Bildanimation (alle 50 ms)
     setInterval(() => {
       if (this.world?.keyboard.RIGHT || this.world?.keyboard.LEFT) {
         this.playWalkingAnimation(this.IMAGE_WALKING);
