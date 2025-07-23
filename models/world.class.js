@@ -32,11 +32,9 @@ updateCamera() {
 
 
 
- draw() {
+draw() {
   this.updateCamera(); // Kamera-Position berechnen
-
   this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); // Bildschirm löschen
-
   this.ctx.translate(this.camera_x, 0); // Kamera-Verschiebung aktivieren
 
   // 🖼 Hintergrund zeichnen
@@ -62,6 +60,14 @@ updateCamera() {
       this.character.width,
       this.character.height
     );
+
+    // 🔷 Blauer Rahmen um Charakter (gespiegelt)
+    this.ctx.beginPath();
+    this.ctx.lineWidth = 2;
+    this.ctx.strokeStyle = "blue";
+    this.ctx.rect(0, this.character.y, this.character.width, this.character.height);
+    this.ctx.stroke();
+
   } else {
     this.ctx.drawImage(
       this.character.img,
@@ -70,10 +76,17 @@ updateCamera() {
       this.character.width,
       this.character.height
     );
+
+    // 🔷 Blauer Rahmen um Charakter
+    this.ctx.beginPath();
+    this.ctx.lineWidth = 2;
+    this.ctx.strokeStyle = "blue";
+    this.ctx.rect(this.character.x, this.character.y, this.character.width, this.character.height);
+    this.ctx.stroke();
   }
   this.ctx.restore();
 
-  // 🐔 Gegner zeichnen
+  // 🐔 Gegner (Chicken) zeichnen mit Rahmen
   this.level.enemises.forEach((enemy) => {
     this.ctx.drawImage(
       enemy.img,
@@ -82,9 +95,16 @@ updateCamera() {
       enemy.width,
       enemy.height
     );
+
+    // 🔷 Blauer Rahmen um Gegner
+    this.ctx.beginPath();
+    this.ctx.lineWidth = 2;
+    this.ctx.strokeStyle = "red";
+    this.ctx.rect(enemy.x, enemy.y, enemy.width, enemy.height);
+    this.ctx.stroke();
   });
 
-  // ☁️ Wolken zeichnen
+  // ☁️ Wolken zeichnen mit Rahmen
   this.level.clouds.forEach((cloud) => {
     this.ctx.drawImage(
       cloud.img,
@@ -93,12 +113,19 @@ updateCamera() {
       cloud.width,
       cloud.height
     );
+
+    // 🔷 Blauer Rahmen um Wolke
+    this.ctx.beginPath();
+    this.ctx.lineWidth = 2;
+    this.ctx.strokeStyle = "red";
+    this.ctx.rect(cloud.x, cloud.y, cloud.width, cloud.height);
+    this.ctx.stroke();
   });
 
-  //  Kamera-Verschiebung rückgängig machen für nächsten Frame
-  this.ctx.translate(-this.camera_x,0);
+  // Kamera zurücksetzen
+  this.ctx.translate(-this.camera_x, 0);
 
-  //  Wiederholen (Animation)
+  // Wiederholen (Animation)
   requestAnimationFrame(() => this.draw());
 }
 
