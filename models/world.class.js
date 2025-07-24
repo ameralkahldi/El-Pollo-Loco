@@ -1,11 +1,13 @@
 class World {
   character = new Character();
    statusBar = new StatusBar();
+   throwableObjects = [new ThrowableObject()];
   level = level1;
   canvas;
   ctx;
   keyboard;
   camera_x = 0;
+  throwableObjects = [];
  
 
   constructor(canvas, keyboard) {
@@ -14,6 +16,7 @@ class World {
     this.keyboard = keyboard;
     this.setWorld();
     this.checkCollisions();
+    this.checkThrowObject(),
     this.draw();
   }
 
@@ -22,6 +25,17 @@ class World {
     this.character.animate(); // <- WICHTIG!
   }
 
+
+checkThrowObject(){
+  setInterval(() => {
+    if(this.keyboard.D){
+      let bottle = new ThrowableObject (this.character.x,this.character.y +100);
+      this.throwableObjects.push(bottle);
+
+    }
+  },200);
+
+}
   checkCollisions() {
     setInterval(() => {
       this.level.enemises.forEach((enemy) => {
@@ -40,8 +54,8 @@ class World {
       this.camera_x = 0;
     }
   }
-
-draw() {
+    
+ draw() {
   this.updateCamera();
   this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
@@ -102,6 +116,14 @@ draw() {
   this.level.clouds.forEach((cloud) => {
     this.ctx.drawImage(cloud.img, cloud.x, cloud.y, cloud.width, cloud.height);
   });
+
+  this.throwableObjects.forEach((obj) => {
+    this.ctx.drawImage(obj.img, obj.x, obj.y, obj.width, obj.height);
+
+});
+
+
+
 
   // Kamera zurücksetzen
   this.ctx.translate(-this.camera_x, 0);
