@@ -1,11 +1,12 @@
 class World {
   character = new Character();
+   statusBar = new StatusBar();
   level = level1;
   canvas;
   ctx;
   keyboard;
   camera_x = 0;
-  statusBar = new StatusBar();
+ 
 
   constructor(canvas, keyboard) {
     this.ctx = canvas.getContext("2d");
@@ -40,81 +41,72 @@ class World {
     }
   }
 
- draw() {
+draw() {
   this.updateCamera();
   this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-  // ✅ StatusBar zeichnen (fixe Position)
-  this.statusBar.draw(this.ctx);
+   // Hintergrund
+   this.ctx.translate(this.camera_x, 0);
+    this.level.backgroundobjects.forEach((bg) => {
+    this.ctx.drawImage(bg.img, bg.x, bg.y, bg.width, bg.height);
+  });
+
+
+    this.ctx.translate(-this.camera_x, 0);
+
+  // ✅ StatusBar manuell zeichnen (anstatt .draw(ctx))
+  if (this.statusBar) {
+    this.ctx.drawImage(
+      this.statusBar.img,
+      this.statusBar.x,
+      this.statusBar.y,
+      this.statusBar.width,
+      this.statusBar.height
+    );
+  }
 
   // 🔽 Kamera danach verschieben
   this.ctx.translate(this.camera_x, 0);
 
+ 
 
-
-    // Hintergrund zeichnen
-    this.level.backgroundobjects.forEach((background) => {
-      this.ctx.drawImage(
-        background.img,
-        background.x,
-        background.y,
-        background.width,
-        background.height
-      );
-    });
-
-    // Charakter zeichnen (mit Spiegelung)
-    this.ctx.save();
-    if (this.character.otherDirection) {
-      this.ctx.translate(this.character.x + this.character.width, 0);
-      this.ctx.scale(-1, 1);
-      this.ctx.drawImage(
-        this.character.img,
-        0,
-        this.character.y,
-        this.character.width,
-        this.character.height
-      );
-      this.ctx.beginPath();
-      this.ctx.lineWidth = 2;
-      this.ctx.strokeStyle = "blue";
-      this.ctx.rect(0, this.character.y, this.character.width, this.character.height);
-      this.ctx.stroke();
-    } else {
-      this.ctx.drawImage(
-        this.character.img,
-        this.character.x,
-        this.character.y,
-        this.character.width,
-        this.character.height
-      );
-      this.ctx.beginPath();
-      this.ctx.lineWidth = 2;
-      this.ctx.strokeStyle = "blue";
-      this.ctx.rect(this.character.x, this.character.y, this.character.width, this.character.height);
-      this.ctx.stroke();
-    }
-    this.ctx.restore();
-
-    // Gegner zeichnen
-    this.level.enemises.forEach((enemy) => {
-      this.ctx.drawImage(enemy.img, enemy.x, enemy.y, enemy.width, enemy.height);
-      this.ctx.beginPath();
-      this.ctx.lineWidth = 2;
-      this.ctx.strokeStyle = "red";
-      this.ctx.rect(enemy.x, enemy.y, enemy.width, enemy.height);
-      this.ctx.stroke();
-    });
-
-    // Wolken zeichnen
-    this.level.clouds.forEach((cloud) => {
-      this.ctx.drawImage(cloud.img, cloud.x, cloud.y, cloud.width, cloud.height);
-    });
-
-    // Kamera zurücksetzen
-    this.ctx.translate(-this.camera_x, 0);
-
-    // Nächster Frame
-    requestAnimationFrame(() => this.draw());
+  // Charakter
+  this.ctx.save();
+  if (this.character.otherDirection) {
+    this.ctx.translate(this.character.x + this.character.width, 0);
+    this.ctx.scale(-1, 1);
+    this.ctx.drawImage(
+      this.character.img,
+      0,
+      this.character.y,
+      this.character.width,
+      this.character.height
+    );
+  } else {
+    this.ctx.drawImage(
+      this.character.img,
+      this.character.x,
+      this.character.y,
+      this.character.width,
+      this.character.height
+    );
   }
+  this.ctx.restore();
+
+  // Gegner
+  this.level.enemises.forEach((enemy) => {
+    this.ctx.drawImage(enemy.img, enemy.x, enemy.y, enemy.width, enemy.height);
+  });
+
+  // Wolken
+  this.level.clouds.forEach((cloud) => {
+    this.ctx.drawImage(cloud.img, cloud.x, cloud.y, cloud.width, cloud.height);
+  });
+
+  // Kamera zurücksetzen
+  this.ctx.translate(-this.camera_x, 0);
+
+  // Weiterzeichnen
+  requestAnimationFrame(() => this.draw());
+}
 }

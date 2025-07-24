@@ -13,9 +13,7 @@ class MovableObject extends DrawableObject {
       }
     }, 1000 / 25);
   }
-draw(ctx){
-  ctx.drawImage(this.img,this.x,this.y,this.width,this.height);
-}
+
   isAboveGround() {
     return this.y < 230;
   }
@@ -45,7 +43,6 @@ draw(ctx){
   isHurt(){
     let timepassed = new Date().getTime() - this.lastHit ;
     timepassed = timepassed /1000;
-    console.log(timepassed);
     return timepassed < 1;
 
   }

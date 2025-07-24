@@ -1,5 +1,5 @@
 class DrawableObject {
-  x = 120;
+   x = 120;
   y = 80;
   width = 200;
   height = 150;
@@ -33,12 +33,6 @@ class DrawableObject {
     ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
   }
   
-  // ✅ Rahmen zur Kontrolle
-  ctx.beginPath();
-  ctx.strokeStyle = "green";
-  ctx.lineWidth = 2;
-  ctx.rect(this.x, this.y, this.width, this.height);
-  ctx.stroke();
 }
 
 }
