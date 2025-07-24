@@ -1,10 +1,6 @@
-class MovableObject {
-  x = 120;
-  y = 80;
-  img;
-  height = 150;
-  width = 200;
-  imageCache = {};
+class MovableObject extends DrawableObject {
+
+  
   speed = 0.15; // Default speed for movement
   otherDirection = false; // Default direction for movement
   speedY = 0;
