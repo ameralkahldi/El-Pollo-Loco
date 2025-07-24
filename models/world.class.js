@@ -28,7 +28,7 @@ checkCollisions(){
     this.level.enemises.forEach((enemy) =>{
       if(this.character.isColliding(enemy)){
        this.character.hit();
-         console.log('Collision with Character , energy ' , this.character.energy);
+         
 
       }
     })
