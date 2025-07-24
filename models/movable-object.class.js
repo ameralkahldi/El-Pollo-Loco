@@ -1,6 +1,4 @@
 class MovableObject extends DrawableObject {
-
-  
   speed = 0.15; // Default speed for movement
   otherDirection = false; // Default direction for movement
   speedY = 0;
@@ -15,7 +13,9 @@ class MovableObject extends DrawableObject {
       }
     }, 1000 / 25);
   }
-
+draw(ctx){
+  ctx.drawImage(this.img,this.x,this.y,this.width,this.height);
+}
   isAboveGround() {
     return this.y < 230;
   }
