@@ -1,7 +1,7 @@
 class World {
   character = new Character();
    statusBar = new StatusBar();
-   throwableObjects = [new ThrowableObject()];
+   throwableObjects = ([]);
    coinsStatusBar = new CoinsStatusBar();
   level = level1;
   canvas;
@@ -17,7 +17,8 @@ class World {
     this.keyboard = keyboard;
     this.setWorld();
     this.checkCollisions();
-    this.checkThrowObject(),
+    this.checkThrowObject();
+    this.checkCoinCollisions();
     this.draw();
   }
 
@@ -37,7 +38,7 @@ checkThrowObject(){
   },200);
 
 }
-  checkCollisions() {
+    checkCollisions() {
     setInterval(() => {
       this.level.enemises.forEach((enemy) => {
         if (this.character.isColliding(enemy)) {
@@ -47,6 +48,31 @@ checkThrowObject(){
       });
     }, 200);
   }
+
+
+ collectCoin(coin) {
+  if (this.character.coins < 10) {
+    this.character.coins += 1;
+    this.coinsStatusBar.setPercentage(this.character.coins * 10);
+  }
+  const index = this.level.coins.indexOf(coin);
+  if (index > -1) {
+    this.level.coins.splice(index, 1);
+  }
+}
+
+
+checkCoinCollisions(){
+    setInterval (() =>{
+    this.level.coins.forEach((coin) => {
+      if(this.character.isColliding(coin)){
+        this.collectCoin(coin);
+      }
+    });
+  },1000);
+}
+
+  
 
   updateCamera() {
     if (this.character.x > 100) {
@@ -62,16 +88,19 @@ checkThrowObject(){
 
    // Hintergrund
    this.ctx.translate(this.camera_x, 0);
-    this.level.backgroundobjects.forEach((bg) => {
-    this.ctx.drawImage(bg.img, bg.x, bg.y, bg.width, bg.height);
-  });
+
+
+this.level.backgroundobjects.forEach((bg) => {
+  this.ctx.drawImage(bg.img, bg.x, bg.y, bg.width, bg.height);
+});
+
 
 
     this.ctx.translate(-this.camera_x, 0);
 
   // ✅ StatusBar manuell zeichnen (anstatt .draw(ctx))
 
-  
+
  // ✅ StatusBar Energie
 if (this.statusBar) {
   this.ctx.drawImage(
@@ -137,7 +166,7 @@ if (this.coinsStatusBar) {
     this.ctx.drawImage(obj.img, obj.x, obj.y, obj.width, obj.height);
 
 });
-
+ 
 
 
 
