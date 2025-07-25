@@ -2,6 +2,7 @@ class World {
   character = new Character();
    statusBar = new StatusBar();
    throwableObjects = [new ThrowableObject()];
+   coinsStatusBar = new CoinsStatusBar();
   level = level1;
   canvas;
   ctx;
@@ -69,15 +70,30 @@ checkThrowObject(){
     this.ctx.translate(-this.camera_x, 0);
 
   // ✅ StatusBar manuell zeichnen (anstatt .draw(ctx))
-  if (this.statusBar) {
-    this.ctx.drawImage(
-      this.statusBar.img,
-      this.statusBar.x,
-      this.statusBar.y,
-      this.statusBar.width,
-      this.statusBar.height
-    );
-  }
+
+  
+ // ✅ StatusBar Energie
+if (this.statusBar) {
+  this.ctx.drawImage(
+    this.statusBar.img,
+    this.statusBar.x,
+    this.statusBar.y,
+    this.statusBar.width,
+    this.statusBar.height
+  );
+}
+
+// ✅ CoinsStatusBar hinzufügen
+if (this.coinsStatusBar) {
+  this.ctx.drawImage(
+    this.coinsStatusBar.img,
+    this.coinsStatusBar.x,
+    this.coinsStatusBar.y,
+    this.coinsStatusBar.width,
+    this.coinsStatusBar.height
+  );
+}
+
 
   // 🔽 Kamera danach verschieben
   this.ctx.translate(this.camera_x, 0);
