@@ -9,7 +9,38 @@ class Character extends MovableObject {
   energy =100;
    bottles = 0;
  collectedCoins = 0;
+ offset = {
+    top: 100,
+    bottom: 10,
+    left: 20,
+    right: 22
+  }
 
+  IMAGES_IDLE = [
+    './img/2_character_pepe/1_idle/idle/I-1.png',
+    './img/2_character_pepe/1_idle/idle/I-2.png',
+    './img/2_character_pepe/1_idle/idle/I-3.png',
+    './img/2_character_pepe/1_idle/idle/I-4.png',
+    './img/2_character_pepe/1_idle/idle/I-5.png',
+    './img/2_character_pepe/1_idle/idle/I-6.png',
+    './img/2_character_pepe/1_idle/idle/I-7.png',
+    './img/2_character_pepe/1_idle/idle/I-8.png',
+    './img/2_character_pepe/1_idle/idle/I-9.png',
+    './img/2_character_pepe/1_idle/idle/I-10.png'
+  ];
+
+    IMAGES_LONG_IDLE = [
+    './img/2_character_pepe/1_idle/long_idle/I-11.png',
+    './img/2_character_pepe/1_idle/long_idle/I-12.png',
+    './img/2_character_pepe/1_idle/long_idle/I-13.png',
+    './img/2_character_pepe/1_idle/long_idle/I-14.png',
+    './img/2_character_pepe/1_idle/long_idle/I-15.png',
+    './img/2_character_pepe/1_idle/long_idle/I-16.png',
+    './img/2_character_pepe/1_idle/long_idle/I-17.png',
+    './img/2_character_pepe/1_idle/long_idle/I-18.png',
+    './img/2_character_pepe/1_idle/long_idle/I-19.png',
+    './img/2_character_pepe/1_idle/long_idle/I-20.png'
+  ]
 
 
   IMAGE_WALKING = [
@@ -59,6 +90,8 @@ class Character extends MovableObject {
     this.loadImages(this.IMAGEs_JUMPING);
     this.loadImages(this.IMAGEs_DEAD);
     this.loadImages(this.IMAGEs_HURT);
+    this.loadImages(this.IMAGES_IDLE);
+    this.loadImages(this.IMAGES_LONG_IDLE);
     this.applyGravity();
     this.animate();
     
@@ -82,6 +115,8 @@ class Character extends MovableObject {
       }
     }, 1000 / 60);
 
+
+    
     // Bildanimation (alle 50 ms)
 setInterval(() => {
   if (this.isDead()) {
