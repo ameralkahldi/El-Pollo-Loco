@@ -147,6 +147,11 @@ this.level.backgroundobjects.forEach((bg) => {
     this.ctx.drawImage(con.img, con.x, con.y, con.width, con.height);
   });
 
+    this.level.enemises.forEach((enemy) => {
+    this.ctx.drawImage(enemy.img, enemy.x, enemy.y, enemy.width, enemy.height);
+  });
+
+
 
   
 

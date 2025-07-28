@@ -84,18 +84,21 @@ class Character extends MovableObject {
 
 
 
-  constructor() {
-    super().loadImage(this.IMAGE_WALKING[0]); // Startbild
-    this.loadImages(this.IMAGE_WALKING); // Alle Bilder cachen
-    this.loadImages(this.IMAGEs_JUMPING);
-    this.loadImages(this.IMAGEs_DEAD);
-    this.loadImages(this.IMAGEs_HURT);
-    this.loadImages(this.IMAGES_IDLE);
-    this.loadImages(this.IMAGES_LONG_IDLE);
-    this.applyGravity();
-    this.animate();
-    
-  }
+ constructor() {
+  super(); // ✔️ Korrekt
+
+  this.loadImage(this.IMAGE_WALKING[0]); // ✔️ Jetzt auf das eigene Objekt
+  this.loadImages(this.IMAGE_WALKING);
+  this.loadImages(this.IMAGEs_JUMPING);
+  this.loadImages(this.IMAGEs_DEAD);
+  this.loadImages(this.IMAGEs_HURT);
+  this.loadImages(this.IMAGES_IDLE);
+  this.loadImages(this.IMAGES_LONG_IDLE);
+
+  this.applyGravity();
+  this.animate();
+}
+
 
   animate() {
     let levelEnd = 2200;
@@ -116,7 +119,7 @@ class Character extends MovableObject {
     }, 1000 / 60);
 
 
-    
+
     // Bildanimation (alle 50 ms)
 setInterval(() => {
   if (this.isDead()) {

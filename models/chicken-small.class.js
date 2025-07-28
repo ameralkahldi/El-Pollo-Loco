@@ -1,27 +1,27 @@
 class ChickenSmall extends MovableObject {
-    y = 380;
-    height = 40;
-    width = 70;
-    speed = 0.8;
+    y = 370;
+    height = 60;
+    width = 60;
+    speed = 0.7;
     isDead = false;
+    currentImage = 0;
+
 
     IMAGES_WALKING = [
-        './img/3_enemies_chicken/chicken_small/1_walk/1_w.png',
-        './img/3_enemies_chicken/chicken_small/1_walk/2_w.png',
-        './img/3_enemies_chicken/chicken_small/1_walk/3_w.png'
+        'img/3_enemies_chicken/chicken_small/1_walk/1_w.png',
+        'img/3_enemies_chicken/chicken_small/1_walk/2_w.png',
+        'img/3_enemies_chicken/chicken_small/1_walk/3_w.png'
     ];
 
     IMAGE_DEAD = [
-        './img/3_enemies_chicken/chicken_small/2_dead/dead.png'
+        'img/3_enemies_chicken/chicken_small/2_dead/dead.png'
     ];
 
     constructor() {
-    super(); // nur super, kein Funktionsaufruf!
-    this.loadImage(this.IMAGES_WALKING[0]); // ✅ richtig
+  // nur super, kein Funktionsaufruf!
+    super().loadImage(this.IMAGES_WALKING[0]); // ✅ richtig
     this.loadImages(this.IMAGES_WALKING);
-    this.loadImages(this.IMAGE_DEAD);
-    this.x = 300 + Math.random() * 800;
-    this.speed = 0.65 + Math.random() * 0.45;
+    this.loadImages(this.IMAGE_DEAD) ;
     this.applyGravity();
     this.animate();
 }
@@ -35,6 +35,7 @@ class ChickenSmall extends MovableObject {
 
   this.animationInterval = setInterval(() => {
     if (!this.isDead) this.playWalkingAnimation(this.IMAGES_WALKING);
+  
   }, 200);
 }
 
@@ -57,6 +58,7 @@ class ChickenSmall extends MovableObject {
     let path = images[i];
     this.img = this.imageCache[path];
     this.currentImage++;
+  
 }
 
 }
