@@ -1,10 +1,9 @@
 class World {
   character = new Character();
+   level = level1;
    statusBar = new StatusBar();
-   throwableObjects = ([]);
    coinsStatusBar = new CoinsStatusBar();
    bottleStatusBar = new BottlesStatusBar();
-  level = level1;
   canvas;
   ctx;
   keyboard;
@@ -19,6 +18,7 @@ class World {
     this.setWorld();
     this.checkCollisions();
     this.checkThrowObject();
+    this.checkBottleCollisions();
     this.draw();
   }
 
@@ -47,9 +47,33 @@ checkThrowObject(){
         }
       });
     }, 200);
+  
   }
 
-  
+
+
+checkBottleCollisions() {
+    this.level.bottles.forEach((bott) => {
+        if (this.character.isColliding(bott)) {
+            this.collectBottle(bott);
+        }
+        
+    });
+}
+
+collectBottle(bottle) {
+  console.log('Bottle eingesammelt:', bottle);  // 🔍 LOG HINZUGEFÜGT
+
+  if (this.character.bottles < 5) {
+    this.character.bottles += 1;
+    this.bottleStatusBar.setPercentage(this.character.bottles * 20);
+    
+    const index = this.level.bottles.indexOf(bottle);
+    if (index > -1) {
+      this.level.bottles.splice(index, 1);
+    }
+  }
+}
 
   
 
@@ -68,6 +92,7 @@ checkThrowObject(){
    // Hintergrund
    this.ctx.translate(this.camera_x, 0);
 
+   
 
 this.level.backgroundobjects.forEach((bg) => {
   this.ctx.drawImage(bg.img, bg.x, bg.y, bg.width, bg.height);
@@ -76,12 +101,20 @@ this.level.backgroundobjects.forEach((bg) => {
  this.level.clouds.forEach((cloud) => {
     this.ctx.drawImage(cloud.img, cloud.x, cloud.y, cloud.width, cloud.height);
   });
+  this.level.bottles.forEach((bot) => {
+    this.ctx.drawImage(bot.img, bot.x, bot.y, bot.width, bot.height);
+  });
+
     
    this.level.enemises.forEach((enemy) => {
     this.ctx.drawImage(enemy.img, enemy.x, enemy.y, enemy.width, enemy.height);
   });
 
- 
+  this.level.coins.forEach((con) => {
+    this.ctx.drawImage(con.img, con.x, con.y, con.width, con.height);
+  });
+   
+
 
 this.ctx.save();
   if (this.character.otherDirection) {
@@ -156,6 +189,8 @@ if (this.bottleStatusBar) {
 
  
   this.ctx.translate(-this.camera_x, 0);
+
+ 
 
 
   requestAnimationFrame(() => this.draw());

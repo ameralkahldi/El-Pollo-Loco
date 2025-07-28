@@ -1,20 +1,16 @@
-class Level{
-   clouds;
+class Level {
     enemises;
-     coins;
-    backgroundobjects;
+    clouds;
     bottles;
-   
+    coins;
+    backgroundobjects;
+    level_end_x = 700 * 7 - 200;
 
-
-    constructor(enemises,clouds,coins,backgroundobjects,bottles){
-        this.enemises=enemises;
-        this.clouds=clouds;
-        this.coins=coins;
-          this.backgroundobjects=backgroundobjects;
-        this.bottles=bottles;
-
-
+    constructor(enemises, clouds, bottles, coins, backgroundobjects){
+        this.enemises = enemises;
+        this.clouds = clouds;
+        this.bottles = bottles;
+        this.coins = coins;
+        this.backgroundobjects = backgroundobjects;
     }
-
 }
