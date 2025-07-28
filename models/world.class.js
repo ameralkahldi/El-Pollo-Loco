@@ -19,6 +19,7 @@ class World {
     this.checkCollisions();
     this.checkThrowObject();
     this.checkBottleCollisions();
+    this.checkBottleHitsEnemy();
     this.draw();
   }
 
@@ -50,6 +51,18 @@ checkThrowObject(){
   
   }
 
+checkBottleHitsEnemy() {
+    setInterval(() => {
+        this.throwableObjects.forEach((bottle) => {
+            this.level.enemises.forEach((enemy) => {
+                if (bottle.isColliding(enemy) && enemy instanceof ChickenSmall) {
+                    enemy.kill(); // ✅ Huhn töten
+                    this.throwableObjects.splice(this.throwableObjects.indexOf(bottle), 1);
+                }
+            });
+        });
+    }, 200);
+}
 
 
 checkBottleCollisions() {
