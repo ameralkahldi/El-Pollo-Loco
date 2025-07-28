@@ -20,6 +20,7 @@ class World {
     this.checkThrowObject();
     this.checkBottleCollisions();
     this.checkBottleHitsEnemy();
+     this.checkCoinCollisions();
     this.draw();
   }
 
@@ -39,6 +40,27 @@ checkThrowObject(){
   },200);
 
 }
+checkCoinCollisions() {
+  this.level.coins.forEach((coin) => {
+    if (this.character.isColliding(coin)) {
+      this.collectCoin(coin);
+    }
+  });
+}
+
+collectCoin(coin) {
+  if (this.character.collectedCoins < 5) {
+    this.character.collectedCoins += 1;
+    this.coinsStatusBar.setPercentage(this.character.collectedCoins * 20);
+
+    const index = this.level.coins.indexOf(coin);
+    if (index > -1) {
+      this.level.coins.splice(index, 1);
+    }
+  }
+}
+
+
     checkCollisions() {
     setInterval(() => {
       this.level.enemises.forEach((enemy) => {
@@ -75,8 +97,6 @@ checkBottleCollisions() {
 }
 
 collectBottle(bottle) {
-  console.log('Bottle eingesammelt:', bottle);  // 🔍 LOG HINZUGEFÜGT
-
   if (this.character.bottles < 5) {
     this.character.bottles += 1;
     this.bottleStatusBar.setPercentage(this.character.bottles * 20);
@@ -99,35 +119,36 @@ collectBottle(bottle) {
   }
     
  draw() {
+
   this.updateCamera();
   this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
    // Hintergrund
    this.ctx.translate(this.camera_x, 0);
-
-   
+ 
 
 this.level.backgroundobjects.forEach((bg) => {
   this.ctx.drawImage(bg.img, bg.x, bg.y, bg.width, bg.height);
 });
+ 
 
  this.level.clouds.forEach((cloud) => {
     this.ctx.drawImage(cloud.img, cloud.x, cloud.y, cloud.width, cloud.height);
   });
+
+
   this.level.bottles.forEach((bot) => {
     this.ctx.drawImage(bot.img, bot.x, bot.y, bot.width, bot.height);
   });
 
-    
-   this.level.enemises.forEach((enemy) => {
-    this.ctx.drawImage(enemy.img, enemy.x, enemy.y, enemy.width, enemy.height);
-  });
+
 
   this.level.coins.forEach((con) => {
     this.ctx.drawImage(con.img, con.x, con.y, con.width, con.height);
   });
-   
 
+
+  
 
 this.ctx.save();
   if (this.character.otherDirection) {
@@ -152,14 +173,16 @@ this.ctx.save();
   this.ctx.restore();
 
 
-
     this.throwableObjects.forEach((obj) => {
     this.ctx.drawImage(obj.img, obj.x, obj.y, obj.width, obj.height);
 
 });
 
 
+
     this.ctx.translate(-this.camera_x, 0);
+
+ 
 
   // ✅ StatusBar manuell zeichnen (anstatt .draw(ctx))
 if (this.coinsStatusBar) {
@@ -183,6 +206,8 @@ if (this.statusBar) {
   );
 }
 
+
+
 if (this.bottleStatusBar) {
   this.ctx.drawImage(
     this.bottleStatusBar.img,
@@ -192,18 +217,13 @@ if (this.bottleStatusBar) {
     this.bottleStatusBar.height
   );
 
-
-
-
-
   this.ctx.translate(this.camera_x, 0);
-
-
 
  
   this.ctx.translate(-this.camera_x, 0);
 
- 
+  
+
 
 
   requestAnimationFrame(() => this.draw());

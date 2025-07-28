@@ -16,14 +16,17 @@ class ChickenSmall extends MovableObject {
     ];
 
     constructor() {
-        super().loadImage(this.IMAGES_WALKING[0]);
-        this.loadImages(this.IMAGES_WALKING);
-        this.loadImages(this.IMAGE_DEAD);
-        this.x = 900 + Math.random() * (3600 - 1200);
-        this.speed = 0.65 + Math.random() * 0.45;
-        this.applyGravity();
-        this.animate();
-    }
+    super(); // nur super, kein Funktionsaufruf!
+    this.loadImage(this.IMAGES_WALKING[0]); // ✅ richtig
+    this.loadImages(this.IMAGES_WALKING);
+    this.loadImages(this.IMAGE_DEAD);
+    this.x = 300 + Math.random() * 800;
+    this.speed = 0.65 + Math.random() * 0.45;
+    this.applyGravity();
+    this.animate();
+}
+    
+    
 
    animate() {
   this.moveInterval = setInterval(() => {
@@ -47,4 +50,13 @@ class ChickenSmall extends MovableObject {
         clearInterval(this.moveInterval);
         clearInterval(this.walkAnimationInterval);
     }
+
+
+    playWalkingAnimation(images) {
+    let i = this.currentImage % images.length;
+    let path = images[i];
+    this.img = this.imageCache[path];
+    this.currentImage++;
+}
+
 }

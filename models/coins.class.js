@@ -6,24 +6,15 @@ class Coins extends DrawableObject{
 
 
    constructor(){
-    super().loadImage('img/8_coin/coin_2.png');
-    this.loadImages(this.IMAGES_COIN);
-    this.animate();
+    super();
+        this.loadImage('img/8_coin/coin_1.png'); // Beispielpfad
+        this.x = 300 + Math.random() * 1000;
+        this.y = 200 + Math.random() * 100;
+        this.width = 50;
+        this.height = 50
+  
+   }
    
-
-   }
-   animate(){
-    setInterval(() => {
-        this.playWalkingAnimation(this.IMAGES_COIN);
-    },200)
-   }
-
- playWalkingAnimation(images) {
-    let i = this.currentImage % images.length;
-  let path = images[i];
-  this.img = this.imageCache[path];
-  this.currentImage++;
-}
 
 
 

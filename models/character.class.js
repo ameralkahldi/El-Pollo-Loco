@@ -7,6 +7,9 @@ class Character extends MovableObject {
   world;
   otherDirection = false;
   energy =100;
+   bottles = 0;
+ collectedCoins = 0;
+
 
 
   IMAGE_WALKING = [
