@@ -1,16 +1,14 @@
 class World {
   character = new Character();
-   level = level1;
-   statusBar = new StatusBar();
-   coinsStatusBar = new CoinsStatusBar();
-   bottleStatusBar = new BottlesStatusBar();
+  level = level1;
+  statusBar = new StatusBar();
+  coinsStatusBar = new CoinsStatusBar();
+  bottleStatusBar = new BottlesStatusBar();
   canvas;
   ctx;
   keyboard;
   camera_x = 0;
   throwableObjects = [];
- 
-
   constructor(canvas, keyboard) {
     this.ctx = canvas.getContext("2d");
     this.canvas = canvas;
@@ -18,49 +16,29 @@ class World {
     this.setWorld();
     this.checkCollisions();
     this.checkThrowObject();
+    this.checkCoinCollisions();
     this.checkBottleCollisions();
-    this.checkBottleHitsEnemy();
-     this.checkCoinCollisions();
-    this.draw();
+     this.draw();
   }
 
   setWorld() {
     this.character.world = this;
-    this.character.animate(); // <- WICHTIG!
+    this.character.animate();
   }
 
-
-checkThrowObject(){
-  setInterval(() => {
-    if(this.keyboard.D){
-      let bottle = new ThrowableObject (this.character.x,this.character.y +100);
-      this.throwableObjects.push(bottle);
-
-    }
-  },200);
-
-}
-checkCoinCollisions() {
-  this.level.coins.forEach((coin) => {
-    if (this.character.isColliding(coin)) {
-      this.collectCoin(coin);
-    }
-  });
-}
-
-collectCoin(coin) {
-  if (this.character.collectedCoins < 5) {
-    this.character.collectedCoins += 1;
-    this.coinsStatusBar.setPercentage(this.character.collectedCoins * 20);
-
-    const index = this.level.coins.indexOf(coin);
-    if (index > -1) {
-      this.level.coins.splice(index, 1);
-    }
+  //Diese Funktion überwacht ständig (alle 200 Millisekunden), ob der Spieler die Taste "D" auf der Tastatur drückt.
+  checkThrowObject() {
+    setInterval(() => {
+      if (this.keyboard.D) {
+        let bottle = new ThrowableObject(
+          this.character.x,
+          this.character.y + 100
+        );
+        this.throwableObjects.push(bottle);
+      }
+    }, 200);
   }
-}
-
-
+  //Diese Funktion prüft regelmäßig (alle 200 Millisekunden), ob das Charakter mit einem Feind kollidiert:
     checkCollisions() {
     setInterval(() => {
       this.level.enemises.forEach((enemy) => {
@@ -70,45 +48,37 @@ collectCoin(coin) {
         }
       });
     }, 200);
-  
   }
 
-checkBottleHitsEnemy() {
-    setInterval(() => {
-        this.throwableObjects.forEach((bottle) => {
-            this.level.enemises.forEach((enemy) => {
-                if (bottle.isColliding(enemy) && enemy instanceof ChickenSmall) {
-                    enemy.kill(); // ✅ Huhn töten
-                    this.throwableObjects.splice(this.throwableObjects.indexOf(bottle), 1);
-                }
-            });
-        });
-    }, 200);
+
+checkCoinCollisions() {
+  setInterval(() => {
+    this.level.coins = this.level.coins.filter((coin) => {
+      if (this.character.isColliding(coin)) {
+        this.character.collectedCoins += 1;
+        this.coinsStatusBar.setPercentage(this.character.collectedCoins * 20);
+        return false; // ✅ Entfernt diese Münze aus dem Array
+      }
+      return true; // bleibt erhalten
+    });
+  }, 200);
 }
+
 
 
 checkBottleCollisions() {
-    this.level.bottles.forEach((bott) => {
-        if (this.character.isColliding(bott)) {
-            this.collectBottle(bott);
-        }
-        
+  setInterval(() => {
+    this.level.bottles = this.level.bottles.filter((bottle) => {
+      if (this.character.isColliding(bottle)) {
+        this.character.collbottles += 1;
+        this.bottleStatusBar.setPercentage(this.character.collbottles * 20);
+        return false; // ✅ Flasche entfernen
+      }
+      return true;
     });
+  }, 200);
 }
 
-collectBottle(bottle) {
-  if (this.character.bottles < 5) {
-    this.character.bottles += 1;
-    this.bottleStatusBar.setPercentage(this.character.bottles * 20);
-    
-    const index = this.level.bottles.indexOf(bottle);
-    if (index > -1) {
-      this.level.bottles.splice(index, 1);
-    }
-  }
-}
-
-  
 
   updateCamera() {
     if (this.character.x > 100) {
@@ -117,120 +87,110 @@ collectBottle(bottle) {
       this.camera_x = 0;
     }
   }
-    
- draw() {
 
-  this.updateCamera();
-  this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  draw() {
+    this.updateCamera();
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-   // Hintergrund
-   this.ctx.translate(this.camera_x, 0);
- 
+    // Hintergrund
+    this.ctx.translate(this.camera_x, 0);
 
-this.level.backgroundobjects.forEach((bg) => {
-  this.ctx.drawImage(bg.img, bg.x, bg.y, bg.width, bg.height);
-});
- 
+    this.level.backgroundobjects.forEach((bg) => {
+      this.ctx.drawImage(bg.img, bg.x, bg.y, bg.width, bg.height);
+    });
 
- this.level.clouds.forEach((cloud) => {
-    this.ctx.drawImage(cloud.img, cloud.x, cloud.y, cloud.width, cloud.height);
-  });
+    this.level.clouds.forEach((cloud) => {
+      this.ctx.drawImage(
+        cloud.img,
+        cloud.x,
+        cloud.y,
+        cloud.width,
+        cloud.height
+      );
+    });
 
+    this.level.bottles.forEach((bot) => {
+      this.ctx.drawImage(bot.img, bot.x, bot.y, bot.width, bot.height);
+    });
 
-  this.level.bottles.forEach((bot) => {
-    this.ctx.drawImage(bot.img, bot.x, bot.y, bot.width, bot.height);
-  });
-
-
-
-  this.level.coins.forEach((con) => {
-    this.ctx.drawImage(con.img, con.x, con.y, con.width, con.height);
-  });
+    this.level.coins.forEach((con) => {
+      this.ctx.drawImage(con.img, con.x, con.y, con.width, con.height);
+    });
 
     this.level.enemises.forEach((enemy) => {
-    this.ctx.drawImage(enemy.img, enemy.x, enemy.y, enemy.width, enemy.height);
-  });
+      this.ctx.drawImage(
+        enemy.img,
+        enemy.x,
+        enemy.y,
+        enemy.width,
+        enemy.height
+      );
+    });
 
-
-
-  
-
-this.ctx.save();
-  if (this.character.otherDirection) {
-    this.ctx.translate(this.character.x + this.character.width, 0);
-    this.ctx.scale(-1, 1);
-    this.ctx.drawImage(
-      this.character.img,
-      0,
-      this.character.y,
-      this.character.width,
-      this.character.height
-    );
-  } else {
-    this.ctx.drawImage(
-      this.character.img,
-      this.character.x,
-      this.character.y,
-      this.character.width,
-      this.character.height
-    );
-  }
-  this.ctx.restore();
-
+    this.ctx.save();
+    if (this.character.otherDirection) {
+      this.ctx.translate(this.character.x + this.character.width, 0);
+      this.ctx.scale(-1, 1);
+      this.ctx.drawImage(
+        this.character.img,
+        0,
+        this.character.y,
+        this.character.width,
+        this.character.height
+      );
+    } else {
+      this.ctx.drawImage(
+        this.character.img,
+        this.character.x,
+        this.character.y,
+        this.character.width,
+        this.character.height
+      );
+    }
+    this.ctx.restore();
 
     this.throwableObjects.forEach((obj) => {
-    this.ctx.drawImage(obj.img, obj.x, obj.y, obj.width, obj.height);
-
-});
-
-
+      this.ctx.drawImage(obj.img, obj.x, obj.y, obj.width, obj.height);
+    });
 
     this.ctx.translate(-this.camera_x, 0);
 
- 
+    // ✅ StatusBar manuell zeichnen (anstatt .draw(ctx))
+    if (this.coinsStatusBar) {
+      this.ctx.drawImage(
+        this.coinsStatusBar.img,
+        this.coinsStatusBar.x,
+        this.coinsStatusBar.y,
+        this.coinsStatusBar.width,
+        this.coinsStatusBar.height
+      );
+    }
 
-  // ✅ StatusBar manuell zeichnen (anstatt .draw(ctx))
-if (this.coinsStatusBar) {
-  this.ctx.drawImage(
-    this.coinsStatusBar.img,
-    this.coinsStatusBar.x,
-    this.coinsStatusBar.y,
-    this.coinsStatusBar.width,
-    this.coinsStatusBar.height
-  );
+    // ✅ StatusBar Energie
+    if (this.statusBar) {
+      this.ctx.drawImage(
+        this.statusBar.img,
+        this.statusBar.x,
+        this.statusBar.y,
+        this.statusBar.width,
+        this.statusBar.height
+      );
+    }
+
+    if (this.bottleStatusBar) {
+      this.ctx.drawImage(
+        this.bottleStatusBar.img,
+        this.bottleStatusBar.x,
+        this.bottleStatusBar.y,
+        this.bottleStatusBar.width,
+        this.bottleStatusBar.height
+      );
+
+      this.ctx.translate(this.camera_x, 0);
+
+      this.ctx.translate(-this.camera_x, 0);
+
+      requestAnimationFrame(() => this.draw());
+    }
+  }
 }
-
- // ✅ StatusBar Energie
-if (this.statusBar) {
-  this.ctx.drawImage(
-    this.statusBar.img,
-    this.statusBar.x,
-    this.statusBar.y,
-    this.statusBar.width,
-    this.statusBar.height
-  );
-}
-
-
-
-if (this.bottleStatusBar) {
-  this.ctx.drawImage(
-    this.bottleStatusBar.img,
-    this.bottleStatusBar.x,
-    this.bottleStatusBar.y,
-    this.bottleStatusBar.width,
-    this.bottleStatusBar.height
-  );
-
-  this.ctx.translate(this.camera_x, 0);
-
- 
-  this.ctx.translate(-this.camera_x, 0);
-
-  
-
-
-
-  requestAnimationFrame(() => this.draw());
-}
-}}

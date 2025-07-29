@@ -1,4 +1,5 @@
 class Coins extends DrawableObject{
+   
    IMAGES_COIN = [
     "img/8_coin/coin_1.png",
     "img/8_coin/coin_2.png"
@@ -13,7 +14,6 @@ class Coins extends DrawableObject{
         this.width = 100;
         this.height = 100;
       
-  
    }
   
    
