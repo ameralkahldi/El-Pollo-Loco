@@ -43,6 +43,14 @@ class MovableObject extends DrawableObject {
     );
   }
 
+
+ /**This function is used to check if the character is falling. */
+    isFalling() {
+        return this.speedY < 0;
+    }
+
+
+
   isHurt(){
     let timepassed = new Date().getTime() - this.lastHit ;
     timepassed = timepassed /1000;
