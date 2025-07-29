@@ -1,15 +1,19 @@
 class Bottle extends MovableObject {
+
+     BOTTLE_IMAGES = [
+            './img/6_salsa_bottle/1_salsa_bottle_on_ground.png',
+            './img/6_salsa_bottle/2_salsa_bottle_on_ground.png'
+        ];
+
+
+
+
     constructor() {
         super();
         this.x = 300 + Math.random() * 2000;
         this.y =350;
         this.width = 100;
         this.height = 100;
-
-        this.BOTTLE_IMAGES = [
-            './img/6_salsa_bottle/1_salsa_bottle_on_ground.png',
-            './img/6_salsa_bottle/2_salsa_bottle_on_ground.png'
-        ];
 
         const randomImage = this.getRandomImage();  // ← zufälliges Bild auswählen
         this.loadImage(randomImage);               // ← wichtig: Bild laden!

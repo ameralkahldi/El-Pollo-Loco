@@ -9,17 +9,28 @@ class World {
   keyboard;
   camera_x = 0;
   throwableObjects = [];
-  constructor(canvas, keyboard) {
-    this.ctx = canvas.getContext("2d");
-    this.canvas = canvas;
-    this.keyboard = keyboard;
-    this.setWorld();
-    this.checkCollisions();
-    this.checkThrowObject();
-    this.checkCoinCollisions();
-    this.checkBottleCollisions();
-     this.draw();
-  }
+ ;
+  
+constructor(canvas, keyboard) {
+  this.ctx = canvas.getContext("2d");
+  this.canvas = canvas;
+  this.keyboard = keyboard;
+  this.setWorld();
+
+  // Anfangswerte der StatusBars setzen
+  this.coinsStatusBar.setPercentage(0);
+  this.bottleStatusBar.setPercentage(0);
+  this.statusBar.setPercentage(this.character.energy);
+
+  // Logik starten
+  this.checkCollisions();
+  this.checkThrowObject();
+  this.checkCoinCollisions();
+  this.checkBottleCollisions();
+  this.hitTargetSuccessfully();
+  this.draw();
+}
+
 
   setWorld() {
     this.character.world = this;
@@ -39,16 +50,20 @@ class World {
     }, 200);
   }
   //Diese Funktion prüft regelmäßig (alle 200 Millisekunden), ob das Charakter mit einem Feind kollidiert:
-    checkCollisions() {
-    setInterval(() => {
-      this.level.enemises.forEach((enemy) => {
-        if (this.character.isColliding(enemy)) {
-          this.character.hit();
-          this.statusBar.setPercentage(this.character.energy); // ✅ Energie synchronisieren
+ checkCollisions() {
+  setInterval(() => {
+    this.level.enemises.forEach((enemy) => {
+      if (this.character.isColliding(enemy)) {
+        if (this.character.isAbove(enemy) && !enemy.dead) {
+          this.hitTargetSuccessfully(enemy); // ✅ Auf Gegner gesprungen
+        } else if (!enemy.dead) {
+          this.character.hit(); // ❌ Gegner trifft Spieler
+          this.statusBar.setPercentage(this.character.energy);
         }
-      });
-    }, 200);
-  }
+      }
+    });
+  }, 100);
+}
 
 
 checkCoinCollisions() {
@@ -70,8 +85,9 @@ checkBottleCollisions() {
   setInterval(() => {
     this.level.bottles = this.level.bottles.filter((bottle) => {
       if (this.character.isColliding(bottle)) {
-        this.character.collbottles += 1;
-        this.bottleStatusBar.setPercentage(this.character.collbottles * 20);
+       this.character.bottles += 1;
+      this.bottleStatusBar.setPercentage(this.character.bottles * 20);
+  
         return false; // ✅ Flasche entfernen
       }
       return true;
@@ -79,6 +95,27 @@ checkBottleCollisions() {
   }, 200);
 }
 
+
+hitTargetSuccessfully(enemy) {
+  if (enemy == this.endBoss) {
+    // Optional: Boss-Logik
+  } else if (this.character.isAbove(enemy)) {
+    this.character.smallJump();  // Charakter springt leicht hoch
+    enemy.energy = 0;
+    enemy.speed = 0;
+    enemy.dead = true;
+
+    // Optional: nach kurzer Zeit entfernen (verstecken)
+    setTimeout(() => {
+      let index = this.level.enemises.indexOf(enemy);
+      if (index > -1) {
+        this.level.enemises.splice(index, 1);
+      }
+    }, 200);  // Feind nach 200ms entfernen
+  }
+}
+
+   
 
   updateCamera() {
     if (this.character.x > 100) {
