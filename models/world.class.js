@@ -17,6 +17,7 @@ constructor(canvas, keyboard) {
   this.canvas = canvas;
   this.keyboard = keyboard;
   this.setWorld();
+  this.endBoss = this.level.endBoss;
 
   // Anfangswerte der StatusBars setzen
   this.coinsStatusBar.setPercentage(0);
@@ -39,7 +40,7 @@ constructor(canvas, keyboard) {
   setWorld() {
     this.character.world = this;
     this.character.animate();
-    this.endBoss = this.level.endBoss;
+    
   }
 
   //Diese Funktion überwacht ständig (alle 200 Millisekunden), ob der Spieler die Taste "D" auf der Tastatur drückt.
@@ -133,25 +134,30 @@ hitTargetSuccessfully(enemy) {
         })
     }
 
+
+
 checkBottleHitOnBoss() {
   setInterval(() => {
     this.throwableObjects.forEach((bottle, i) => {
       if (this.endBoss && bottle.isColliding(this.endBoss) && !this.endBoss.dead) {
-        this.endBoss.energy -= 20; // z. B. 20% Schaden pro Treffer
-        this.endbossStatusBar.setPercentage(this.endBoss.energy);
-
-        this.throwableObjects.splice(i, 1); // Flasche entfernen
-
-        // Falls Boss besiegt:
-        if (this.endBoss.energy <= 0) {
-          this.endBoss.dead = true;
-          // Optional: Entferne Boss oder spiele Animation
-        }
+        this.reduceEndbossHP(bottle);
       }
     });
   }, 100);
 }
-   
+
+reduceEndbossHP(bottle) {
+  this.endBoss.energy -= 20;
+  this.endbossStatusBar.setPercentage(this.endBoss.energy);
+  setTimeout(() => {
+    this.throwableObjects.splice(this.throwableObjects.indexOf(bottle), 1);
+  }, 30);
+
+  if (this.endBoss.energy <= 0) {
+    this.endBoss.dead = true;
+    // Optionale Animation / Entfernung
+  }
+}
 
    
   updateCamera() {
@@ -268,22 +274,32 @@ checkBottleHitOnBoss() {
         this.bottleStatusBar.y,
         this.bottleStatusBar.width,
         this.bottleStatusBar.height
-      );
+      );}
 
-   if (this.endbossStatusBar && this.endBoss && this.endBoss.x < this.character.x + 800) {
+      if (this.endbossStatusBar) {
+      this.ctx.drawImage(
+        this.endbossStatusBar.img,
+        this.endbossStatusBar.x,
+        this.endbossStatusBar.y,
+        this.endbossStatusBar.width,
+        this.endbossStatusBar.height
+      );}
+
+if (this.endBoss && !this.endBoss.dead) {
   this.ctx.drawImage(
-    this.endbossStatusBar.img,
-    this.endbossStatusBar.x,
-    this.endbossStatusBar.y,
-    this.endbossStatusBar.width,
-    this.endbossStatusBar.height
+    this.endBoss.img,
+    this.endBoss.x,
+    this.endBoss.y,
+    this.endBoss.width,
+    this.endBoss.height
   );
 }
+ 
       this.ctx.translate(this.camera_x, 0);
 
       this.ctx.translate(-this.camera_x, 0);
 
       requestAnimationFrame(() => this.draw());
     }
-  }
+  
 }

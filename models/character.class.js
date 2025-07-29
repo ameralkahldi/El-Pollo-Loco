@@ -7,6 +7,8 @@ class Character extends MovableObject {
   world;
   otherDirection = false;
   energy = 100;
+   bottles = 0;
+   collectedCoins = 0;
 
   offset = {
     top: 100,
@@ -15,31 +17,6 @@ class Character extends MovableObject {
     right: 22,
   };
 
-  IMAGES_IDLE = [
-    "./img/2_character_pepe/1_idle/idle/I-1.png",
-    "./img/2_character_pepe/1_idle/idle/I-2.png",
-    "./img/2_character_pepe/1_idle/idle/I-3.png",
-    "./img/2_character_pepe/1_idle/idle/I-4.png",
-    "./img/2_character_pepe/1_idle/idle/I-5.png",
-    "./img/2_character_pepe/1_idle/idle/I-6.png",
-    "./img/2_character_pepe/1_idle/idle/I-7.png",
-    "./img/2_character_pepe/1_idle/idle/I-8.png",
-    "./img/2_character_pepe/1_idle/idle/I-9.png",
-    "./img/2_character_pepe/1_idle/idle/I-10.png",
-  ];
-
-  IMAGES_LONG_IDLE = [
-    "./img/2_character_pepe/1_idle/long_idle/I-11.png",
-    "./img/2_character_pepe/1_idle/long_idle/I-12.png",
-    "./img/2_character_pepe/1_idle/long_idle/I-13.png",
-    "./img/2_character_pepe/1_idle/long_idle/I-14.png",
-    "./img/2_character_pepe/1_idle/long_idle/I-15.png",
-    "./img/2_character_pepe/1_idle/long_idle/I-16.png",
-    "./img/2_character_pepe/1_idle/long_idle/I-17.png",
-    "./img/2_character_pepe/1_idle/long_idle/I-18.png",
-    "./img/2_character_pepe/1_idle/long_idle/I-19.png",
-    "./img/2_character_pepe/1_idle/long_idle/I-20.png",
-  ];
 
   IMAGE_WALKING = [
     "img/2_character_pepe/2_walk/W-21.png",
@@ -77,22 +54,45 @@ class Character extends MovableObject {
     "img/2_character_pepe/4_hurt/H-42.png",
     "img/2_character_pepe/4_hurt/H-43.png",
   ];
+    IMAGES_IDLE = [
+    "./img/2_character_pepe/1_idle/idle/I-1.png",
+    "./img/2_character_pepe/1_idle/idle/I-2.png",
+    "./img/2_character_pepe/1_idle/idle/I-3.png",
+    "./img/2_character_pepe/1_idle/idle/I-4.png",
+    "./img/2_character_pepe/1_idle/idle/I-5.png",
+    "./img/2_character_pepe/1_idle/idle/I-6.png",
+    "./img/2_character_pepe/1_idle/idle/I-7.png",
+    "./img/2_character_pepe/1_idle/idle/I-8.png",
+    "./img/2_character_pepe/1_idle/idle/I-9.png",
+    "./img/2_character_pepe/1_idle/idle/I-10.png",
+  ];
+
+  IMAGES_LONG_IDLE = [
+    "./img/2_character_pepe/1_idle/long_idle/I-11.png",
+    "./img/2_character_pepe/1_idle/long_idle/I-12.png",
+    "./img/2_character_pepe/1_idle/long_idle/I-13.png",
+    "./img/2_character_pepe/1_idle/long_idle/I-14.png",
+    "./img/2_character_pepe/1_idle/long_idle/I-15.png",
+    "./img/2_character_pepe/1_idle/long_idle/I-16.png",
+    "./img/2_character_pepe/1_idle/long_idle/I-17.png",
+    "./img/2_character_pepe/1_idle/long_idle/I-18.png",
+    "./img/2_character_pepe/1_idle/long_idle/I-19.png",
+    "./img/2_character_pepe/1_idle/long_idle/I-20.png",
+  ];
 
   constructor() {
     super();
 
     this.loadImage(this.IMAGE_WALKING[0]); // ✔️ Jetzt auf das eigene Objekt
     this.loadImages(this.IMAGE_WALKING);
+    this.loadImages(this.IMAGES_IDLE);
+    this.loadImages(this.IMAGES_LONG_IDLE);
     this.loadImages(this.IMAGEs_JUMPING);
     this.loadImages(this.IMAGEs_DEAD);
     this.loadImages(this.IMAGEs_HURT);
-    this.loadImages(this.IMAGES_IDLE);
-    this.loadImages(this.IMAGES_LONG_IDLE);
-
     this.applyGravity();
     this.animate();
-    this.bottles = 0;
-    this.collectedCoins = 0;
+   
   }
 
   animate() {
@@ -122,6 +122,11 @@ class Character extends MovableObject {
         this.playWalkingAnimation(this.IMAGEs_JUMPING);
       } else if (this.world?.keyboard.RIGHT || this.world?.keyboard.LEFT) {
         this.playWalkingAnimation(this.IMAGE_WALKING);
+      }else if (this.startLongIdle()){
+        this.playAnimation(this.IMAGES_LONG_IDLE)
+      }else if(this.speedY == 0 && !this.isAboveGround()){
+        this.playAnimation(this.IMAGES_IDLE)
+
       }
     }, 50);
   }
@@ -132,9 +137,79 @@ class Character extends MovableObject {
     this.img = this.imageCache[path];
     this.currentImage++;
   }
-  
+
+  /**This function handles the movement of the main player if certain conditions are met. */
+    moveCharacter() {
+        this.walking_sound.pause();
+        if (!gameIsPaused) {
+            if (this.canMoveRight()) 
+                this.characterMovesRight();
+            if (this.canMoveLeft()) 
+                this.characterMovesLeft();
+            if (this.canJump()) 
+                this.jump();
+            this.world.camera_x = -this.x + 100;
+        }
+        this.lastPressedKey();
+    }
+
+
    isAbove(enemy) {
     return this.speedY < 0 && this.y + this.height <= enemy.y + enemy.height / 2;
   }
+
+    /**This function moves the character right, sets the movement direction so that the main player is drawn properly on the canvas and plays the walk sound effect.  */
+    characterMovesRight() {
+        this.moveRight();
+        this.otherDirection = false;
+        this.walking_sound.play();
+    }
+
+    /**This function moves the character leftt, sets the movement direction so that the main player is drawn properly on the canvas and plays the walk sound effect.  */
+    characterMovesLeft() {
+        this.moveLeft();
+        this.otherDirection = true;
+        this.walking_sound.play();
+    }
+
+    /**This is a small help function that checks if the criteria is met for the main player to move to the right */
+    canMoveRight() {
+        return this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x;
+    }
+
+    /**This is a small help function that checks if the criteria is met for the main player to move to the left */
+    canMoveLeft() {
+        return this.world.keyboard.LEFT && this.x > 0;
+    }
+
+    /**This is a small help function that checks if the criteria is met for the main player to jump */
+    canJump() {
+        return this.world.keyboard.SPACE && !this.isAboveGround();
+    }
+
+    /**This function makes the movable object jump, by setting the speed on the Y axis to a certain value. */
+    jump() {
+        this.speedY = 30;
+    }
+
+    /**This function checks if the difference in time between the last keypress and the current time is greater than a predetermined value, so that when it is greater the character
+     * can go enter a "long idle" state.*/
+    startLongIdle() {
+        let timepassed = new Date().getTime() - this.lastKeyPressed;
+        timepassed = timepassed / 1000;
+        return (timepassed > 8);
+    }
+
+    /**This function saves the time of the last keypress as a variable. */
+    lastPressedKey() {
+        if (this.keyIsPressed()) {
+            this.lastKeyPressed = new Date().getTime();
+        }
+    }
+
+    /**This function checks if any of the predetermined keys was pressed. */
+    keyIsPressed() {
+        return keyboard.LEFT || keyboard.RIGHT || keyboard.UP || keyboard.DOWN || keyboard.SPACE || keyboard.D
+    }
   
 }

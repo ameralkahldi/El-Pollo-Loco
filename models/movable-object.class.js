@@ -14,6 +14,17 @@ class MovableObject extends DrawableObject {
     }, 1000 / 25);
   }
 
+
+  /**This function sets the character to the ground on the right coordinate of the Y axis, when needed. */
+    returnCharToGroundProperly() {
+        if (this instanceof Character) {
+            this.speedY = 0;
+            this.y = 230;
+        }
+    }
+
+
+
   isAboveGround() {
     if (this instanceof ThrowableObject) { //
       return true;
@@ -59,14 +70,19 @@ class MovableObject extends DrawableObject {
   }
 
   hit() {
-    this.energy -= 5;
-    if (this.energy < 0) {
-      this.energy = 0;
-    }else {
-      this.lastHit = new Date().getTime();
-
+        if (this instanceof Endboss) {
+            if (this.energy < 0) 
+                this.energy = 0;
+             else 
+                this.lastHit = new Date().getTime();
+        } else {
+            this.energy -= 5;
+            if (this.energy < 0) 
+                this.energy = 0;
+             else 
+                this.lastHit = new Date().getTime();
+        }
     }
-  }
 
   isDead() {
     return this.energy == 0;
@@ -83,7 +99,7 @@ class MovableObject extends DrawableObject {
   }
 
   jump() {
-    this.speedY = 25;
+    this.speedY = 20;
   }
   smallJump() {
         this.speedY = 10;
