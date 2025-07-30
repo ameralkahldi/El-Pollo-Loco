@@ -17,7 +17,7 @@ constructor(canvas, keyboard) {
   this.canvas = canvas;
   this.keyboard = keyboard;
   this.setWorld();
-  this.endBoss = this.level.endBoss;
+
 
   // Anfangswerte der StatusBars setzen
   this.coinsStatusBar.setPercentage(0);

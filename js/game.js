@@ -1,6 +1,15 @@
 let canvas;
 let world;
 let keyboard = new Keyboard();
+let intervalIds = [];
+
+function startGame() {
+  document.getElementById('startMenu').style.display = 'none';
+  document.getElementById('gameContainer').style.display = 'block';
+
+  init(); // Das eigentliche Spiel starten
+}
+
 
 
 function init() {

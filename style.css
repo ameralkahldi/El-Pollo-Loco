@@ -21,7 +21,8 @@ h1 {
   background-color: black;
   border: 3.5px solid rgb(154, 76, 42);
   border-radius: 5px;
-  display: none;
+ 
+
 }
 #startMenu {
   display: flex;
@@ -111,6 +112,7 @@ h1 {
 }
 #gameContainer {
   position: relative;
+  display: none;
 }
 #bottomPanel {
   position: absolute;
