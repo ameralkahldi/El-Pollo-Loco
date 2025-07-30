@@ -1,11 +1,337 @@
-
-body{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-image: url(img/5_background/background.png);
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
+  margin: 0;
+  font-family: "zabars";
+}
+h1 {
+  font-size: 32px;
+  margin-bottom: 24px;
+  letter-spacing: 3px;
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.5);
+  color: white;
+}
+#canvas {
+  background-color: black;
+  border: 3.5px solid rgb(154, 76, 42);
+  border-radius: 5px;
+  display: none;
+}
+#startMenu {
+  display: flex;
+  flex-direction: column; /* Ensures the button is above the image */
+  align-items: center;
+  height: 480px;
+  width: 720px;
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  border: 3.5px solid rgb(154, 76, 42);
+  border-radius: 5px;
+}
+#menuImage {
+  height: 100%;
+  width: 100%;
+  position: absolute; /* Make sure the image stays in the background */
+  top: 0;
+  left: 0;
+  z-index: 1;
 }
 
+#startButton {
+  font-family: "zabars";
+  margin-top: 28px;
+  z-index: 2;
+  background-color: transparent; /* Vollständig transparent */
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  font-size: 60px;
+  color: #ffd700; /* Goldgelbe Schriftfarbe */
+  border-radius: 5px; /* Leicht abgerundete Ecken */
+  animation: pulse 1.5s infinite; /* Endlos wiederholende Animation */
+  transition: color 0.08s ease;
 
-canvas{
-    background-color: black;
+  /* Textschatten hinzufügen */
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7); /* Dunkler Schatten */
+}
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2); /* Vergrößern auf 120% */
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+#startButton:hover {
+  color: #ffa500; /* Intensivere Schriftfarbe beim Hover */
+}
+
+#controlDiv {
+  display: flex;
+  justify-content: space-between;
+  width: 500px;
+  font-size: 26px;
+  margin-top: 12px;
+  margin-bottom: 12px;
+  margin: 12px auto;
+  color: white;
+}
+@font-face {
+  font-family: "zabars";
+  src: url("fonts/Zabars (1).ttf") format("truetype");
+}
+
+@media only screen and (max-width: 720px) {
+  canvas {
+    width: 100%;
+  }
+}
+
+@media only screen and (max-height: 480px) {
+  canvas {
+    height: 100vh;
+  }
+}
+
+@media (max-height: 600px) {
+  h1 {
+    display: none;
+  }
+}
+#gameContainer {
+  position: relative;
+}
+#bottomPanel {
+  position: absolute;
+  bottom: 10px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+.control-button {
+  background-color: rgba(255, 255, 255, 0.8);
+  border: 2px solid rgb(154, 76, 42);
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.control-button img {
+  width: 70%;
+  height: 70%;
+}
+
+.mobile-controls {
+  display: none;
+}
+
+.hidden {
+  display: none !important;
+}
+
+@media (pointer: coarse) {
+  .mobile-controls {
+    display: flex;
+  }
+
+  #btnLeft {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+  }
+
+  #btnRight {
+    position: absolute;
+    bottom: 20px;
+    left: 100px;
+  }
+
+  #btnJump {
+    position: absolute;
+    bottom: 20px;
+    right: 100px;
+  }
+
+  #btnJumpImg {
+    height: 32px;
+  }
+
+  #btnThrow {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+  }
+}
+
+#orientationWarning {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 20px;
+  border-radius: 10px;
+  z-index: 10;
+}
+
+#orientationWarning h2 {
+  margin: 20px 0 0;
+  font-size: 24px;
+}
+
+#orientationWarning img {
+  width: 180px;
+  height: auto;
+}
+
+#gameOverScreen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: calc(100% + 7px); /* Berücksichtige die Border des Canvas */
+  height: calc(100% + 7px); /* Berücksichtige die Border des Canvas */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  box-sizing: border-box; /* Enthält Padding und Border in den Elementbreiten- und -höhenberechnungen */
+  border: 3.5px solid rgb(154, 76, 42); /* Gleiche Border wie das Canvas */
+}
+
+#gameOverImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Bild füllt den gesamten Container */
+}
+
+#gameOverScreen.won #gameOverImage {
+  width: 72%;
+  height: auto;
+  object-fit: contain; /* Bild behält sein Seitenverhältnis bei */
+}
+
+#backToMenuButton {
+  z-index: 20;
+  cursor: pointer;
+  position: absolute;
+  top: 30px;
+  font-family: "zabars";
+  background-color: transparent;
+  border: none;
+  font-size: 60px;
+  color: #ffd700;
+  transition: color 0.08s ease;
+  animation: pulse 1.5s infinite; /* Endlos wiederholende Animation */
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7); /* Dunkler Schatten */
+}
+
+#backToMenuButton:hover {
+  color: #ffa500;
+}
+
+.sound-menu {
+  display: none;
+  position: fixed;
+  top: 50%;   /* Center vertically */
+  left: 50%;  /* Center horizontally */
+  transform: translate(-50%, -50%);  /* Perfect centering */
+  z-index: 20;  /* Make sure the z-index is higher than the canvas */
+  background-color: rgba(0, 0, 0, 0.75);  /* Semi-transparent background */
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.4);
+  border: 3.5px solid #d8b800; /* Matching border style */
+  text-align: center;
+  width: 300px;
+  color: #ffd700;
+  font-size: 46px;
+  flex-direction: column;
+  align-items: center;
+}
+
+.sound-menu .close-icon {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  height: 24px !important;
+  cursor: pointer;
+}
+
+.sound-menu .close-icon:hover {
+  content: url('./img/11-menu/close_icon_hover.png');
+}
+
+.sound-menu div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  justify-content: space-between;
+  width: 240px;
+}
+
+.sound-menu img {
+  height: 72px;
+  cursor: pointer;
+}
+
+#soundIcon {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: transparent;
+  border: 0;
+  font-size: 30px;
+  height: 46px;
+  cursor: pointer;
+  transition: transform 0.05s ease;
+  display: none;
+}
+
+#soundIcon:active {
+  transform: scale(1.2); 
+}
+
+#soundIcon:hover {
+  content: url('./img/11-menu/settings_icon_hover.png');
+}
+
+footer {
+  bottom: 0;
+  font-size: 24px;
+  position: absolute;
+  padding-bottom: 12px;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  justify-content: center;
+}
+
+footer a {
+  color: black;
+  text-decoration: none;
+  border-bottom: 3px solid transparent;
+}
+
+footer a:hover {
+  border-bottom: 3px solid #ffa500;
 }
