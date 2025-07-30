@@ -83,7 +83,7 @@ class Character extends MovableObject {
   constructor() {
     super();
 
-    this.loadImage(this.IMAGE_WALKING[0]); // ✔️ Jetzt auf das eigene Objekt
+    this.loadImage(this.IMAGE_WALKING[0]); 
     this.loadImages(this.IMAGE_WALKING);
     this.loadImages(this.IMAGES_IDLE);
     this.loadImages(this.IMAGES_LONG_IDLE);

@@ -32,7 +32,6 @@ constructor(canvas, keyboard) {
   this.checkCoinCollisions();
   this.checkBottleCollisions();
   this.hitTargetSuccessfully();
-  this.checkBottleHitOnBoss();
   this.draw();
 }
 
@@ -136,28 +135,7 @@ hitTargetSuccessfully(enemy) {
 
 
 
-checkBottleHitOnBoss() {
-  setInterval(() => {
-    this.throwableObjects.forEach((bottle, i) => {
-      if (this.endBoss && bottle.isColliding(this.endBoss) && !this.endBoss.dead) {
-        this.reduceEndbossHP(bottle);
-      }
-    });
-  }, 100);
-}
 
-reduceEndbossHP(bottle) {
-  this.endBoss.energy -= 20;
-  this.endbossStatusBar.setPercentage(this.endBoss.energy);
-  setTimeout(() => {
-    this.throwableObjects.splice(this.throwableObjects.indexOf(bottle), 1);
-  }, 30);
-
-  if (this.endBoss.energy <= 0) {
-    this.endBoss.dead = true;
-    // Optionale Animation / Entfernung
-  }
-}
 
    
   updateCamera() {

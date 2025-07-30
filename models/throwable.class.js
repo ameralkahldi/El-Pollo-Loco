@@ -1,4 +1,5 @@
 class ThrowableObject extends MovableObject{
+    
 
 
     
