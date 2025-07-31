@@ -9,6 +9,7 @@ class Character extends MovableObject {
   energy = 100;
    bottles = 0;
    collectedCoins = 0;
+dead = false;
 
   offset = {
     top: 100,

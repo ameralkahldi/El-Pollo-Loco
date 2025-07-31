@@ -48,6 +48,7 @@ h1 {
   height: auto;
 }
 
+
 #startButton {
   position: absolute;
   top: 20%;
@@ -61,6 +62,8 @@ h1 {
   cursor: pointer;
   box-shadow: 0 4px 6px rgba(0,0,0,0.3);
 }
+
+
 @keyframes pulse {
   0% {
     transform: scale(1);
@@ -208,20 +211,16 @@ h1 {
 #gameOverScreen {
   display: flex;
   flex-direction: column;
-  justify-content: center; /* عمودي */
-  align-items: center;     /* أفقي */
-  text-align: center;
-
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-
-  background-color: rgba(0, 0, 0, 0.85);
-  z-index: 9999;
+  align-items: center;
+  justify-content: center;
   gap: 20px;
 }
+
+#gameOverButtons {
+  display: flex;
+  gap: 20px;
+}
+
 
 #gameOverImage {
   width: 60%;
