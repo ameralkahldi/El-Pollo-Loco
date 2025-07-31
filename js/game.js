@@ -13,11 +13,11 @@ function startGame() {
   document.getElementById('gameContainer').style.display = 'block';
   document.getElementById('canvas').classList.remove('hidden');
 
-  init(); // تبدأ اللعبة من جديد
+  init();
 }
 
 function gameOver(won) {
-  stopGame();  // أوقف اللعبة فور انتهاءها
+  stopGame();  
 
   const screen = document.getElementById('gameOverScreen');
   const img = document.getElementById('gameOverImage');
@@ -28,12 +28,12 @@ function gameOver(won) {
     : './img/9_intro_outro_screens/game_over/you lost.png';
 
   screen.classList.remove('hidden');
-  canvas.classList.add('hidden'); // إخفاء الـ canvas
+  canvas.classList.add('hidden'); 
 }
 
 function stopGame() {
   if (world) {
-    world.stop(); // إيقاف الحلقة الرسومية وكل الـ intervals
+    world.stop(); 
     world = null;
   }
 
@@ -71,16 +71,17 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 
   backBtn.addEventListener('click', () => {
-    stopGame();
-    document.getElementById('startMenu').style.display = 'block';
-    document.getElementById('gameOverScreen').classList.add('hidden');
-    document.getElementById('canvas').classList.add('hidden');
+    stopGame(); // إيقاف اللعبة بشكل كامل
+    document.getElementById('startMenu').style.display = 'block'; // إظهار قائمة البداية
+    document.getElementById('gameOverScreen').classList.add('hidden'); // إخفاء شاشة النهاية
+    document.getElementById('canvas').classList.add('hidden'); // إخفاء الكانفاس
   });
 
   restartBtn.addEventListener('click', () => {
-    stopGame();
-    document.getElementById('gameOverScreen').classList.add('hidden');
-    document.getElementById('canvas').classList.remove('hidden');
+    stopGame(); // إيقاف اللعبة
+    document.getElementById('gameOverScreen').classList.add('hidden'); // إخفاء شاشة النهاية
+    document.getElementById('canvas').classList.remove('hidden'); // إظهار الكانفاس
     init(); // إعادة تشغيل اللعبة
   });
 });
+

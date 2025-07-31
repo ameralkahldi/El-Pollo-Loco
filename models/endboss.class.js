@@ -10,6 +10,17 @@ class Endboss extends MovableObject {
     "img/4_enemie_boss_chicken/2_alert/G12.png",
   ];
 
+  IMAGE_ATTACK = [  // صور الهجوم التي طلبتها
+    "img/4_enemie_boss_chicken/3_attack/G13.png",
+    "img/4_enemie_boss_chicken/3_attack/G14.png",
+    "img/4_enemie_boss_chicken/3_attack/G15.png",
+    "img/4_enemie_boss_chicken/3_attack/G16.png",
+    "img/4_enemie_boss_chicken/3_attack/G17.png",
+    "img/4_enemie_boss_chicken/3_attack/G18.png",
+    "img/4_enemie_boss_chicken/3_attack/G19.png",
+    "img/4_enemie_boss_chicken/3_attack/G20.png",
+  ];
+
   IMAGE_HURT = [
     "img/4_enemie_boss_chicken/4_hurt/G21.png",
     "img/4_enemie_boss_chicken/4_hurt/G22.png",
@@ -26,6 +37,7 @@ class Endboss extends MovableObject {
     super();
     this.loadImage(this.IMAGE_WALKING[0]);
     this.loadImages(this.IMAGE_WALKING);
+    this.loadImages(this.IMAGE_ATTACK);  // تحميل صور الهجوم
     this.loadImages(this.IMAGE_HURT);
     this.loadImages(this.IMAGE_DEAD);
 
@@ -35,6 +47,7 @@ class Endboss extends MovableObject {
     this.height = 500;
 
     this.currentImage = 0;
+    this.currentAttackImage = 0;
     this.currentHurtImage = 0;
     this.currentDeadImage = 0;
 
@@ -42,6 +55,9 @@ class Endboss extends MovableObject {
     this.dead = false;
     this.speed = 0;
     this.isHurt = false;
+    this.isAttacking = false;  // حالة الهجوم
+
+    this.otherDirection = false; // لوجهة الحركة
 
     this.animate();
   }
@@ -52,6 +68,8 @@ class Endboss extends MovableObject {
         this.playDeadAnimation();
       } else if (this.isHurt) {
         this.playHurtAnimation();
+      } else if (this.isAttacking) {
+        this.playAttackAnimation();
       } else {
         this.playWalkingAnimation();
       }
@@ -63,6 +81,20 @@ class Endboss extends MovableObject {
     let path = this.IMAGE_WALKING[i];
     this.img = this.imageCache[path];
     this.currentImage++;
+  }
+
+  playAttackAnimation() {
+    let i = this.currentAttackImage % this.IMAGE_ATTACK.length;
+    let path = this.IMAGE_ATTACK[i];
+    this.img = this.imageCache[path];
+    this.currentAttackImage++;
+
+    // لو انتهت الصور نرجع للحالة الطبيعية أو الهجوم مستمر حسب منطق اللعبة
+    if (this.currentAttackImage >= this.IMAGE_ATTACK.length) {
+      this.currentAttackImage = 0;
+      // ممكن تبطل الهجوم بعد دورة وحدة مثلاً
+      // this.isAttacking = false;
+    }
   }
 
   playHurtAnimation() {
@@ -84,9 +116,21 @@ class Endboss extends MovableObject {
     this.img = this.imageCache[path];
     this.currentDeadImage++;
 
-    // Sobald Animation zu Ende ist, kein weiteres Zählen
     if (this.currentDeadImage >= this.IMAGE_DEAD.length) {
-      this.currentDeadImage = this.IMAGE_DEAD.length - 1; // bleib auf letztem Frame
+      this.currentDeadImage = this.IMAGE_DEAD.length - 1;
+    }
+  }
+
+  // دالة تحريك الـ endboss نحو الـ character
+  moveTowards(character) {
+    if (this.dead) return;
+
+    if (this.x > character.x) {
+      this.x -= this.speed;
+      this.otherDirection = true; // يتجه لليسار
+    } else if (this.x < character.x) {
+      this.x += this.speed;
+      this.otherDirection = false; // يتجه لليمين
     }
   }
 }

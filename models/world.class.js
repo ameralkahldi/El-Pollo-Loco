@@ -170,6 +170,23 @@ class World {
     this.camera_x = this.character.x > 100 ? -this.character.x + 100 : 0;
   }
 
+
+updateEndbossBehavior() {
+  if (!this.endBoss || this.endBoss.dead) return;
+
+  const distance = Math.abs(this.character.x - this.endBoss.x);
+  const detectionRange = 400; // مدى الكشف
+
+  if (distance < detectionRange) {
+    this.endBoss.speed = 2;       // سرعة التحرك
+    this.endBoss.isAttacking = true;  // حالة الهجوم (تفعيل الرسوم)
+    this.endBoss.moveTowards(this.character); // تحريك الـ endBoss باتجاه الـ character
+  } else {
+    this.endBoss.speed = 0;
+    this.endBoss.isAttacking = false;
+  }
+}
+
   draw() {
     if (this.gameIsOver) return;
 
@@ -177,6 +194,8 @@ class World {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
     this.ctx.translate(this.camera_x, 0);
+    
+    this.updateEndbossBehavior();
 
     this.level.backgroundobjects.forEach(bg =>
       this.ctx.drawImage(bg.img, bg.x, bg.y, bg.width, bg.height)
