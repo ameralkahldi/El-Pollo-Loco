@@ -36,31 +36,30 @@ h1 {
   border: 3.5px solid rgb(154, 76, 42);
   border-radius: 5px;
 }
+
+#menuWrapper {
+  position: relative;
+  display: inline-block;
+}
+
 #menuImage {
-  height: 100%;
-  width: 100%;
-  position: absolute; /* Make sure the image stays in the background */
-  top: 0;
-  left: 0;
-  z-index: 1;
+  display: block;
+  width: 100%; /* أو حجم مخصص حسب التصميم */
+  height: auto;
 }
 
 #startButton {
-  font-family: "zabars";
-  margin-top: 28px;
-  z-index: 2;
-  background-color: transparent; /* Vollständig transparent */
-  padding: 10px 20px;
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 15px 30px;
+  font-size: 18px;
+  background-color: #ffd800;
   border: none;
+  border-radius: 10px;
   cursor: pointer;
-  font-size: 60px;
-  color: #ffd700; /* Goldgelbe Schriftfarbe */
-  border-radius: 5px; /* Leicht abgerundete Ecken */
-  animation: pulse 1.5s infinite; /* Endlos wiederholende Animation */
-  transition: color 0.08s ease;
-
-  /* Textschatten hinzufügen */
-  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7); /* Dunkler Schatten */
+  box-shadow: 0 4px 6px rgba(0,0,0,0.3);
 }
 @keyframes pulse {
   0% {
@@ -207,24 +206,50 @@ h1 {
 }
 
 #gameOverScreen {
-  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* عمودي */
+  align-items: center;     /* أفقي */
+  text-align: center;
+
+  position: fixed;
   top: 0;
   left: 0;
-  width: calc(100% + 7px); /* Berücksichtige die Border des Canvas */
-  height: calc(100% + 7px); /* Berücksichtige die Border des Canvas */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 10;
-  box-sizing: border-box; /* Enthält Padding und Border in den Elementbreiten- und -höhenberechnungen */
-  border: 3.5px solid rgb(154, 76, 42); /* Gleiche Border wie das Canvas */
+  width: 100vw;
+  height: 100vh;
+
+  background-color: rgba(0, 0, 0, 0.85);
+  z-index: 9999;
+  gap: 20px;
 }
 
 #gameOverImage {
-  width: 100%;
-  height: 100%;
-  object-fit: cover; /* Bild füllt den gesamten Container */
+  width: 60%;
+  max-width: 500px;
+  height: auto;
+  border-radius: 12px;
 }
+
+#gameTitle {
+  font-size: 48px;
+  color: white;
+  margin: 0;
+}
+
+#backToMenuButton {
+  padding: 12px 24px;
+  font-size: 20px;
+  background-color: #ff9900;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+#backToMenuButton:hover {
+  background-color: #cc7a00;
+}
+
 
 #gameOverScreen.won #gameOverImage {
   width: 72%;
@@ -232,24 +257,7 @@ h1 {
   object-fit: contain; /* Bild behält sein Seitenverhältnis bei */
 }
 
-#backToMenuButton {
-  z-index: 20;
-  cursor: pointer;
-  position: absolute;
-  top: 30px;
-  font-family: "zabars";
-  background-color: transparent;
-  border: none;
-  font-size: 60px;
-  color: #ffd700;
-  transition: color 0.08s ease;
-  animation: pulse 1.5s infinite; /* Endlos wiederholende Animation */
-  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7); /* Dunkler Schatten */
-}
 
-#backToMenuButton:hover {
-  color: #ffa500;
-}
 
 .sound-menu {
   display: none;

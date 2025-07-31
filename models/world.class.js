@@ -10,6 +10,7 @@ class World {
   keyboard;
   camera_x = 0;
   throwableObjects = [];
+  gameIsOver = false;
   constructor(canvas, keyboard) {
     this.ctx = canvas.getContext("2d");
     this.canvas = canvas;
@@ -148,28 +149,34 @@ characterCanBeHit() {
     });
   }
 
-  checkBottleHitsEndboss() {
-    setInterval(() => {
-      this.throwableObjects.forEach((bottle, index) => {
-        if (this.endBoss && bottle.isColliding(this.endBoss) && !bottle.hit) {
-          bottle.hit = true;
-          this.endBoss.energy -= 20;
-          // Statusbar aktualisieren (z. B. max 100 -> in %)
-          this.endbossStatusBar.setPercentage(this.endBoss.energy);
-          // Flasche entfernen
-          this.throwableObjects.splice(index, 1);
-          // Endboss tot?
-          if (this.endBoss.energy <= 0) {
-            this.endBoss.dead = true;
-            this.endBoss.speed = 0;
-            setTimeout(() => {
-              gameOver(true); // 🎉 Spieler hat gewonnen
-            }, 2000);
-          }
-        }
-      });
-    }, 100);
-  }
+ checkBottleHitsEndboss() {
+  setInterval(() => {
+    this.throwableObjects.forEach((bottle, index) => {
+      if (this.endBoss && bottle.isColliding(this.endBoss) && !bottle.hit) {
+        bottle.hit = true;
+        this.endBoss.energy -= 20;
+
+        // Verletzungsanimation starten:
+        this.endBoss.isHurt = true;
+
+        this.endbossStatusBar.setPercentage(this.endBoss.energy);
+        this.throwableObjects.splice(index, 1);
+
+       if (this.endBoss.energy <= 0) {
+  this.endBoss.dead = true;
+  this.endBoss.speed = 0;
+  this.gameIsOver = true;
+  this.endBoss.isHurt = false; // kein Hurt mehr zeigen
+  setTimeout(() => {
+    gameOver(true);
+  }, 2000);
+}
+
+      }
+    });
+  }, 100);
+}
+
 
   updateCamera() {
     if (this.character.x > 100) {
@@ -180,6 +187,9 @@ characterCanBeHit() {
   }
 
   draw() {
+
+     if (this.gameIsOver) return;
+
     this.updateCamera();
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 

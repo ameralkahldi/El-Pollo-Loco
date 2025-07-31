@@ -31,9 +31,12 @@
 <body>
     <h1 id="gameTitel">El Pollo Loco</h1>
 
-     <div id="startMenu">
-      <img id="menuImage" src="./img/9_intro_outro_screens/start/startscreen_2.png" alt="" />
-      <button id="startButton" onclick="startGame()">Start Game</button>
+<div id="startMenu">
+  <div id="menuWrapper">
+    <img id="menuImage" src="./img/9_intro_outro_screens/start/startscreen_2.png" alt="Start Menu Image" />
+    <button id="startButton" onclick="startGame()">Start Game</button>
+  </div>
+</div>
     </div>
 
        <div id="gameContainer">
@@ -73,6 +76,7 @@
         </button>
       </div>
       <div id="gameOverScreen" class="hidden">
+        <h1 id="gameTitel">El Pollo Loco</h1>
         <img id="gameOverImage" src="" alt="Game Over" />
         <button id="backToMenuButton">Back to Menu</button>
       </div>
