@@ -10,36 +10,32 @@ class World {
   keyboard;
   camera_x = 0;
   throwableObjects = [];
- ;
-  
-constructor(canvas, keyboard) {
-  this.ctx = canvas.getContext("2d");
-  this.canvas = canvas;
-  this.keyboard = keyboard;
-  this.setWorld();
+  constructor(canvas, keyboard) {
+    this.ctx = canvas.getContext("2d");
+    this.canvas = canvas;
+    this.keyboard = keyboard;
+    this.setWorld();
 
+    // Anfangswerte der StatusBars setzen
+    this.coinsStatusBar.setPercentage(0);
+    this.bottleStatusBar.setPercentage(0);
+    this.statusBar.setPercentage(this.character.energy);
+    this.endbossStatusBar.setPercentage(100); // Anfangswert für den Endboss
 
-  // Anfangswerte der StatusBars setzen
-  this.coinsStatusBar.setPercentage(0);
-  this.bottleStatusBar.setPercentage(0);
-  this.statusBar.setPercentage(this.character.energy);
-  this.endbossStatusBar.setPercentage(100); // Anfangswert für den Endboss
-
-
-  // Logik starten
-  this.checkCollisions();
-  this.checkThrowObject();
-  this.checkCoinCollisions();
-  this.checkBottleCollisions();
-  this.hitTargetSuccessfully();
-  this.draw();
-}
-
+    // Logik starten
+    this.checkCollisions();
+    this.checkThrowObject();
+    this.checkCoinCollisions();
+    this.checkBottleCollisions();
+    this.hitTargetSuccessfully();
+    this.checkBottleHitsEndboss();
+    this.draw();
+  }
 
   setWorld() {
     this.character.world = this;
     this.character.animate();
-    
+    this.endBoss = this.level.endboss[0]; // hole den ersten (und einzigen) Endboss
   }
 
   //Diese Funktion überwacht ständig (alle 200 Millisekunden), ob der Spieler die Taste "D" auf der Tastatur drückt.
@@ -50,94 +46,131 @@ constructor(canvas, keyboard) {
           this.character.x,
           this.character.y + 100
         );
+        bottle.hit = false; // ❗ wichtig, damit die Flasche nur 1x trifft
         this.throwableObjects.push(bottle);
       }
     }, 200);
   }
+
   //Diese Funktion prüft regelmäßig (alle 200 Millisekunden), ob das Charakter mit einem Feind kollidiert:
- checkCollisions() {
-  setInterval(() => {
-    this.level.enemises.forEach((enemy) => {
-      if (this.character.isColliding(enemy)) {
-        if (this.character.isAbove(enemy) && !enemy.dead) {
-          this.hitTargetSuccessfully(enemy); // ✅ Auf Gegner gesprungen
-        } else if (!enemy.dead) {
-          this.character.hit(); // ❌ Gegner trifft Spieler
-          this.statusBar.setPercentage(this.character.energy);
+  checkCollisions() {
+    setInterval(() => {
+      // تصادم مع الأعداء العاديين
+      this.level.enemises.forEach((enemy) => {
+        if (this.character.isColliding(enemy)) {
+          if (this.character.isAbove(enemy) && !enemy.dead) {
+            this.hitTargetSuccessfully(enemy); // ✅ قفز على العدو
+          } else if (!enemy.dead) {
+            this.character.hit(); // ❌ العدو يضرب اللاعب
+            this.statusBar.setPercentage(this.character.energy);
+          }
         }
+      });
+
+      // ✅ تصادم مع Endboss
+      if (
+        this.endBoss &&
+        this.character.isColliding(this.endBoss) &&
+        !this.endBoss.dead &&
+        this.characterCanBeHit()
+      ) {
+        this.character.hit();
+        this.statusBar.setPercentage(this.character.energy);
       }
-    });
-  }, 100);
-}
-
-
-checkCoinCollisions() {
-  setInterval(() => {
-    this.level.coins = this.level.coins.filter((coin) => {
-      if (this.character.isColliding(coin)) {
-        this.character.collectedCoins += 1;
-        this.coinsStatusBar.setPercentage(this.character.collectedCoins * 20);
-        return false; // ✅ Entfernt diese Münze aus dem Array
-      }
-      return true; // bleibt erhalten
-    });
-  }, 200);
-}
-
-
-
-checkBottleCollisions() {
-  setInterval(() => {
-    this.level.bottles = this.level.bottles.filter((bottle) => {
-      if (this.character.isColliding(bottle)) {
-       this.character.bottles += 1;
-      this.bottleStatusBar.setPercentage(this.character.bottles * 20);
-  
-        return false; // ✅ Flasche entfernen
-      }
-      return true;
-    });
-  }, 200);
-}
-
-
-hitTargetSuccessfully(enemy) {
-  if (enemy == this.endBoss) {
-    // Optional: Boss-Logik
-  } else if (this.character.isAbove(enemy)) {
-    this.character.smallJump();  // Charakter springt leicht hoch
-    enemy.energy = 0;
-    enemy.speed = 0;
-    enemy.dead = true;
-    // Optional: nach kurzer Zeit entfernen (verstecken)
-    setTimeout(() => {
-      let index = this.level.enemises.indexOf(enemy);
-      if (index > -1) {
-        this.level.enemises.splice(index, 1);
-      }
-    }, 200);  // Feind nach 200ms entfernen
+    }, 100);
   }
+  
+characterCanBeHit() {
+  let now = new Date().getTime();
+  let timePassed = now - this.character.lastHit;
+  return timePassed > 1000; // 1 ثانية حماية بعد كل ضربة
 }
 
- /**This function checks if the caracter stepped properly on enemys head.*/
-    steppedOnProperly(enemy){
-        return this.character.isColliding(enemy) && this.character.isAboveGround() && !enemy.energy == 0 && this.character.isFalling();
+  checkCoinCollisions() {
+    setInterval(() => {
+      this.level.coins = this.level.coins.filter((coin) => {
+        if (this.character.isColliding(coin)) {
+          this.character.collectedCoins += 1;
+          this.coinsStatusBar.setPercentage(this.character.collectedCoins * 20);
+          return false; // ✅ Entfernt diese Münze aus dem Array
+        }
+        return true; // bleibt erhalten
+      });
+    }, 200);
+  }
+
+  checkBottleCollisions() {
+    setInterval(() => {
+      this.level.bottles = this.level.bottles.filter((bottle) => {
+        if (this.character.isColliding(bottle)) {
+          this.character.bottles += 1;
+          this.bottleStatusBar.setPercentage(this.character.bottles * 20);
+
+          return false; // ✅ Flasche entfernen
+        }
+        return true;
+      });
+    }, 200);
+  }
+
+  hitTargetSuccessfully(enemy) {
+    if (enemy == this.endBoss) {
+      // Optional: Boss-Logik
+    } else if (this.character.isAbove(enemy)) {
+      this.character.smallJump(); // Charakter springt leicht hoch
+      enemy.energy = 0;
+      enemy.speed = 0;
+      enemy.dead = true;
+      // Optional: nach kurzer Zeit entfernen (verstecken)
+      setTimeout(() => {
+        let index = this.level.enemises.indexOf(enemy);
+        if (index > -1) {
+          this.level.enemises.splice(index, 1);
+        }
+      }, 200); // Feind nach 200ms entfernen
     }
+  }
+
+  /**This function checks if the caracter stepped properly on enemys head.*/
+  steppedOnProperly(enemy) {
+    return (
+      this.character.isColliding(enemy) &&
+      this.character.isAboveGround() &&
+      !enemy.energy == 0 &&
+      this.character.isFalling()
+    );
+  }
   /**This function handles the removal of a smaller enemy from the world after being stepped on by the main player. */
-    killChicken() {
-        this.level.enemies.forEach((enemy, i) => {
-            if (enemy.dead)
-                this.level.enemies.splice(i, 1)
-            if (this.steppedOnProperly(enemy))
-                this.hitTargetSuccessfully(enemy)
-        })
-    }
+  killChicken() {
+    this.level.enemies.forEach((enemy, i) => {
+      if (enemy.dead) this.level.enemies.splice(i, 1);
+      if (this.steppedOnProperly(enemy)) this.hitTargetSuccessfully(enemy);
+    });
+  }
 
+  checkBottleHitsEndboss() {
+    setInterval(() => {
+      this.throwableObjects.forEach((bottle, index) => {
+        if (this.endBoss && bottle.isColliding(this.endBoss) && !bottle.hit) {
+          bottle.hit = true;
+          this.endBoss.energy -= 20;
+          // Statusbar aktualisieren (z. B. max 100 -> in %)
+          this.endbossStatusBar.setPercentage(this.endBoss.energy);
+          // Flasche entfernen
+          this.throwableObjects.splice(index, 1);
+          // Endboss tot?
+          if (this.endBoss.energy <= 0) {
+            this.endBoss.dead = true;
+            this.endBoss.speed = 0;
+            setTimeout(() => {
+              gameOver(true); // 🎉 Spieler hat gewonnen
+            }, 2000);
+          }
+        }
+      });
+    }, 100);
+  }
 
-
-
-
-   
   updateCamera() {
     if (this.character.x > 100) {
       this.camera_x = -this.character.x + 100;
@@ -184,15 +217,9 @@ hitTargetSuccessfully(enemy) {
         enemy.height
       );
     });
-    
+
     this.level.endboss.forEach((endb) => {
-      this.ctx.drawImage(
-        endb.img,
-        endb.x,
-        endb.y,
-        endb.width,
-        endb.height
-      );
+      this.ctx.drawImage(endb.img, endb.x, endb.y, endb.width, endb.height);
     });
 
     this.ctx.save();
@@ -252,32 +279,33 @@ hitTargetSuccessfully(enemy) {
         this.bottleStatusBar.y,
         this.bottleStatusBar.width,
         this.bottleStatusBar.height
-      );}
+      );
+    }
 
-      if (this.endbossStatusBar) {
+    if (this.endbossStatusBar) {
       this.ctx.drawImage(
         this.endbossStatusBar.img,
         this.endbossStatusBar.x,
         this.endbossStatusBar.y,
         this.endbossStatusBar.width,
         this.endbossStatusBar.height
-      );}
-
-if (this.endBoss && !this.endBoss.dead) {
-  this.ctx.drawImage(
-    this.endBoss.img,
-    this.endBoss.x,
-    this.endBoss.y,
-    this.endBoss.width,
-    this.endBoss.height
-  );
-}
- 
-      this.ctx.translate(this.camera_x, 0);
-
-      this.ctx.translate(-this.camera_x, 0);
-
-      requestAnimationFrame(() => this.draw());
+      );
     }
-  
+
+    if (this.endBoss && !this.endBoss.dead) {
+      this.ctx.drawImage(
+        this.endBoss.img,
+        this.endBoss.x,
+        this.endBoss.y,
+        this.endBoss.width,
+        this.endBoss.height
+      );
+    }
+
+    this.ctx.translate(this.camera_x, 0);
+
+    this.ctx.translate(-this.camera_x, 0);
+
+    requestAnimationFrame(() => this.draw());
+  }
 }

@@ -1,64 +1,51 @@
 // Die Endboss-Klasse erbt von MovableObject und stellt den animierten Endgegner dar.
 class Endboss extends MovableObject {
+  // Array mit allen Bildpfaden für die Laufanimation des Endbosses.
+  IMAGE_WALKING = [
+    "img/4_enemie_boss_chicken/2_alert/G5.png",
+    "img/4_enemie_boss_chicken/2_alert/G6.png",
+    "img/4_enemie_boss_chicken/2_alert/G7.png",
+    "img/4_enemie_boss_chicken/2_alert/G8.png",
+    "img/4_enemie_boss_chicken/2_alert/G9.png",
+    "img/4_enemie_boss_chicken/2_alert/G10.png",
+    "img/4_enemie_boss_chicken/2_alert/G11.png",
+    "img/4_enemie_boss_chicken/2_alert/G12.png",
+  ];
 
-    // Array mit allen Bildpfaden für die Laufanimation des Endbosses.
-    IMAGE_WALKING = [
-        'img/4_enemie_boss_chicken/2_alert/G5.png',
-        'img/4_enemie_boss_chicken/2_alert/G6.png',
-        'img/4_enemie_boss_chicken/2_alert/G7.png',
-        'img/4_enemie_boss_chicken/2_alert/G8.png',
-        'img/4_enemie_boss_chicken/2_alert/G9.png',
-        'img/4_enemie_boss_chicken/2_alert/G10.png',
-        'img/4_enemie_boss_chicken/2_alert/G11.png',
-        'img/4_enemie_boss_chicken/2_alert/G12.png'
-    ];
+  // Der Konstruktor wird beim Erstellen eines neuen Endboss-Objekts aufgerufen.
+  constructor() {
+    super();
 
-    // Der Konstruktor wird beim Erstellen eines neuen Endboss-Objekts aufgerufen.
-    constructor() {
-        super(); // Ruft den Konstruktor der Elternklasse MovableObject auf.
+    this.loadImage(this.IMAGE_WALKING[0]);
+    this.loadImages(this.IMAGE_WALKING);
 
-        // Lädt das erste Bild als Startbild des Endbosses.
-        this.loadImage(this.IMAGE_WALKING[0]);
+    this.x = 2000;
+    this.y = -35;
+    this.width = 300;
+    this.height = 500;
 
-        // Lädt alle Bilder in den Cache, damit sie später schnell angezeigt werden können.
-        this.loadImages(this.IMAGE_WALKING);
+    this.currentImage = 0;
 
-        // Setzt die Startposition des Endbosses (rechts außerhalb des Bildschirms).
-        this.x = 2000;
+    // ✅ NEU:
+    this.energy = 100;
+    this.dead = false;
+    this.speed = 0;
 
-        // Setzt die vertikale Position (y) leicht über dem Boden.
-        this.y = -35;
+    this.animate();
+  }
+  animate() {
+    setInterval(() => {
+      this.playWalkingAnimation(); // Wechselt das angezeigte Bild.
+    }, 200);
+  }
 
-        // Setzt die Größe des Endbosses.
-        this.width = 300;
-        this.height = 500;
+  playWalkingAnimation() {
+    let i = this.currentImage % this.IMAGE_WALKING.length;
 
-        // Initialisiert den Zähler für das aktuelle Animationsbild.
-        this.currentImage = 0;
+    let path = this.IMAGE_WALKING[i];
 
-        // Startet die Laufanimation.
-        this.animate();
-    }
+    this.img = this.imageCache[path];
 
-    // Die animate()-Funktion ruft alle 200 Millisekunden die Funktion zum Bildwechsel auf.
-    animate() {
-        setInterval(() => {
-            this.playWalkingAnimation(); // Wechselt das angezeigte Bild.
-        }, 200);
-    }
-
-    // Diese Funktion ändert das sichtbare Bild des Endbosses, um eine Laufanimation zu erzeugen.
-    playWalkingAnimation() {
-        // Berechnet den Index im Array basierend auf currentImage.
-        let i = this.currentImage % this.IMAGE_WALKING.length;
-
-        // Holt den Pfad zum aktuellen Bild.
-        let path = this.IMAGE_WALKING[i];
-
-        // Wechselt das sichtbare Bild aus dem Cache.
-        this.img = this.imageCache[path];
-
-        // Erhöht den Zähler für das nächste Bild.
-        this.currentImage++;
-    }
+    this.currentImage++;
+  }
 }
