@@ -45,7 +45,7 @@ h1 {
 #menuImage {
   display: block;
   width: 100%; /* أو حجم مخصص حسب التصميم */
-  height: auto;
+  height: 120%;
 }
 
 

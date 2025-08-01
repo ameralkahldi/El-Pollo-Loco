@@ -24,7 +24,7 @@ class World {
 
     this.checkCollisions();
     this.checkThrowObject();
-    this.checkCoinCollisions();
+    this.collectCoins();
     this.checkBottleCollisions();
     this.checkBottleHitsEndboss();
     this.checkCharacterDead();
@@ -48,41 +48,64 @@ class World {
     }, 200));
   }
 
-  checkCollisions() {
-    this.intervalIds.push(setInterval(() => {
-      this.level.enemises.forEach((enemy) => {
-        if (this.character.isColliding(enemy)) {
-          if (this.character.isAbove(enemy) && !enemy.dead) {
-            this.hitTargetSuccessfully(enemy);
-          } else if (!enemy.dead) {
-            this.character.hit();
-            this.statusBar.setPercentage(this.character.energy);
-          }
-        }
-      });
 
-      if (this.endBoss &&
-          this.character.isColliding(this.endBoss) &&
-          !this.endBoss.dead &&
-          this.characterCanBeHit()) {
-        this.character.hit();
-        this.statusBar.setPercentage(this.character.energy);
+// Main collision check loop running every 100ms
+checkCollisions() {
+  this.intervalIds.push(setInterval(() => {
+    this.checkEnemyCollisions();   // Check collisions with enemies
+    this.checkEndbossCollision();  // Check collision with the end boss
+  }, 100));
+}
+
+// Check collisions between character and all enemies
+checkEnemyCollisions() {
+  this.level.enemises.forEach((enemy) => {
+    if (this.character.isColliding(enemy)) {
+      if (this.character.isAbove(enemy) && !enemy.dead) {
+        this.hitTargetSuccessfully(enemy);  // Successfully hit enemy by jumping on top
+      } else if (!enemy.dead) {
+        this.handleCharacterHit();          // Character takes damage on collision
       }
-    }, 100));
-  }
+    }
+  });
+}
 
-  checkCoinCollisions() {
-    this.intervalIds.push(setInterval(() => {
-      this.level.coins = this.level.coins.filter((coin) => {
-        if (this.character.isColliding(coin)) {
-          this.character.collectedCoins += 1;
-          this.coinsStatusBar.setPercentage(this.character.collectedCoins * 20);
-          return false;
-        }
-        return true;
-      });
-    }, 200));
+// Check collision between character and the end boss
+checkEndbossCollision() {
+  if (this.endBoss &&
+      this.character.isColliding(this.endBoss) &&
+      !this.endBoss.dead &&
+      this.characterCanBeHit()) {
+    this.handleCharacterHit();  // Character takes damage from end boss
   }
+}
+
+// Handle character getting hit: reduce energy and update status bar
+handleCharacterHit() {
+  this.character.hit();
+  this.statusBar.setPercentage(this.character.energy);
+}
+
+
+
+
+collectCoins() {
+  // فحص العملات الموجودة على الأرض كل 200ms
+  this.intervalIds.push(setInterval(() => {
+    // تصفية العملات الملتقطة
+    this.level.coins = this.level.coins.filter((coin) => {
+      if (this.character.isColliding(coin)) {
+        this.character.collectedCoins += 1; // زيادة عداد العملات
+        this.coinsStatusBar.setPercentage(this.character.collectedCoins * 20); // تحديث شريط العملات
+
+        // حذف العملة من العالم لأنها تم جمعها
+        return false;
+      }
+      return true; // إبقاء العملة إن لم تُجمع
+    });
+  }, 200));
+}
+
 
   checkBottleCollisions() {
     this.intervalIds.push(setInterval(() => {
@@ -97,38 +120,79 @@ class World {
     }, 200));
   }
 
+
+
 checkBottleHitsEndboss() {
+  // Check for bottle hits every 100 milliseconds
   this.intervalIds.push(setInterval(() => {
-    this.throwableObjects.forEach((bottle, index) => {
-      if (this.endBoss && bottle.isColliding(this.endBoss) && !bottle.hit) {
-        bottle.hit = true;
-        bottle.showHitEffect = true;
-        bottle.hitEffectStart = Date.now();
-        bottle.stop();
-
-        this.endBoss.energy -= 20;
-        this.endBoss.isHurt = true;
-        this.endbossStatusBar.setPercentage(this.endBoss.energy);
-
-        // إزالة الزجاجة بعد انتهاء تأثير الانفجار
-        setTimeout(() => {
-          const idx = this.throwableObjects.indexOf(bottle);
-          if (idx > -1) this.throwableObjects.splice(idx, 1);
-        }, bottle.hitEffectDuration);
-
-        if (this.endBoss.energy <= 0) {
-          this.endBoss.dead = true;
-          this.endBoss.speed = 0;
-          this.endBoss.isHurt = false;
-          this.gameIsOver = true;
-          setTimeout(() => {
-            gameOver(true);
-          }, 2000);
-        }
+    this.throwableObjects.forEach((bottle) => {
+      // If the bottle should hit the endboss
+      if (this.shouldBottleHitEndboss(bottle)) {
+        this.handleBottleHit(bottle); // Handle what happens after a hit
       }
     });
   }, 100));
 }
+
+
+
+shouldBottleHitEndboss(bottle) {
+  // Returns true only if:
+  // - Endboss exists
+  // - Bottle is colliding with the endboss
+  // - Bottle hasn't already hit something
+  return this.endBoss &&
+         bottle.isColliding(this.endBoss) &&
+         !bottle.hit;
+}
+
+
+handleBottleHit(bottle) {
+  bottle.hit = true;                // Mark bottle as used
+  bottle.showHitEffect = true;     // Start explosion effect
+  bottle.hitEffectStart = Date.now(); // Save the moment of impact
+  bottle.stop();                   // Stop the bottle's motion
+
+  this.reduceEndbossEnergy(20);    // Damage endboss by 20
+  this.scheduleBottleRemoval(bottle); // Remove bottle after effect
+
+  // If endboss energy is 0 or less → defeat it
+  if (this.endBoss.energy <= 0) {
+    this.killEndboss();
+  }
+}
+
+
+reduceEndbossEnergy(amount) {
+  this.endBoss.energy -= amount; // Subtract energy
+  this.endBoss.isHurt = true;    // Visual damage state
+  this.endbossStatusBar.setPercentage(this.endBoss.energy); // Update health bar
+}
+
+
+scheduleBottleRemoval(bottle) {
+  // Wait for the explosion effect to finish
+  setTimeout(() => {
+    const index = this.throwableObjects.indexOf(bottle);
+    if (index > -1) {
+      this.throwableObjects.splice(index, 1); // Remove from game
+    }
+  }, bottle.hitEffectDuration); // Duration of hit animation
+}
+
+
+killEndboss() {
+  this.endBoss.dead = true;     // Boss is now dead
+  this.endBoss.speed = 0;       // Stop movement
+  this.endBoss.isHurt = false;  // Clear hurt state
+  this.gameIsOver = true;       // End the game
+
+  // Wait 2 seconds then show win screen
+  setTimeout(() => {
+    gameOver(true);
+  }, 2000);
+}
+
 
 
   checkCharacterDead() {
@@ -164,7 +228,6 @@ checkBottleHitsEndboss() {
   }
 
   stop() {
-    // 🛑 إيقاف جميع الرسوم والتحديثات
     if (this.animationFrameId) {
       cancelAnimationFrame(this.animationFrameId);
       this.animationFrameId = null;

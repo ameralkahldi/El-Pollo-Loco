@@ -7,7 +7,6 @@ class ThrowableObject extends MovableObject {
     this.width = 50;
     this.hit = false;
 
-    // ✅ خصائص التأثير
     this.showHitEffect = false;
     this.hitEffectStart = null;
     this.hitEffectDuration = 500;
@@ -23,7 +22,6 @@ class ThrowableObject extends MovableObject {
     }, 50);
   }
 
-  // ✅ رسم تأثير الانفجار
   drawHitEffect(ctx) {
     if (this.showHitEffect) {
       const img = new Image();
