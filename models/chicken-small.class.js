@@ -17,15 +17,15 @@ class ChickenSmall extends MovableObject {
         'img/3_enemies_chicken/chicken_small/2_dead/dead.png'
     ];
 
-    constructor() {
-  // nur super, kein Funktionsaufruf!
-    super().loadImage(this.IMAGES_WALKING[0]); // ✅ richtig
+constructor(x) {
+    super().loadImage(this.IMAGES_WALKING[0]);
     this.loadImages(this.IMAGES_WALKING);
-    this.loadImages(this.IMAGE_DEAD) ;
+    this.loadImages(this.IMAGE_DEAD);
     this.applyGravity();
     this.animate();
+    this.x = x; // ✅ هذه السطر المهم
 }
-    
+
     
 
    animate() {

@@ -1,6 +1,6 @@
 class World {
   character = new Character();
-  level = level1;
+ level = createLevel1(); // ← يتم إنشاء نسخة جديدة من المستوى في كل مرة
   statusBar = new StatusBar();
   coinsStatusBar = new CoinsStatusBar();
   bottleStatusBar = new BottlesStatusBar();
@@ -97,29 +97,39 @@ class World {
     }, 200));
   }
 
-  checkBottleHitsEndboss() {
-    this.intervalIds.push(setInterval(() => {
-      this.throwableObjects.forEach((bottle, index) => {
-        if (this.endBoss && bottle.isColliding(this.endBoss) && !bottle.hit) {
-          bottle.hit = true;
-          this.endBoss.energy -= 20;
-          this.endBoss.isHurt = true;
-          this.endbossStatusBar.setPercentage(this.endBoss.energy);
-          this.throwableObjects.splice(index, 1);
+checkBottleHitsEndboss() {
+  this.intervalIds.push(setInterval(() => {
+    this.throwableObjects.forEach((bottle, index) => {
+      if (this.endBoss && bottle.isColliding(this.endBoss) && !bottle.hit) {
+        bottle.hit = true;
+        bottle.showHitEffect = true;
+        bottle.hitEffectStart = Date.now();
+        bottle.stop();
 
-          if (this.endBoss.energy <= 0) {
-            this.endBoss.dead = true;
-            this.endBoss.speed = 0;
-            this.endBoss.isHurt = false;
-            this.gameIsOver = true;
-            setTimeout(() => {
-              gameOver(true);
-            }, 2000);
-          }
+        this.endBoss.energy -= 20;
+        this.endBoss.isHurt = true;
+        this.endbossStatusBar.setPercentage(this.endBoss.energy);
+
+        // إزالة الزجاجة بعد انتهاء تأثير الانفجار
+        setTimeout(() => {
+          const idx = this.throwableObjects.indexOf(bottle);
+          if (idx > -1) this.throwableObjects.splice(idx, 1);
+        }, bottle.hitEffectDuration);
+
+        if (this.endBoss.energy <= 0) {
+          this.endBoss.dead = true;
+          this.endBoss.speed = 0;
+          this.endBoss.isHurt = false;
+          this.gameIsOver = true;
+          setTimeout(() => {
+            gameOver(true);
+          }, 2000);
         }
-      });
-    }, 100));
-  }
+      }
+    });
+  }, 100));
+}
+
 
   checkCharacterDead() {
     this.intervalIds.push(setInterval(() => {
@@ -243,9 +253,11 @@ updateEndbossBehavior() {
     }
     this.ctx.restore();
 
-    this.throwableObjects.forEach(obj =>
-      this.ctx.drawImage(obj.img, obj.x, obj.y, obj.width, obj.height)
-    );
+ this.throwableObjects.forEach(obj => {
+  this.ctx.drawImage(obj.img, obj.x, obj.y, obj.width, obj.height);
+  obj.drawHitEffect(this.ctx);
+});
+
 
     this.ctx.translate(-this.camera_x, 0);
 
