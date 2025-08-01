@@ -28,7 +28,7 @@ class World {
     this.checkBottleCollisions();
     this.checkBottleHitsEndboss();
     this.checkCharacterDead();
-
+    this.checkBottleHitsEnemies();
     this.draw();
   }
 
@@ -119,6 +119,45 @@ collectCoins() {
       });
     }, 200));
   }
+
+  checkBottleHitsEnemies() {
+  this.intervalIds.push(setInterval(() => {
+    this.throwableObjects.forEach((bottle) => {
+      this.level.enemises.forEach((enemy) => {
+        if (!enemy.dead && !bottle.hit && bottle.isColliding(enemy)) {
+          // Flasche trifft das Huhn
+          bottle.hit = true;
+          bottle.showHitEffect = true;
+          bottle.hitEffectStart = Date.now();
+          bottle.stop();
+
+          // Enemy „töten“
+          enemy.dead = true;
+          enemy.speed = 0;
+
+          // Optional: kleiner Sprung vom Charakter
+          this.character.smallJump();
+
+          // Enemy nach kurzer Zeit aus Level entfernen
+          setTimeout(() => {
+            const index = this.level.enemises.indexOf(enemy);
+            if (index > -1) {
+              this.level.enemises.splice(index, 1);
+            }
+          }, 200);
+
+          // Flasche nach Effekt entfernen
+          setTimeout(() => {
+            const bottleIndex = this.throwableObjects.indexOf(bottle);
+            if (bottleIndex > -1) {
+              this.throwableObjects.splice(bottleIndex, 1);
+            }
+          }, bottle.hitEffectDuration || 500);
+        }
+      });
+    });
+  }, 100));
+}
 
 
 
