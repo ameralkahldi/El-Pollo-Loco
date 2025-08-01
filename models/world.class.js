@@ -1,5 +1,6 @@
 class World {
   character = new Character();
+  breakSound = new Audio("audio/audio_break.mp3");
  level = createLevel1(); // ← يتم إنشاء نسخة جديدة من المستوى في كل مرة
   statusBar = new StatusBar();
   coinsStatusBar = new CoinsStatusBar();
@@ -90,18 +91,15 @@ handleCharacterHit() {
 
 
 collectCoins() {
-  // فحص العملات الموجودة على الأرض كل 200ms
   this.intervalIds.push(setInterval(() => {
-    // تصفية العملات الملتقطة
     this.level.coins = this.level.coins.filter((coin) => {
       if (this.character.isColliding(coin)) {
-        this.character.collectedCoins += 1; // زيادة عداد العملات
-        this.coinsStatusBar.setPercentage(this.character.collectedCoins * 20); // تحديث شريط العملات
+        this.character.collectedCoins += 1; 
+        this.coinsStatusBar.setPercentage(this.character.collectedCoins * 20); 
 
-        // حذف العملة من العالم لأنها تم جمعها
         return false;
       }
-      return true; // إبقاء العملة إن لم تُجمع
+      return true; 
     });
   }, 200));
 }
@@ -120,25 +118,24 @@ collectCoins() {
     }, 200));
   }
 
-  checkBottleHitsEnemies() {
+checkBottleHitsEnemies() {
   this.intervalIds.push(setInterval(() => {
     this.throwableObjects.forEach((bottle) => {
       this.level.enemises.forEach((enemy) => {
         if (!enemy.dead && !bottle.hit && bottle.isColliding(enemy)) {
-          // Flasche trifft das Huhn
           bottle.hit = true;
           bottle.showHitEffect = true;
           bottle.hitEffectStart = Date.now();
           bottle.stop();
 
-          // Enemy „töten“
+          // 🔊 Break-Sound abspielen
+          this.breakSound.currentTime = 0;
+          this.breakSound.play();
+
           enemy.dead = true;
           enemy.speed = 0;
-
-          // Optional: kleiner Sprung vom Charakter
           this.character.smallJump();
 
-          // Enemy nach kurzer Zeit aus Level entfernen
           setTimeout(() => {
             const index = this.level.enemises.indexOf(enemy);
             if (index > -1) {
@@ -146,7 +143,6 @@ collectCoins() {
             }
           }, 200);
 
-          // Flasche nach Effekt entfernen
           setTimeout(() => {
             const bottleIndex = this.throwableObjects.indexOf(bottle);
             if (bottleIndex > -1) {
@@ -158,6 +154,7 @@ collectCoins() {
     });
   }, 100));
 }
+
 
 
 

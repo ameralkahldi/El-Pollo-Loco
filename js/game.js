@@ -24,7 +24,7 @@ function gameOver(won) {
   const canvas = document.getElementById('canvas');
 
   img.src = won
-    ? './img/9_intro_outro_screens/game_over/game over!.png'
+    ? './img/9_intro_outro_screens/win_2.png'
     : './img/9_intro_outro_screens/game_over/you lost.png';
 
   screen.classList.remove('hidden');
