@@ -13,7 +13,8 @@ class World {
   throwableObjects = [];
   gameIsOver = false;
   animationFrameId;
-  intervalIds = []; // 🆕 لتخزين كل الـ setInterval
+  intervalIds = [];// 🆕 لتخزين كل الـ setInterval
+
 
   constructor(canvas, keyboard) {
     this.ctx = canvas.getContext("2d");
@@ -94,8 +95,8 @@ collectCoins() {
   this.intervalIds.push(setInterval(() => {
     this.level.coins = this.level.coins.filter((coin) => {
       if (this.character.isColliding(coin)) {
-        this.character.collectedCoins += 1; 
-        this.coinsStatusBar.setPercentage(this.character.collectedCoins * 20); 
+        this.character.coinCount += 1; 
+        this.coinsStatusBar.setPercentage(this.character.coinCount * 20); 
 
         return false;
       }
@@ -109,8 +110,8 @@ collectCoins() {
     this.intervalIds.push(setInterval(() => {
       this.level.bottles = this.level.bottles.filter((bottle) => {
         if (this.character.isColliding(bottle)) {
-          this.character.bottles += 1;
-          this.bottleStatusBar.setPercentage(this.character.bottles * 20);
+          this.character.bottleCount += 1;
+          this.bottleStatusBar.setPercentage(this.character.bottleCount * 20);
           return false;
         }
         return true;
@@ -284,12 +285,12 @@ updateEndbossBehavior() {
   if (!this.endBoss || this.endBoss.dead) return;
 
   const distance = Math.abs(this.character.x - this.endBoss.x);
-  const detectionRange = 400; // مدى الكشف
+  const detectionRange = 400; 
 
   if (distance < detectionRange) {
-    this.endBoss.speed = 2;       // سرعة التحرك
-    this.endBoss.isAttacking = true;  // حالة الهجوم (تفعيل الرسوم)
-    this.endBoss.moveTowards(this.character); // تحريك الـ endBoss باتجاه الـ character
+    this.endBoss.speed = 2;      
+    this.endBoss.isAttacking = true;  
+    this.endBoss.moveTowards(this.character); 
   } else {
     this.endBoss.speed = 0;
     this.endBoss.isAttacking = false;

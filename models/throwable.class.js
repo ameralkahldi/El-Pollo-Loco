@@ -34,7 +34,6 @@ class ThrowableObject extends MovableObject {
     }
   }
 
-  // 🧹 إيقاف الحركة عند الاصطدام
   stop() {
     clearInterval(this.moveInterval);
   }

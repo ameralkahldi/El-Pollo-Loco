@@ -8,8 +8,9 @@ class Character extends MovableObject {
   otherDirection = false;
   energy = 100;
    bottles = 0;
-   collectedCoins = 0;
 dead = false;
+   coinCount = 0;
+bottleCount = 0;
 
   offset = {
     top: 100,
@@ -93,6 +94,8 @@ dead = false;
     this.loadImages(this.IMAGEs_HURT);
     this.applyGravity();
     this.animate();
+
+
    
   }
 
