@@ -3,7 +3,7 @@ let world;
 let keyboard = new Keyboard();
 let soundEnabled = true;
 let musicEnabled = true;
-const backgroundMusic = new Audio('audio/background_music.mp3');
+const backgroundMusic = new Audio('audio/audio_music.mp3');
 backgroundMusic.loop = true;
 backgroundMusic.volume = 0.3;
 
@@ -121,21 +121,24 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 🎵 زر الموسيقى
-  if (musicSwitch) {
-    musicSwitch.addEventListener('click', () => {
-      musicEnabled = !musicEnabled;
-      musicSwitch.src = musicEnabled
-        ? './img/11-menu/switch_on.png'
-        : './img/11-menu/switch_off.png';
+// 🎵 زر الموسيقى
+if (musicSwitch) {
+  musicSwitch.addEventListener('click', () => {
+    musicEnabled = !musicEnabled;
+    musicSwitch.src = musicEnabled
+      ? './img/11-menu/switch_on.png'
+      : './img/11-menu/switch_off.png';
 
-      if (musicEnabled) {
-        backgroundMusic.play().catch(e => console.warn('Fehler beim Starten der Musik:', e));
-      } else {
-        backgroundMusic.pause();
-      }
-    });
-  }
+    // تشغيل أو إيقاف الموسيقى حسب الحالة
+    if (musicEnabled) {
+      backgroundMusic.play().catch(e => console.warn('Music not started:', e));
+    } else {
+      backgroundMusic.pause();
+      backgroundMusic.currentTime = 0;
+    }
+  });
+}
+
 
   // ⛶ زر ملء الشاشة
   if (fullscreenSwitch) {

@@ -1,6 +1,5 @@
 class World {
   character = new Character();
-  breakSound = new Audio("audio/audio_break.mp3");
  level = createLevel1(); // ← يتم إنشاء نسخة جديدة من المستوى في كل مرة
   statusBar = new StatusBar();
   coinsStatusBar = new CoinsStatusBar();
@@ -13,7 +12,12 @@ class World {
   throwableObjects = [];
   gameIsOver = false;
   animationFrameId;
-  intervalIds = [];// 🆕 لتخزين كل الـ setInterval
+  intervalIds = [];
+  chickenDeathSound = new Audio("audio/audio_chicken_death.mp3");
+  chickenBossMoveSound = new Audio("audio/audio_chickenBoss.wav");
+  coinCollectSound = new Audio("audio/audio_coin_collect.wav");
+
+
 
 
   constructor(canvas, keyboard) {
@@ -95,12 +99,14 @@ collectCoins() {
   this.intervalIds.push(setInterval(() => {
     this.level.coins = this.level.coins.filter((coin) => {
       if (this.character.isColliding(coin)) {
-        this.character.coinCount += 1; 
-        this.coinsStatusBar.setPercentage(this.character.coinCount * 20); 
+        this.character.coinCount += 1;
+        this.coinsStatusBar.setPercentage(this.character.coinCount * 20);
+        this.coinCollectSound.currentTime = 0;
+        this.coinCollectSound.play();
 
         return false;
       }
-      return true; 
+      return true;
     });
   }, 200));
 }
@@ -129,9 +135,7 @@ checkBottleHitsEnemies() {
           bottle.hitEffectStart = Date.now();
           bottle.stop();
 
-          // 🔊 Break-Sound abspielen
-          this.breakSound.currentTime = 0;
-          this.breakSound.play();
+          
 
           enemy.dead = true;
           enemy.speed = 0;
@@ -247,22 +251,28 @@ killEndboss() {
     return timePassed > 1000;
   }
 
-  hitTargetSuccessfully(enemy) {
-    if (enemy == this.endBoss) {
-      return;
-    } else if (this.character.isAbove(enemy)) {
-      this.character.smallJump();
-      enemy.energy = 0;
-      enemy.speed = 0;
-      enemy.dead = true;
-      setTimeout(() => {
-        let index = this.level.enemises.indexOf(enemy);
-        if (index > -1) {
-          this.level.enemises.splice(index, 1);
-        }
-      }, 200);
-    }
+hitTargetSuccessfully(enemy) {
+  if (enemy == this.endBoss) {
+    return;
+  } else if (this.character.isAbove(enemy)) {
+    this.character.smallJump();
+    enemy.energy = 0;
+    enemy.speed = 0;
+    enemy.dead = true;
+
+    // 🔊 تشغيل صوت موت الدجاج
+    this.chickenDeathSound.currentTime = 0;
+    this.chickenDeathSound.play();
+
+    setTimeout(() => {
+      let index = this.level.enemises.indexOf(enemy);
+      if (index > -1) {
+        this.level.enemises.splice(index, 1);
+      }
+    }, 200);
   }
+}
+
 
   stop() {
     if (this.animationFrameId) {
@@ -288,6 +298,11 @@ updateEndbossBehavior() {
   const detectionRange = 400; 
 
   if (distance < detectionRange) {
+    if (this.endBoss.speed === 0) {
+      // شغل الصوت لما يبدأ يتحرك
+      this.chickenBossMoveSound.currentTime = 0;
+      this.chickenBossMoveSound.play();
+    }
     this.endBoss.speed = 2;      
     this.endBoss.isAttacking = true;  
     this.endBoss.moveTowards(this.character); 
@@ -296,6 +311,7 @@ updateEndbossBehavior() {
     this.endBoss.isAttacking = false;
   }
 }
+
 
   draw() {
     if (this.gameIsOver) return;

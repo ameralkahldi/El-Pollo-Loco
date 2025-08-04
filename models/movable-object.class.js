@@ -3,6 +3,10 @@ class MovableObject extends DrawableObject {
   otherDirection = false; // Default direction for movement
   speedY = 0;
   acceleration = 2.5;
+  hurtSound = new Audio("audio/audio_pepe_hurt1.mp3");
+
+ 
+
   lastHit = 0;
     offset = {
         top: 0,
@@ -77,20 +81,27 @@ class MovableObject extends DrawableObject {
 
   }
 
-  hit() {
-        if (this instanceof Endboss) {
-            if (this.energy < 0) 
-                this.energy = 0;
-             else 
-                this.lastHit = new Date().getTime();
+hit() {
+    if (this instanceof Endboss) {
+        if (this.energy < 0) {
+            this.energy = 0;
         } else {
-            this.energy -= 5;
-            if (this.energy < 0) 
-                this.energy = 0;
-             else 
-                this.lastHit = new Date().getTime();
+            this.lastHit = new Date().getTime();
+        }
+    } else {
+        this.energy -= 5;
+        if (this.energy < 0) {
+            this.energy = 0;
+        } else {
+            this.lastHit = new Date().getTime();
+            if (this.hurtSound) {
+                this.hurtSound.currentTime = 0;
+                this.hurtSound.play().catch(e => console.warn("Cannot play hurt sound:", e));
+            }
         }
     }
+}
+
 
   isDead() {
     return this.energy == 0;

@@ -11,6 +11,11 @@ class Character extends MovableObject {
 dead = false;
    coinCount = 0;
 bottleCount = 0;
+jumpSound = new Audio("audio/audio_jump.wav");
+ 
+
+
+
 
   offset = {
     top: 100,
@@ -127,9 +132,9 @@ bottleCount = 0;
       } else if (this.world?.keyboard.RIGHT || this.world?.keyboard.LEFT) {
         this.playWalkingAnimation(this.IMAGE_WALKING);
       }else if (this.startLongIdle()){
-        this.playAnimation(this.IMAGES_LONG_IDLE)
+        this.playWalkingAnimation(this.IMAGES_LONG_IDLE)
       }else if(this.speedY == 0 && !this.isAboveGround()){
-        this.playAnimation(this.IMAGES_IDLE)
+        this.playWalkingAnimation(this.IMAGES_IDLE)
 
       }
     }, 50);
@@ -194,6 +199,8 @@ bottleCount = 0;
     /**This function makes the movable object jump, by setting the speed on the Y axis to a certain value. */
     jump() {
         this.speedY = 30;
+    this.jumpSound.currentTime = 0; // اعادة الصوت من البداية
+    this.jumpSound.play();
     }
 
     /**This function checks if the difference in time between the last keypress and the current time is greater than a predetermined value, so that when it is greater the character
