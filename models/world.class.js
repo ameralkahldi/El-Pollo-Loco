@@ -118,6 +118,9 @@ collectCoins() {
         if (this.character.isColliding(bottle)) {
           this.character.bottleCount += 1;
           this.bottleStatusBar.setPercentage(this.character.bottleCount * 20);
+           this.coinCollectSound.currentTime = 0;
+        this.coinCollectSound.play();
+          
           return false;
         }
         return true;

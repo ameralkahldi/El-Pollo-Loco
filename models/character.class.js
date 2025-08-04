@@ -106,9 +106,11 @@ jumpSound = new Audio("audio/audio_jump.wav");
 
   animate() {
     let levelEnd = 2200;
+    
 
     // Bewegung
     setInterval(() => {
+      if (gameIsPaused) return;
       if (this.world.keyboard.RIGHT && this.x < levelEnd) {
         this.moveRight();
       }

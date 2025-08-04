@@ -6,6 +6,8 @@ let musicEnabled = true;
 const backgroundMusic = new Audio('audio/audio_music.mp3');
 backgroundMusic.loop = true;
 backgroundMusic.volume = 0.3;
+let gameIsPaused = false;
+
 
 
 function init() {
@@ -42,17 +44,22 @@ function gameOver(won) {
     ? './img/9_intro_outro_screens/win_2.png'
     : './img/9_intro_outro_screens/game_over/game over.png';
 
-  // 👇 Play chicken death sound if player loses
   if (!won) {
     const deathSound = new Audio('audio/audio_chicken_death.mp3');
     deathSound.play().catch((e) => {
       console.error('Failed to play death sound:', e);
+    });
+
+    const gameOverSound = new Audio('audio/audio_game_over.wav');
+    gameOverSound.play().catch((e) => {
+      console.warn('Game over sound blocked:', e);
     });
   }
 
   screen.classList.remove('hidden');
   canvas.classList.add('hidden');
 }
+
 
 function stopGame() {
   if (world) {
@@ -99,6 +106,22 @@ window.addEventListener('DOMContentLoaded', () => {
   const backBtn = document.getElementById('backToMenuButton');
   const restartBtn = document.getElementById('restartButton');
 
+  const pauseBtn = document.getElementById('pauseButton');
+
+  if (pauseBtn) {
+  pauseBtn.addEventListener('click', () => {
+    gameIsPaused = !gameIsPaused;
+
+    if (gameIsPaused) {
+      backgroundMusic.pause();
+      pauseBtn.innerText = '▶️ استئناف';
+    } else {
+      if (musicEnabled) backgroundMusic.play();
+      pauseBtn.innerText = '⏸️ إيقاف مؤقت';
+    }
+  });
+}
+
   if (soundIcon && soundMenu) {
     soundIcon.addEventListener('click', () => {
       soundMenu.style.display = 'flex';
@@ -111,7 +134,6 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 🔊 زر الصوت
   if (soundSwitch) {
     soundSwitch.addEventListener('click', () => {
       soundEnabled = !soundEnabled;
@@ -121,7 +143,6 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-// 🎵 زر الموسيقى
 if (musicSwitch) {
   musicSwitch.addEventListener('click', () => {
     musicEnabled = !musicEnabled;
@@ -153,7 +174,7 @@ if (musicSwitch) {
     });
   }
 
-  // 🔁 أزرار النهاية
+ 
   if (backBtn && restartBtn) {
     backBtn.addEventListener('click', () => {
       stopGame();
