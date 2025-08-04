@@ -19,7 +19,7 @@ function startGame() {
   document.getElementById('startMenu').style.display = 'none';
   document.getElementById('gameContainer').style.display = 'block';
   document.getElementById('canvas').classList.remove('hidden');
-  document.getElementById('soundIcon').style.display = 'block';
+
 
   if (musicEnabled) {
     backgroundMusic.play().catch(e => console.warn('Music blockiert:', e));
@@ -157,7 +157,7 @@ window.addEventListener('DOMContentLoaded', () => {
       document.getElementById('startMenu').style.display = 'block';
       document.getElementById('gameOverScreen').classList.add('hidden');
       document.getElementById('canvas').classList.add('hidden');
-      document.getElementById('soundIcon').style.display = 'none';
+     
     });
 
     restartBtn.addEventListener('click', () => {

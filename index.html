@@ -31,36 +31,40 @@
 <body>
     <h1 id="gameTitel">El Pollo Loco</h1>
 
+
 <div id="startMenu">
   <div id="menuWrapper">
     <img id="menuImage" src="./img/9_intro_outro_screens/start/startscreen_2.png" alt="Start Menu Image" />
     <button id="startButton" onclick="startGame()">Start Game</button>
+
+    <!-- ✅ هنا أضف الإعدادات -->
+    <img id="soundIcon" src="./img/11-menu/settings_icon.png" alt="Settings Icon">
+
+    <div class="sound-menu">
+      <div>
+        Fullscreen
+        <img id="fullscreen-switch" src="./img/11-menu/switch_off.png" alt="Sound Switch">
+      </div>
+      <div>
+        Sounds
+        <img id="sound-switch" src="./img/11-menu/switch_on.png" alt="Sound Switch">
+      </div>
+      <div>
+        Music
+        <img id="music-switch" src="./img/11-menu/switch_on.png" alt="Music Switch">
+      </div>
+      <img class="close-icon" src="./img/11-menu/close_icon.png" alt="Close">
+    </div>
+    <!-- ✅ نهاية الإعدادات -->
   </div>
 </div>
-    </div>
+
+
 
        <div id="gameContainer">
     <canvas id="canvas" width="720" height="500">
     </canvas>
 
-
-     <img id="soundIcon" src="./img/11-menu/settings_icon.png" alt="">
-
-      <div class="sound-menu">
-        <div>
-          Fullscreen
-          <img  id="fullscreen-switch" src="./img/11-menu/switch_off.png" alt="Sound Switch">
-        </div>
-        <div>
-          Sounds
-          <img  id="sound-switch" src="./img/11-menu/switch_on.png" alt="Sound Switch">
-        </div>
-        <div>
-          Music
-          <img  id="music-switch" src="./img/11-menu/switch_on.png" alt="Music Switch">
-        </div>
-        <img class="close-icon"  src="./img/11-menu/close_icon.png" alt="">
-    </div>
 
      <div id="controlDiv"><span>Arrows Left/Right = Walk</span><span>Arrow Up = Jump</span><span>D = Throw Salsa</span></div>
 
