@@ -112,6 +112,47 @@ h1 {
     display: none;
   }
 }
+
+
+/* إظهار عناصر التحكم في الأجهزة الصغيرة فقط */
+@media (max-width: 768px) {
+  #bottomPanel {
+    position: fixed;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+  }
+
+  .control-button {
+    background: none;
+    border: none;
+    padding: 0;
+    width: 60px;
+    height: 60px;
+  }
+
+  .control-button img {
+    width: 100%;
+    height: auto;
+  }
+
+  .mobile-controls.hidden {
+    display: none;
+  }
+}
+
+/* إخفاء لوحة التحكم في الشاشات الكبيرة */
+@media (min-width: 769px) {
+  #bottomPanel {
+    display: none !important;
+  }
+}
+
 #gameContainer {
   position: relative;
   display: none;
@@ -244,6 +285,20 @@ h1 {
   border-radius: 8px;
   cursor: pointer;
 }
+#restartButton{
+   padding: 12px 24px;
+  font-size: 20px;
+  background-color: #ff9900;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  
+}
+
+#restartButton:hover {
+  background-color: #cc7a00;
+}
 
 #backToMenuButton:hover {
   background-color: #cc7a00;
@@ -316,3 +371,10 @@ h1 {
   content: url('./img/11-menu/settings_icon_hover.png');
 }
 
+@media(max-width: 720px) {
+  #canvas {
+    height: auto;
+    width: 100vw;
+    aspect-ratio: 720 / 480;
+  }
+}
