@@ -205,10 +205,10 @@ function setupPauseButton() {
 
     if (gameIsPaused) {
       backgroundMusic.pause();
-      pauseBtn.innerText = '▶️ استئناف';
+      pauseBtn.innerText = '▶️ Restarting';
     } else {
       if (musicEnabled) backgroundMusic.play();
-      pauseBtn.innerText = '⏸️ إيقاف مؤقت';
+      pauseBtn.innerText = '⏸️ Stop ';
     }
   });
 }
