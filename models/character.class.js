@@ -7,23 +7,11 @@ class Character extends MovableObject {
   world;
   otherDirection = false;
   energy = 100;
-   bottles = 0;
-dead = false;
-   coinCount = 0;
-bottleCount = 0;
-jumpSound = new Audio("audio/audio_jump.wav");
- 
-
-
-
-
-  offset = {
-    top: 100,
-    bottom: 10,
-    left: 20,
-    right: 22,
-  };
-
+  bottles = 0;
+  dead = false;
+  coinCount = 0;
+  bottleCount = 0;
+  jumpSound = new Audio("audio/audio_jump.wav");
 
   IMAGE_WALKING = [
     "img/2_character_pepe/2_walk/W-21.png",
@@ -61,7 +49,7 @@ jumpSound = new Audio("audio/audio_jump.wav");
     "img/2_character_pepe/4_hurt/H-42.png",
     "img/2_character_pepe/4_hurt/H-43.png",
   ];
-    IMAGES_IDLE = [
+  IMAGES_IDLE = [
     "./img/2_character_pepe/1_idle/idle/I-1.png",
     "./img/2_character_pepe/1_idle/idle/I-2.png",
     "./img/2_character_pepe/1_idle/idle/I-3.png",
@@ -90,7 +78,7 @@ jumpSound = new Audio("audio/audio_jump.wav");
   constructor() {
     super();
 
-    this.loadImage(this.IMAGE_WALKING[0]); 
+    this.loadImage(this.IMAGE_WALKING[0]);
     this.loadImages(this.IMAGE_WALKING);
     this.loadImages(this.IMAGES_IDLE);
     this.loadImages(this.IMAGES_LONG_IDLE);
@@ -99,14 +87,10 @@ jumpSound = new Audio("audio/audio_jump.wav");
     this.loadImages(this.IMAGEs_HURT);
     this.applyGravity();
     this.animate();
-
-
-   
   }
 
   animate() {
     let levelEnd = 2200;
-    
 
     // Bewegung
     setInterval(() => {
@@ -133,11 +117,10 @@ jumpSound = new Audio("audio/audio_jump.wav");
         this.playWalkingAnimation(this.IMAGEs_JUMPING);
       } else if (this.world?.keyboard.RIGHT || this.world?.keyboard.LEFT) {
         this.playWalkingAnimation(this.IMAGE_WALKING);
-      }else if (this.startLongIdle()){
-        this.playWalkingAnimation(this.IMAGES_LONG_IDLE)
-      }else if(this.speedY == 0 && !this.isAboveGround()){
-        this.playWalkingAnimation(this.IMAGES_IDLE)
-
+      } else if (this.startLongIdle()) {
+        this.playWalkingAnimation(this.IMAGES_LONG_IDLE);
+      } else if (this.speedY == 0 && !this.isAboveGround()) {
+        this.playWalkingAnimation(this.IMAGES_IDLE);
       }
     }, 50);
   }
@@ -150,79 +133,83 @@ jumpSound = new Audio("audio/audio_jump.wav");
   }
 
   /**This function handles the movement of the main player if certain conditions are met. */
-    moveCharacter() {
-        this.walking_sound.pause();
-        if (!gameIsPaused) {
-            if (this.canMoveRight()) 
-                this.characterMovesRight();
-            if (this.canMoveLeft()) 
-                this.characterMovesLeft();
-            if (this.canJump()) 
-                this.jump();
-            this.world.camera_x = -this.x + 100;
-        }
-        this.lastPressedKey();
+  moveCharacter() {
+    this.walking_sound.pause();
+    if (!gameIsPaused) {
+      if (this.canMoveRight()) this.characterMovesRight();
+      if (this.canMoveLeft()) this.characterMovesLeft();
+      if (this.canJump()) this.jump();
+      this.world.camera_x = -this.x + 100;
     }
-
-
-   isAbove(enemy) {
-    return this.speedY < 0 && this.y + this.height <= enemy.y + enemy.height / 2;
+    this.lastPressedKey();
   }
 
-    /**This function moves the character right, sets the movement direction so that the main player is drawn properly on the canvas and plays the walk sound effect.  */
-    characterMovesRight() {
-        this.moveRight();
-        this.otherDirection = false;
-        this.walking_sound.play();
-    }
+  isAbove(enemy) {
+    return (
+      this.speedY < 0 && this.y + this.height <= enemy.y + enemy.height / 2
+    );
+  }
 
-    /**This function moves the character leftt, sets the movement direction so that the main player is drawn properly on the canvas and plays the walk sound effect.  */
-    characterMovesLeft() {
-        this.moveLeft();
-        this.otherDirection = true;
-        this.walking_sound.play();
-    }
+  /**This function moves the character right, sets the movement direction so that the main player is drawn properly on the canvas and plays the walk sound effect.  */
+  characterMovesRight() {
+    this.moveRight();
+    this.otherDirection = false;
+    this.walking_sound.play();
+  }
 
-    /**This is a small help function that checks if the criteria is met for the main player to move to the right */
-    canMoveRight() {
-        return this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x;
-    }
+  /**This function moves the character leftt, sets the movement direction so that the main player is drawn properly on the canvas and plays the walk sound effect.  */
+  characterMovesLeft() {
+    this.moveLeft();
+    this.otherDirection = true;
+    this.walking_sound.play();
+  }
 
-    /**This is a small help function that checks if the criteria is met for the main player to move to the left */
-    canMoveLeft() {
-        return this.world.keyboard.LEFT && this.x > 0;
-    }
+  /**This is a small help function that checks if the criteria is met for the main player to move to the right */
+  canMoveRight() {
+    return this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x;
+  }
 
-    /**This is a small help function that checks if the criteria is met for the main player to jump */
-    canJump() {
-        return this.world.keyboard.SPACE && !this.isAboveGround();
-    }
+  /**This is a small help function that checks if the criteria is met for the main player to move to the left */
+  canMoveLeft() {
+    return this.world.keyboard.LEFT && this.x > 0;
+  }
 
-    /**This function makes the movable object jump, by setting the speed on the Y axis to a certain value. */
-    jump() {
-        this.speedY = 30;
+  /**This is a small help function that checks if the criteria is met for the main player to jump */
+  canJump() {
+    return this.world.keyboard.SPACE && !this.isAboveGround();
+  }
+
+  /**This function makes the movable object jump, by setting the speed on the Y axis to a certain value. */
+  jump() {
+    this.speedY = 30;
     this.jumpSound.currentTime = 0; // اعادة الصوت من البداية
     this.jumpSound.play();
-    }
+  }
 
-    /**This function checks if the difference in time between the last keypress and the current time is greater than a predetermined value, so that when it is greater the character
-     * can go enter a "long idle" state.*/
-    startLongIdle() {
-        let timepassed = new Date().getTime() - this.lastKeyPressed;
-        timepassed = timepassed / 1000;
-        return (timepassed > 8);
-    }
+  /**This function checks if the difference in time between the last keypress and the current time is greater than a predetermined value, so that when it is greater the character
+   * can go enter a "long idle" state.*/
+  startLongIdle() {
+    let timepassed = new Date().getTime() - this.lastKeyPressed;
+    timepassed = timepassed / 1000;
+    return timepassed > 8;
+  }
 
-    /**This function saves the time of the last keypress as a variable. */
-    lastPressedKey() {
-        if (this.keyIsPressed()) {
-            this.lastKeyPressed = new Date().getTime();
-        }
+  /**This function saves the time of the last keypress as a variable. */
+  lastPressedKey() {
+    if (this.keyIsPressed()) {
+      this.lastKeyPressed = new Date().getTime();
     }
+  }
 
-    /**This function checks if any of the predetermined keys was pressed. */
-    keyIsPressed() {
-        return keyboard.LEFT || keyboard.RIGHT || keyboard.UP || keyboard.DOWN || keyboard.SPACE || keyboard.D
-    }
-  
+  /**This function checks if any of the predetermined keys was pressed. */
+  keyIsPressed() {
+    return (
+      keyboard.LEFT ||
+      keyboard.RIGHT ||
+      keyboard.UP ||
+      keyboard.DOWN ||
+      keyboard.SPACE ||
+      keyboard.D
+    );
+  }
 }

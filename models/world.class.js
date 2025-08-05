@@ -13,6 +13,7 @@ class World {
   gameIsOver = false;
   animationFrameId;
   intervalIds = [];
+  intervalIdscons = [];
   chickenDeathSound = new Audio("audio/audio_chicken_death.mp3");
   chickenBossMoveSound = new Audio("audio/audio_chickenBoss.wav");
   coinCollectSound = new Audio("audio/audio_coin_collect.wav");
@@ -37,6 +38,7 @@ class World {
     this.checkBottleHitsEnemies();
     this.draw();
   }
+
 
   setWorld() {
     this.character.world = this;
@@ -96,7 +98,7 @@ handleCharacterHit() {
 
 
 collectCoins() {
-  this.intervalIds.push(setInterval(() => {
+  this.intervalIdscons.push(setInterval(() => {
     this.level.coins = this.level.coins.filter((coin) => {
       if (this.character.isColliding(coin)) {
         this.character.coinCount += 1;

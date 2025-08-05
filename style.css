@@ -17,51 +17,204 @@ h1 {
   text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.5);
   color: white;
 }
+
+
 #canvas {
+  display: block;
+  margin: auto;
   background-color: black;
   border: 3.5px solid rgb(154, 76, 42);
   border-radius: 5px;
- 
-
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100vw;
+  height: auto;
+  aspect-ratio: 16 / 9;
 }
+
+
+@media (max-width: 768px) {
+  #canvas {
+    max-width: 100%;
+    border-width: 2px;
+  }
+}
+
+@media (max-width: 480px) {
+  #canvas {
+    max-width: 100%;
+    border-width: 1.5px;
+  }
+}
+
+
+
+
+
+/* ✅ المكون الرئيسي */
 #startMenu {
   display: flex;
-  flex-direction: column; /* Ensures the button is above the image */
+  flex-direction: column;
   align-items: center;
-  height: 480px;
-  width: 720px;
+  height: 90vh;
+  width: 95vw;
+  max-width: 720px;
+  max-height: 480px;
   position: relative;
   background-size: cover;
   background-position: center;
   border: 3.5px solid rgb(154, 76, 42);
   border-radius: 5px;
+  margin: auto;
+  box-sizing: border-box;
 }
 
+/* ✅ غلاف المحتوى */
 #menuWrapper {
   position: relative;
   display: inline-block;
+  width: 100%;
+  height: 100%;
 }
 
+/* ✅ صورة الخلفية */
 #menuImage {
   display: block;
-  width: 100%; /* أو حجم مخصص حسب التصميم */
-  height: 120%;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 5px;
 }
 
-
+/* ✅ زر البدء */
 #startButton {
   position: absolute;
   top: 20%;
   left: 50%;
   transform: translate(-50%, -50%);
-  padding: 15px 30px;
-  font-size: 18px;
+  padding: 3vh 6vw;
+  font-size: 1.2rem;
   background-color: #ffd800;
   border: none;
   border-radius: 10px;
   cursor: pointer;
   box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+  z-index: 10;
 }
+
+/* ✅ أيقونة الإعدادات */
+#soundIcon {
+  position: absolute;
+  top: 2%;
+  right: 2%;
+  width: 40px;
+  cursor: pointer;
+  z-index: 1000;
+}
+
+#soundIcon:active {
+  transform: scale(1.2); 
+}
+
+#soundIcon:hover {
+  content: url('./img/11-menu/settings_icon_hover.png');
+}
+
+/* ✅ قائمة الإعدادات */
+.sound-menu {
+  position: absolute;
+  top: 80px;
+  right: 20px;
+  background: rgba(0, 0, 0, 0.8);
+  padding: 15px;
+  border-radius: 8px;
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 1000;
+  color: white;
+  font-size: 1.5rem;
+  width: 260px;
+  box-sizing: border-box;
+}
+
+.sound-menu .close-icon {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  height: 24px !important;
+  cursor: pointer;
+}
+
+.sound-menu .close-icon:hover {
+  content: url('./img/11-menu/close_icon_hover.png');
+}
+
+.sound-menu div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.sound-menu img {
+  height: 48px;
+  cursor: pointer;
+  max-height: 60px;
+}
+
+
+/* 📱 الهواتف والشاشات الصغيرة */
+@media (max-width: 600px) {
+  #startMenu {
+    height: 95vh;
+    width: 95vw;
+  }
+
+  #startButton {
+    padding: 2.5vh 5vw;
+    font-size: 1rem;
+  }
+
+  #soundIcon {
+    width: 32px;
+  }
+
+  .sound-menu {
+    top: 60px;
+    right: 10px;
+    width: 90vw;
+    font-size: 1.2rem;
+    padding: 20px;
+  }
+
+  .sound-menu img {
+    height: 36px;
+  }
+
+  .sound-menu div {
+    width: 100%;
+  }
+}
+
+/* 📲 شاشات أضيق جدًا */
+@media (max-width: 400px) {
+  #startButton {
+    font-size: 0.9rem;
+    padding: 2vh 4vw;
+  }
+
+  .sound-menu {
+    font-size: 1rem;
+  }
+
+  .sound-menu img {
+    height: 30px;
+  }
+}
+
+
+
 
 
 @keyframes pulse {
@@ -95,58 +248,8 @@ h1 {
   src: url("fonts/Zabars (1).ttf") format("truetype");
 }
 
-@media only screen and (max-width: 720px) {
-  canvas {
-    width: 100%;
-  }
-}
-
-@media only screen and (max-height: 480px) {
-  canvas {
-    height: 100vh;
-  }
-}
-
-@media (max-height: 600px) {
-  h1 {
-    display: none;
-  }
-}
 
 
-/* إظهار عناصر التحكم في الأجهزة الصغيرة فقط */
-@media (max-width: 768px) {
-  #bottomPanel {
-    position: fixed;
-    bottom: 20px;
-    left: 0;
-    right: 0;
-    display: flex;
-    justify-content: space-around;
-    padding: 10px;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 999;
-  }
-
-  .control-button {
-    background: none;
-    border: none;
-    padding: 0;
-    width: 60px;
-    height: 60px;
-  }
-
-  .control-button img {
-    width: 100%;
-    height: auto;
-  }
-
-  .mobile-controls.hidden {
-    display: none;
-  }
-}
-
-/* إخفاء لوحة التحكم في الشاشات الكبيرة */
 @media (min-width: 769px) {
   #bottomPanel {
     display: none !important;
@@ -312,69 +415,25 @@ h1 {
 }
 
 
+/* افترض أن كلاس hidden يخفي العنصر باستخدام display: none */
+@media (max-width: 768px) {
+  #bottomPanel {
+    display: flex !important; /* أو block حسب التصميم */
+    justify-content: center;
+    position: fixed;
+    bottom: 10px;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.8); /* أو حسب تصميمك */
+    z-index: 1000;
+  }
 
+  .control-button {
+    margin: 0 10px;
+    background: none;
+    border: none;
+  }
 
-.sound-menu {
-  position: absolute;
-  top: 80px;
-  right: 20px;
-  background: rgba(0, 0, 0, 0.8);
-  padding: 15px;
-  border-radius: 8px;
-  display: none;
-  flex-direction: column;
-  gap: 10px;
-  z-index: 1000;
-  color: white;
-  font-size: 30px;
-}
-
-.sound-menu .close-icon {
-  position: absolute;
-  top: 6px;
-  right: 6px;
-  height: 24px !important;
-  cursor: pointer;
-}
-
-.sound-menu .close-icon:hover {
-  content: url('./img/11-menu/close_icon_hover.png');
-}
-
-.sound-menu div {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  justify-content: space-between;
-  width: 240px;
-}
-
-.sound-menu img {
-  height: 72px;
-  cursor: pointer;
-}
-
-#soundIcon {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  width: 40px;
-  cursor: pointer;
-  z-index: 1000;
-}
-
-#soundIcon:active {
-  transform: scale(1.2); 
-}
-
-#soundIcon:hover {
-  content: url('./img/11-menu/settings_icon_hover.png');
-}
-
-@media(max-width: 720px) {
-  #canvas {
-    height: auto;
-    width: 100vw;
-    aspect-ratio: 720 / 480;
+  #bottomPanel.hidden {
+    display: none !important; /* يحترم إذا تم إخفاؤه يدويًا */
   }
 }
