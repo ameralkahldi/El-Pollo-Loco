@@ -1,6 +1,6 @@
 class World {
   character = new Character();
- level = createLevel1(); // ← يتم إنشاء نسخة جديدة من المستوى في كل مرة
+  level = createLevel1(); // ← يتم إنشاء نسخة جديدة من المستوى في كل مرة
   statusBar = new StatusBar();
   coinsStatusBar = new CoinsStatusBar();
   bottleStatusBar = new BottlesStatusBar();
@@ -14,12 +14,11 @@ class World {
   animationFrameId;
   intervalIds = [];
   intervalIdscons = [];
+  collectedCoins = [];
   chickenDeathSound = new Audio("audio/audio_chicken_death.mp3");
   chickenBossMoveSound = new Audio("audio/audio_chickenBoss.wav");
   coinCollectSound = new Audio("audio/audio_coin_collect.wav");
-
-
-
+  bottleCollectSound = new Audio("audio/audio_landing.wav");
 
   constructor(canvas, keyboard) {
     this.ctx = canvas.getContext("2d");
@@ -31,14 +30,13 @@ class World {
 
     this.checkCollisions();
     this.checkThrowObject();
-    this.collectCoins();
     this.checkBottleCollisions();
     this.checkBottleHitsEndboss();
     this.checkCharacterDead();
     this.checkBottleHitsEnemies();
+    this.checkCoinCollection();
     this.draw();
   }
-
 
   setWorld() {
     this.character.world = this;
@@ -47,207 +45,232 @@ class World {
   }
 
   checkThrowObject() {
-    this.intervalIds.push(setInterval(() => {
-      if (this.keyboard.D) {
-        let bottle = new ThrowableObject(this.character.x, this.character.y + 100);
-        bottle.hit = false;
-        this.throwableObjects.push(bottle);
-      }
-    }, 200));
+    this.intervalIds.push(
+      setInterval(() => {
+        if (this.keyboard.D) {
+          // تحقق من أن الشخصية لديها زجاجات قبل الرمي
+          if (this.character.bottleCount > 0) {
+            let bottle = new ThrowableObject(
+              this.character.x,
+              this.character.y + 100
+            );
+            bottle.hit = false;
+            this.throwableObjects.push(bottle);
+
+            // نقص الزجاجة من الشخصية
+            this.character.bottleCount -= 1;
+
+            // تحديث Bottles Status Bar بعد الرمي
+            this.bottleStatusBar.setPercentage(this.character.bottleCount * 20);
+
+            // تشغيل صوت الرمي
+            this.bottleCollectSound.currentTime = 0;
+            this.bottleCollectSound.play();
+          }
+        }
+      }, 200)
+    );
   }
 
+  // Main collision check loop running every 100ms
+  checkCollisions() {
+    this.intervalIds.push(
+      setInterval(() => {
+        this.checkEnemyCollisions(); // Check collisions with enemies
+        this.checkEndbossCollision(); // Check collision with the end boss
+      }, 100)
+    );
+  }
 
-// Main collision check loop running every 100ms
-checkCollisions() {
-  this.intervalIds.push(setInterval(() => {
-    this.checkEnemyCollisions();   // Check collisions with enemies
-    this.checkEndbossCollision();  // Check collision with the end boss
-  }, 100));
-}
-
-// Check collisions between character and all enemies
-checkEnemyCollisions() {
-  this.level.enemises.forEach((enemy) => {
-    if (this.character.isColliding(enemy)) {
-      if (this.character.isAbove(enemy) && !enemy.dead) {
-        this.hitTargetSuccessfully(enemy);  // Successfully hit enemy by jumping on top
-      } else if (!enemy.dead) {
-        this.handleCharacterHit();          // Character takes damage on collision
+  // Check collisions between character and all enemies
+  checkEnemyCollisions() {
+    this.level.enemises.forEach((enemy) => {
+      if (this.character.isColliding(enemy)) {
+        if (this.character.isAbove(enemy) && !enemy.dead) {
+          this.hitTargetSuccessfully(enemy); // Successfully hit enemy by jumping on top
+        } else if (!enemy.dead) {
+          this.handleCharacterHit(); // Character takes damage on collision
+        }
       }
-    }
-  });
-}
+    });
+  }
 
-// Check collision between character and the end boss
-checkEndbossCollision() {
-  if (this.endBoss &&
+  // Check collision between character and the end boss
+  checkEndbossCollision() {
+    if (
+      this.endBoss &&
       this.character.isColliding(this.endBoss) &&
       !this.endBoss.dead &&
-      this.characterCanBeHit()) {
-    this.handleCharacterHit();  // Character takes damage from end boss
+      this.characterCanBeHit()
+    ) {
+      this.handleCharacterHit(); // Character takes damage from end boss
+    }
   }
-}
 
-// Handle character getting hit: reduce energy and update status bar
-handleCharacterHit() {
-  this.character.hit();
-  this.statusBar.setPercentage(this.character.energy);
-}
+  // Handle character getting hit: reduce energy and update status bar
+  handleCharacterHit() {
+    this.character.hit();
+    this.statusBar.setPercentage(this.character.energy);
+  }
 
+  checkCoinCollection() {
+    this.intervalIds.push(
+      setInterval(() => {
+        this.level.coins = this.level.coins.filter((coin) => {
+          if (this.character.isColliding(coin)) {
+            // زيادة عداد العملات
+            this.character.coinsCount = (this.character.coinsCount || 0) + 1;
 
+            // تحديث Coins Status Bar
+            this.coinsStatusBar.setPercentage(this.character.coinsCount * 20);
 
+            // إضافة العملة إلى مصفوفة collectedCoins
+            this.collectedCoins.push(coin);
 
-collectCoins() {
-  this.intervalIdscons.push(setInterval(() => {
-    this.level.coins = this.level.coins.filter((coin) => {
-      if (this.character.isColliding(coin)) {
-        this.character.coinCount += 1;
-        this.coinsStatusBar.setPercentage(this.character.coinCount * 20);
-        this.coinCollectSound.currentTime = 0;
-        this.coinCollectSound.play();
+            // تشغيل صوت جمع العملة
+            this.coinCollectSound.currentTime = 0;
+            this.coinCollectSound.play();
 
-        return false;
-      }
-      return true;
-    });
-  }, 200));
-}
-
+            return false; // إزالة العملة من الأرض
+          }
+          return true;
+        });
+      }, 200)
+    );
+  }
 
   checkBottleCollisions() {
-    this.intervalIds.push(setInterval(() => {
-      this.level.bottles = this.level.bottles.filter((bottle) => {
-        if (this.character.isColliding(bottle)) {
-          this.character.bottleCount += 1;
-          this.bottleStatusBar.setPercentage(this.character.bottleCount * 20);
-           this.coinCollectSound.currentTime = 0;
-        this.coinCollectSound.play();
-          
-          return false;
-        }
-        return true;
-      });
-    }, 200));
+    this.intervalIds.push(
+      setInterval(() => {
+        this.level.bottles = this.level.bottles.filter((bottle) => {
+          if (this.character.isColliding(bottle)) {
+            // زيادة عداد الزجاجات
+            this.character.bottleCount += 1;
+
+            // تحديث Bottles Status Bar
+            this.bottleStatusBar.setPercentage(this.character.bottleCount * 20);
+
+            // تشغيل صوت جمع الزجاجة
+            this.bottleCollectSound.currentTime = 0;
+            this.bottleCollectSound.play();
+
+            return false; // إزالة الزجاجة من الأرض
+          }
+          return true;
+        });
+      }, 200)
+    );
   }
 
-checkBottleHitsEnemies() {
-  this.intervalIds.push(setInterval(() => {
-    this.throwableObjects.forEach((bottle) => {
-      this.level.enemises.forEach((enemy) => {
-        if (!enemy.dead && !bottle.hit && bottle.isColliding(enemy)) {
-          bottle.hit = true;
-          bottle.showHitEffect = true;
-          bottle.hitEffectStart = Date.now();
-          bottle.stop();
+  checkBottleHitsEnemies() {
+    this.intervalIds.push(
+      setInterval(() => {
+        this.throwableObjects.forEach((bottle) => {
+          this.level.enemises.forEach((enemy) => {
+            if (!enemy.dead && !bottle.hit && bottle.isColliding(enemy)) {
+              bottle.hit = true;
+              bottle.showHitEffect = true;
+              bottle.hitEffectStart = Date.now();
+              bottle.stop();
 
-          
+              enemy.dead = true;
+              enemy.speed = 0;
+              this.character.smallJump();
 
-          enemy.dead = true;
-          enemy.speed = 0;
-          this.character.smallJump();
+              setTimeout(() => {
+                const index = this.level.enemises.indexOf(enemy);
+                if (index > -1) {
+                  this.level.enemises.splice(index, 1);
+                }
+              }, 200);
 
-          setTimeout(() => {
-            const index = this.level.enemises.indexOf(enemy);
-            if (index > -1) {
-              this.level.enemises.splice(index, 1);
+              setTimeout(() => {
+                const bottleIndex = this.throwableObjects.indexOf(bottle);
+                if (bottleIndex > -1) {
+                  this.throwableObjects.splice(bottleIndex, 1);
+                }
+              }, bottle.hitEffectDuration || 500);
             }
-          }, 200);
-
-          setTimeout(() => {
-            const bottleIndex = this.throwableObjects.indexOf(bottle);
-            if (bottleIndex > -1) {
-              this.throwableObjects.splice(bottleIndex, 1);
-            }
-          }, bottle.hitEffectDuration || 500);
-        }
-      });
-    });
-  }, 100));
-}
-
-
-
-
-checkBottleHitsEndboss() {
-  // Check for bottle hits every 100 milliseconds
-  this.intervalIds.push(setInterval(() => {
-    this.throwableObjects.forEach((bottle) => {
-      // If the bottle should hit the endboss
-      if (this.shouldBottleHitEndboss(bottle)) {
-        this.handleBottleHit(bottle); // Handle what happens after a hit
-      }
-    });
-  }, 100));
-}
-
-
-
-shouldBottleHitEndboss(bottle) {
-  // Returns true only if:
-  // - Endboss exists
-  // - Bottle is colliding with the endboss
-  // - Bottle hasn't already hit something
-  return this.endBoss &&
-         bottle.isColliding(this.endBoss) &&
-         !bottle.hit;
-}
-
-
-handleBottleHit(bottle) {
-  bottle.hit = true;                // Mark bottle as used
-  bottle.showHitEffect = true;     // Start explosion effect
-  bottle.hitEffectStart = Date.now(); // Save the moment of impact
-  bottle.stop();                   // Stop the bottle's motion
-
-  this.reduceEndbossEnergy(20);    // Damage endboss by 20
-  this.scheduleBottleRemoval(bottle); // Remove bottle after effect
-
-  // If endboss energy is 0 or less → defeat it
-  if (this.endBoss.energy <= 0) {
-    this.killEndboss();
+          });
+        });
+      }, 100)
+    );
   }
-}
 
+  checkBottleHitsEndboss() {
+    // Check for bottle hits every 100 milliseconds
+    this.intervalIds.push(
+      setInterval(() => {
+        this.throwableObjects.forEach((bottle) => {
+          // If the bottle should hit the endboss
+          if (this.shouldBottleHitEndboss(bottle)) {
+            this.handleBottleHit(bottle); // Handle what happens after a hit
+          }
+        });
+      }, 100)
+    );
+  }
 
-reduceEndbossEnergy(amount) {
-  this.endBoss.energy -= amount; // Subtract energy
-  this.endBoss.isHurt = true;    // Visual damage state
-  this.endbossStatusBar.setPercentage(this.endBoss.energy); // Update health bar
-}
+  shouldBottleHitEndboss(bottle) {
+    // Returns true only if:
+    // - Endboss exists
+    // - Bottle is colliding with the endboss
+    // - Bottle hasn't already hit something
+    return this.endBoss && bottle.isColliding(this.endBoss) && !bottle.hit;
+  }
 
+  handleBottleHit(bottle) {
+    bottle.hit = true; // Mark bottle as used
+    bottle.showHitEffect = true; // Start explosion effect
+    bottle.hitEffectStart = Date.now(); // Save the moment of impact
+    bottle.stop(); // Stop the bottle's motion
 
-scheduleBottleRemoval(bottle) {
-  // Wait for the explosion effect to finish
-  setTimeout(() => {
-    const index = this.throwableObjects.indexOf(bottle);
-    if (index > -1) {
-      this.throwableObjects.splice(index, 1); // Remove from game
+    this.reduceEndbossEnergy(20); // Damage endboss by 20
+    this.scheduleBottleRemoval(bottle); // Remove bottle after effect
+
+    // If endboss energy is 0 or less → defeat it
+    if (this.endBoss.energy <= 0) {
+      this.killEndboss();
     }
-  }, bottle.hitEffectDuration); // Duration of hit animation
-}
+  }
 
+  reduceEndbossEnergy(amount) {
+    this.endBoss.energy -= amount; // Subtract energy
+    this.endBoss.isHurt = true; // Visual damage state
+    this.endbossStatusBar.setPercentage(this.endBoss.energy); // Update health bar
+  }
 
-killEndboss() {
-  this.endBoss.dead = true;     // Boss is now dead
-  this.endBoss.speed = 0;       // Stop movement
-  this.endBoss.isHurt = false;  // Clear hurt state
-  this.gameIsOver = true;       // End the game
+  scheduleBottleRemoval(bottle) {
+    // Wait for the explosion effect to finish
+    setTimeout(() => {
+      const index = this.throwableObjects.indexOf(bottle);
+      if (index > -1) {
+        this.throwableObjects.splice(index, 1); // Remove from game
+      }
+    }, bottle.hitEffectDuration); // Duration of hit animation
+  }
 
-  // Wait 2 seconds then show win screen
-  setTimeout(() => {
-    gameOver(true);
-  }, 2000);
-}
+  killEndboss() {
+    this.endBoss.dead = true; // Boss is now dead
+    this.endBoss.speed = 0; // Stop movement
+    this.endBoss.isHurt = false; // Clear hurt state
+    this.gameIsOver = true; // End the game
 
-
+    // Wait 2 seconds then show win screen
+    setTimeout(() => {
+      gameOver(true);
+    }, 2000);
+  }
 
   checkCharacterDead() {
-    this.intervalIds.push(setInterval(() => {
-      if (this.character.energy <= 0) {
-        this.character.dead = true;
-        gameOver(false);
-      }
-    }, 200));
+    this.intervalIds.push(
+      setInterval(() => {
+        if (this.character.energy <= 0) {
+          this.character.dead = true;
+          gameOver(false);
+        }
+      }, 200)
+    );
   }
 
   characterCanBeHit() {
@@ -256,28 +279,27 @@ killEndboss() {
     return timePassed > 1000;
   }
 
-hitTargetSuccessfully(enemy) {
-  if (enemy == this.endBoss) {
-    return;
-  } else if (this.character.isAbove(enemy)) {
-    this.character.smallJump();
-    enemy.energy = 0;
-    enemy.speed = 0;
-    enemy.dead = true;
+  hitTargetSuccessfully(enemy) {
+    if (enemy == this.endBoss) {
+      return;
+    } else if (this.character.isAbove(enemy)) {
+      this.character.smallJump();
+      enemy.energy = 0;
+      enemy.speed = 0;
+      enemy.dead = true;
 
-    // 🔊 تشغيل صوت موت الدجاج
-    this.chickenDeathSound.currentTime = 0;
-    this.chickenDeathSound.play();
+      // 🔊 تشغيل صوت موت الدجاج
+      this.chickenDeathSound.currentTime = 0;
+      this.chickenDeathSound.play();
 
-    setTimeout(() => {
-      let index = this.level.enemises.indexOf(enemy);
-      if (index > -1) {
-        this.level.enemises.splice(index, 1);
-      }
-    }, 200);
+      setTimeout(() => {
+        let index = this.level.enemises.indexOf(enemy);
+        if (index > -1) {
+          this.level.enemises.splice(index, 1);
+        }
+      }, 200);
+    }
   }
-}
-
 
   stop() {
     if (this.animationFrameId) {
@@ -285,7 +307,7 @@ hitTargetSuccessfully(enemy) {
       this.animationFrameId = null;
     }
 
-    this.intervalIds.forEach(id => clearInterval(id));
+    this.intervalIds.forEach((id) => clearInterval(id));
     this.intervalIds = [];
 
     this.gameIsOver = true;
@@ -295,28 +317,26 @@ hitTargetSuccessfully(enemy) {
     this.camera_x = this.character.x > 100 ? -this.character.x + 100 : 0;
   }
 
+  updateEndbossBehavior() {
+    if (!this.endBoss || this.endBoss.dead) return;
 
-updateEndbossBehavior() {
-  if (!this.endBoss || this.endBoss.dead) return;
+    const distance = Math.abs(this.character.x - this.endBoss.x);
+    const detectionRange = 400;
 
-  const distance = Math.abs(this.character.x - this.endBoss.x);
-  const detectionRange = 400; 
-
-  if (distance < detectionRange) {
-    if (this.endBoss.speed === 0) {
-      // شغل الصوت لما يبدأ يتحرك
-      this.chickenBossMoveSound.currentTime = 0;
-      this.chickenBossMoveSound.play();
+    if (distance < detectionRange) {
+      if (this.endBoss.speed === 0) {
+        // شغل الصوت لما يبدأ يتحرك
+        this.chickenBossMoveSound.currentTime = 0;
+        this.chickenBossMoveSound.play();
+      }
+      this.endBoss.speed = 2;
+      this.endBoss.isAttacking = true;
+      this.endBoss.moveTowards(this.character);
+    } else {
+      this.endBoss.speed = 0;
+      this.endBoss.isAttacking = false;
     }
-    this.endBoss.speed = 2;      
-    this.endBoss.isAttacking = true;  
-    this.endBoss.moveTowards(this.character); 
-  } else {
-    this.endBoss.speed = 0;
-    this.endBoss.isAttacking = false;
   }
-}
-
 
   draw() {
     if (this.gameIsOver) return;
@@ -325,30 +345,30 @@ updateEndbossBehavior() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
     this.ctx.translate(this.camera_x, 0);
-    
+
     this.updateEndbossBehavior();
 
-    this.level.backgroundobjects.forEach(bg =>
+    this.level.backgroundobjects.forEach((bg) =>
       this.ctx.drawImage(bg.img, bg.x, bg.y, bg.width, bg.height)
     );
 
-    this.level.clouds.forEach(cloud =>
+    this.level.clouds.forEach((cloud) =>
       this.ctx.drawImage(cloud.img, cloud.x, cloud.y, cloud.width, cloud.height)
     );
 
-    this.level.bottles.forEach(bot =>
+    this.level.bottles.forEach((bot) =>
       this.ctx.drawImage(bot.img, bot.x, bot.y, bot.width, bot.height)
     );
 
-    this.level.coins.forEach(con =>
+    this.level.coins.forEach((con) =>
       this.ctx.drawImage(con.img, con.x, con.y, con.width, con.height)
     );
 
-    this.level.enemises.forEach(enemy =>
+    this.level.enemises.forEach((enemy) =>
       this.ctx.drawImage(enemy.img, enemy.x, enemy.y, enemy.width, enemy.height)
     );
 
-    this.level.endboss.forEach(endb =>
+    this.level.endboss.forEach((endb) =>
       this.ctx.drawImage(endb.img, endb.x, endb.y, endb.width, endb.height)
     );
 
@@ -374,11 +394,10 @@ updateEndbossBehavior() {
     }
     this.ctx.restore();
 
- this.throwableObjects.forEach(obj => {
-  this.ctx.drawImage(obj.img, obj.x, obj.y, obj.width, obj.height);
-  obj.drawHitEffect(this.ctx);
-});
-
+    this.throwableObjects.forEach((obj) => {
+      this.ctx.drawImage(obj.img, obj.x, obj.y, obj.width, obj.height);
+      obj.drawHitEffect(this.ctx);
+    });
 
     this.ctx.translate(-this.camera_x, 0);
 

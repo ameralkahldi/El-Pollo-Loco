@@ -9,8 +9,8 @@ class Character extends MovableObject {
   energy = 100;
   bottles = 0;
   dead = false;
-  coinCount = 0;
   bottleCount = 0;
+  coinsCount=0;
   jumpSound = new Audio("audio/audio_jump.wav");
 
   IMAGE_WALKING = [

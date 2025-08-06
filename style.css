@@ -323,8 +323,7 @@ h1 {
 
   #btnThrow {
     position: absolute;
-    bottom: 20px;
-    right: 20px;
+   
   }
 }
 
@@ -427,7 +426,6 @@ h1 {
   }
 
   .control-button {
-    margin: 0 10px;
     background: none;
     border: none;
   }
