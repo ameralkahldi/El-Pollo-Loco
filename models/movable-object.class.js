@@ -1,19 +1,15 @@
 class MovableObject extends DrawableObject {
-  speed = 0.15; // Default speed for movement
-  otherDirection = false; // Default direction for movement
+  speed = 0.15;
+  otherDirection = false;
   speedY = 0;
   acceleration = 2.5;
   hurtSound = new Audio("audio/audio_pepe_hurt1.mp3");
 
- 
+  soundEnabled = true; // التحكم في الصوت لكل كائن
+  volume = 1.0;       // مستوى الصوت (0 إلى 1)
 
   lastHit = 0;
-    offset = {
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0
-    }
+  offset = { top: 0, left: 0, right: 0, bottom: 0 };
 
   applyGravity() {
     setInterval(() => {
@@ -21,28 +17,25 @@ class MovableObject extends DrawableObject {
         this.y -= this.speedY;
         this.speedY -= this.acceleration;
       } else {
-        this.speedY =0;
+        this.speedY = 0;
       }
     }, 1000 / 25);
   }
 
-
-  /**This function sets the character to the ground on the right coordinate of the Y axis, when needed. */
-    returnCharToGroundProperly() {
-        if (this instanceof Character) {
-            this.speedY = 0;
-            this.y = 230;
-        }
+  returnCharToGroundProperly() {
+    if (this instanceof Character) {
+      this.speedY = 0;
+      this.y = 230;
     }
-
-
+  }
 
   isAboveGround() {
-    if (this instanceof ThrowableObject) { //
+    if (this instanceof ThrowableObject) {
       return true;
     } else {
-    return this.y < 230;
-  }}
+      return this.y < 230;
+    }
+  }
 
   loadImage(path) {
     this.img = new Image();
@@ -66,42 +59,51 @@ class MovableObject extends DrawableObject {
     );
   }
 
-
- /**This function is used to check if the character is falling. */
-    isFalling() {
-        return this.speedY < 0;
-    }
-
-
-
-  isHurt(){
-    let timepassed = new Date().getTime() - this.lastHit ;
-    timepassed = timepassed /1000;
-    return timepassed < 1; // tut
-
+  isFalling() {
+    return this.speedY < 0;
   }
 
-hit() {
-    if (this instanceof Endboss) {
-        if (this.energy < 0) {
-            this.energy = 0;
-        } else {
-            this.lastHit = new Date().getTime();
-        }
-    } else {
-        this.energy -= 5;
-        if (this.energy < 0) {
-            this.energy = 0;
-        } else {
-            this.lastHit = new Date().getTime();
-            if (this.hurtSound) {
-                this.hurtSound.currentTime = 0;
-                this.hurtSound.play().catch(e => console.warn("Cannot play hurt sound:", e));
-            }
-        }
-    }
-}
+  isHurt() {
+    let timepassed = (new Date().getTime() - this.lastHit) / 1000;
+    return timepassed < 1;
+  }
 
+  hit() {
+    if (this instanceof Endboss) {
+      if (this.energy < 0) {
+        this.energy = 0;
+      } else {
+        this.lastHit = new Date().getTime();
+      }
+    } else {
+      this.energy -= 5;
+      if (this.energy < 0) {
+        this.energy = 0;
+      } else {
+        this.lastHit = new Date().getTime();
+        this.playHurtSound();
+      }
+    }
+  }
+
+  // ===================== Sound =====================
+  playHurtSound() {
+    if (this.hurtSound && this.soundEnabled) {
+      this.hurtSound.volume = this.volume;
+      this.hurtSound.currentTime = 0;
+      this.hurtSound.play().catch(e => console.warn("Cannot play hurt sound:", e));
+    }
+  }
+
+  setSoundEnabled(enabled) {
+    this.soundEnabled = enabled;
+    if (!enabled) this.hurtSound.pause();
+  }
+
+  setVolume(vol) {
+    this.volume = Math.max(0, Math.min(1, vol)); // تقييد القيمة بين 0 و 1
+    if (this.hurtSound) this.hurtSound.volume = this.volume;
+  }
 
   isDead() {
     return this.energy == 0;
@@ -120,11 +122,8 @@ hit() {
   jump() {
     this.speedY = 20;
   }
+
   smallJump() {
-        this.speedY = 10;
-    }
-
-
-  
-
+    this.speedY = 10;
+  }
 }

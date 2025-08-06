@@ -1,6 +1,6 @@
 class World {
   character = new Character();
-  level = createLevel1(); // ← يتم إنشاء نسخة جديدة من المستوى في كل مرة
+  level = createLevel1();
   statusBar = new StatusBar();
   coinsStatusBar = new CoinsStatusBar();
   bottleStatusBar = new BottlesStatusBar();
@@ -14,6 +14,7 @@ class World {
   animationFrameId;
   intervalIds = [];
   collectedCoins = [];
+  muted = false;
   chickenDeathSound = new Audio("audio/audio_chicken_death.mp3");
   chickenBossMoveSound = new Audio("audio/audio_chickenBoss.wav");
   coinCollectSound = new Audio("audio/audio_coin_collect.wav");
@@ -37,65 +38,67 @@ class World {
     this.draw();
   }
 
+   playSound(audio) {
+    if (!audio || this.muted) return; // إذا مكتوم الصوت، لا تعمل
+    let sound = audio.cloneNode(); // نسخة جديدة لتجنب التعارض
+    sound.play();
+  }
+
+  toggleMute() {
+    this.muted = !this.muted;
+    console.log(`Sound is now ${this.muted ? "OFF" : "ON"}`);
+  }
+
   setWorld() {
     this.character.world = this;
     this.character.animate();
     this.endBoss = this.level.endboss[0];
   }
 
- checkThrowObject() {
-  this.intervalIds.push(
-    setInterval(() => {
-      if (this.keyboard.D) {
-        if (this.character.bottleCount > 0) {
-          // إنشاء الزجاجة
-          let bottle = new ThrowableObject(this.character.x, this.character.y + 100);
-          bottle.hit = false;
-          this.throwableObjects.push(bottle);
+  checkThrowObject() {
+    this.intervalIds.push(
+      setInterval(() => {
+        if (this.keyboard.D) {
+          if (this.character.bottleCount > 0) {
+            let bottle = new ThrowableObject(this.character.x, this.character.y + 100);
+            bottle.hit = false;
+            this.throwableObjects.push(bottle);
 
-          // نقص عدد الزجاجات
-          this.character.bottleCount -= 1;
+            this.character.bottleCount -= 1;
 
-          // تحديث شريط الزجاجات
-          let percentage = this.character.bottleCount * 20;
-          this.bottleStatusBar.setPercentage(percentage);
+            let percentage = this.character.bottleCount * 20;
+            this.bottleStatusBar.setPercentage(percentage);
 
-          // تشغيل صوت الرمي
-          this.bottleCollectSound.currentTime = 0;
-          this.bottleCollectSound.play();
+            this.playSound(this.bottleCollectSound);
 
-          console.log('Bottles after throw:', this.character.bottleCount);
+            console.log('Bottles after throw:', this.character.bottleCount);
+          }
         }
-      }
-    }, 200)
-  );
-}
+      }, 200)
+    );
+  }
 
-
-  // Main collision check loop running every 100ms
   checkCollisions() {
     this.intervalIds.push(
       setInterval(() => {
-        this.checkEnemyCollisions(); // Check collisions with enemies
-        this.checkEndbossCollision(); // Check collision with the end boss
+        this.checkEnemyCollisions();
+        this.checkEndbossCollision();
       }, 100)
     );
   }
 
-  // Check collisions between character and all enemies
   checkEnemyCollisions() {
     this.level.enemises.forEach((enemy) => {
       if (this.character.isColliding(enemy)) {
         if (this.character.isAbove(enemy) && !enemy.dead) {
-          this.hitTargetSuccessfully(enemy); // Successfully hit enemy by jumping on top
+          this.hitTargetSuccessfully(enemy);
         } else if (!enemy.dead) {
-          this.handleCharacterHit(); // Character takes damage on collision
+          this.handleCharacterHit();
         }
       }
     });
   }
 
-  // Check collision between character and the end boss
   checkEndbossCollision() {
     if (
       this.endBoss &&
@@ -103,11 +106,10 @@ class World {
       !this.endBoss.dead &&
       this.characterCanBeHit()
     ) {
-      this.handleCharacterHit(); // Character takes damage from end boss
+      this.handleCharacterHit();
     }
   }
 
-  // Handle character getting hit: reduce energy and update status bar
   handleCharacterHit() {
     this.character.hit();
     this.statusBar.setPercentage(this.character.energy);
@@ -118,20 +120,11 @@ class World {
       setInterval(() => {
         this.level.coins = this.level.coins.filter((coin) => {
           if (this.character.isColliding(coin)) {
-            // زيادة عداد العملات
             this.character.coinsCount = (this.character.coinsCount || 0) + 1;
-
-            // تحديث Coins Status Bar
             this.coinsStatusBar.setPercentage(this.character.coinsCount * 20);
-
-            // إضافة العملة إلى مصفوفة collectedCoins
             this.collectedCoins.push(coin);
-
-            // تشغيل صوت جمع العملة
-            this.coinCollectSound.currentTime = 0;
-            this.coinCollectSound.play();
-
-            return false; // إزالة العملة من الأرض
+            this.playSound(this.coinCollectSound);
+            return false;
           }
           return true;
         });
@@ -140,31 +133,23 @@ class World {
   }
 
   checkBottleCollisions() {
-  this.intervalIds.push(
-    setInterval(() => {
-      this.level.bottles = this.level.bottles.filter((bottle) => {
-        if (this.character.isColliding(bottle)) {
-          // زيادة عدد الزجاجات
-          this.character.bottleCount += 1;
-
-          // تحديث شريط الزجاجات
-          let percentage = this.character.bottleCount * 20;
-          if (percentage > 100) percentage = 100; // الحد الأقصى 100%
-          this.bottleStatusBar.setPercentage(percentage);
-
-          // تشغيل صوت جمع الزجاجة
-          this.bottleCollectSound.currentTime = 0;
-          this.bottleCollectSound.play();
-
-          console.log('Bottles after collect:', this.character.bottleCount);
-          return false; // إزالة الزجاجة من الأرض
-        }
-        return true;
-      });
-    }, 200)
-  );
-}
-
+    this.intervalIds.push(
+      setInterval(() => {
+        this.level.bottles = this.level.bottles.filter((bottle) => {
+          if (this.character.isColliding(bottle)) {
+            this.character.bottleCount += 1;
+            let percentage = this.character.bottleCount * 20;
+            if (percentage > 100) percentage = 100;
+            this.bottleStatusBar.setPercentage(percentage);
+            this.playSound(this.bottleCollectSound);
+            console.log('Bottles after collect:', this.character.bottleCount);
+            return false;
+          }
+          return true;
+        });
+      }, 200)
+    );
+  }
 
   checkBottleHitsEnemies() {
     this.intervalIds.push(
@@ -183,16 +168,12 @@ class World {
 
               setTimeout(() => {
                 const index = this.level.enemises.indexOf(enemy);
-                if (index > -1) {
-                  this.level.enemises.splice(index, 1);
-                }
+                if (index > -1) this.level.enemises.splice(index, 1);
               }, 200);
 
               setTimeout(() => {
                 const bottleIndex = this.throwableObjects.indexOf(bottle);
-                if (bottleIndex > -1) {
-                  this.throwableObjects.splice(bottleIndex, 1);
-                }
+                if (bottleIndex > -1) this.throwableObjects.splice(bottleIndex, 1);
               }, bottle.hitEffectDuration || 500);
             }
           });
@@ -202,68 +183,51 @@ class World {
   }
 
   checkBottleHitsEndboss() {
-    // Check for bottle hits every 100 milliseconds
     this.intervalIds.push(
       setInterval(() => {
         this.throwableObjects.forEach((bottle) => {
-          // If the bottle should hit the endboss
-          if (this.shouldBottleHitEndboss(bottle)) {
-            this.handleBottleHit(bottle); // Handle what happens after a hit
-          }
+          if (this.shouldBottleHitEndboss(bottle)) this.handleBottleHit(bottle);
         });
       }, 100)
     );
   }
 
   shouldBottleHitEndboss(bottle) {
-    // Returns true only if:
-    // - Endboss exists
-    // - Bottle is colliding with the endboss
-    // - Bottle hasn't already hit something
     return this.endBoss && bottle.isColliding(this.endBoss) && !bottle.hit;
   }
 
   handleBottleHit(bottle) {
-    bottle.hit = true; // Mark bottle as used
-    bottle.showHitEffect = true; // Start explosion effect
-    bottle.hitEffectStart = Date.now(); // Save the moment of impact
-    bottle.stop(); // Stop the bottle's motion
+    bottle.hit = true;
+    bottle.showHitEffect = true;
+    bottle.hitEffectStart = Date.now();
+    bottle.stop();
 
-    this.reduceEndbossEnergy(20); // Damage endboss by 20
-    this.scheduleBottleRemoval(bottle); // Remove bottle after effect
+    this.reduceEndbossEnergy(20);
+    this.scheduleBottleRemoval(bottle);
 
-    // If endboss energy is 0 or less → defeat it
-    if (this.endBoss.energy <= 0) {
-      this.killEndboss();
-    }
+    if (this.endBoss.energy <= 0) this.killEndboss();
   }
 
   reduceEndbossEnergy(amount) {
-    this.endBoss.energy -= amount; // Subtract energy
-    this.endBoss.isHurt = true; // Visual damage state
-    this.endbossStatusBar.setPercentage(this.endBoss.energy); // Update health bar
+    this.endBoss.energy -= amount;
+    this.endBoss.isHurt = true;
+    this.endbossStatusBar.setPercentage(this.endBoss.energy);
   }
 
   scheduleBottleRemoval(bottle) {
-    // Wait for the explosion effect to finish
     setTimeout(() => {
       const index = this.throwableObjects.indexOf(bottle);
-      if (index > -1) {
-        this.throwableObjects.splice(index, 1); // Remove from game
-      }
-    }, bottle.hitEffectDuration); // Duration of hit animation
+      if (index > -1) this.throwableObjects.splice(index, 1);
+    }, bottle.hitEffectDuration);
   }
 
   killEndboss() {
-    this.endBoss.dead = true; // Boss is now dead
-    this.endBoss.speed = 0; // Stop movement
-    this.endBoss.isHurt = false; // Clear hurt state
-    this.gameIsOver = true; // End the game
+    this.endBoss.dead = true;
+    this.endBoss.speed = 0;
+    this.endBoss.isHurt = false;
+    this.gameIsOver = true;
 
-    // Wait 2 seconds then show win screen
-    setTimeout(() => {
-      gameOver(true);
-    }, 2000);
+    setTimeout(() => gameOver(true), 2000);
   }
 
   checkCharacterDead() {
@@ -284,36 +248,25 @@ class World {
   }
 
   hitTargetSuccessfully(enemy) {
-    if (enemy == this.endBoss) {
-      return;
-    } else if (this.character.isAbove(enemy)) {
+    if (enemy == this.endBoss) return;
+    if (this.character.isAbove(enemy)) {
       this.character.smallJump();
       enemy.energy = 0;
       enemy.speed = 0;
       enemy.dead = true;
-
-      // 🔊 تشغيل صوت موت الدجاج
-      this.chickenDeathSound.currentTime = 0;
-      this.chickenDeathSound.play();
+      this.playSound(this.chickenDeathSound);
 
       setTimeout(() => {
         let index = this.level.enemises.indexOf(enemy);
-        if (index > -1) {
-          this.level.enemises.splice(index, 1);
-        }
+        if (index > -1) this.level.enemises.splice(index, 1);
       }, 200);
     }
   }
 
   stop() {
-    if (this.animationFrameId) {
-      cancelAnimationFrame(this.animationFrameId);
-      this.animationFrameId = null;
-    }
-
+    if (this.animationFrameId) cancelAnimationFrame(this.animationFrameId);
     this.intervalIds.forEach((id) => clearInterval(id));
     this.intervalIds = [];
-
     this.gameIsOver = true;
   }
 
@@ -328,11 +281,7 @@ class World {
     const detectionRange = 400;
 
     if (distance < detectionRange) {
-      if (this.endBoss.speed === 0) {
-        // شغل الصوت لما يبدأ يتحرك
-        this.chickenBossMoveSound.currentTime = 0;
-        this.chickenBossMoveSound.play();
-      }
+      if (this.endBoss.speed === 0) this.playSound(this.chickenBossMoveSound);
       this.endBoss.speed = 2;
       this.endBoss.isAttacking = true;
       this.endBoss.moveTowards(this.character);
@@ -405,7 +354,6 @@ class World {
 
     this.ctx.translate(-this.camera_x, 0);
 
-    // Status Bars
     if (this.coinsStatusBar) {
       this.ctx.drawImage(
         this.coinsStatusBar.img,

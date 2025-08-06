@@ -1,16 +1,16 @@
 function createLevel1() {
-    // إنشاء الغيوم جنب بعض
-    let clouds = [];
-    let cloudSpacing = 500; // المسافة بين كل غيمة والأخرى
-    for (let i = 0; i < 4; i++) {
-        let cloud = new Cloud();
-        cloud.x = i * cloudSpacing; // الغيوم جنب بعض
-        clouds.push(cloud);
-    }
+ let clouds = [];
+let cloudSpacing = 400; // المسافة بين كل غيمة والأخرى
+for (let i = 0; i < 3; i++) {
+    let cloud = new Cloud();
+    cloud.x = i * cloudSpacing; // الغيوم جنب بعض
+    cloud.y = 20 + Math.random() * 80;
+    clouds.push(cloud);
+} 
+
 
     return new Level(
         [
-            // ترتيب الدجاج حسب الإحداثي الأفقي
             new Chicken(100),
             new ChickenSmall(200),
             new Chicken(500),

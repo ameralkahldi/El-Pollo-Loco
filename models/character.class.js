@@ -12,6 +12,8 @@ class Character extends MovableObject {
   bottleCount = 0;
   coinsCount=0;
   jumpSound = new Audio("audio/audio_jump.wav");
+  soundEnabled = true;
+  volume = 1.0;
 
   IMAGE_WALKING = [
     "img/2_character_pepe/2_walk/W-21.png",

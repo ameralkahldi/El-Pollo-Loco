@@ -8,22 +8,17 @@ backgroundMusic.loop = true;
 backgroundMusic.volume = 0.3;
 let gameIsPaused = false;
 
-
-
 function init() {
-
   canvas = document.getElementById("canvas");
   world = new World(canvas, keyboard);
   console.log("My Character is: ", world.character);
 }
-
 
 function startGame() {
   const isPortrait = window.innerHeight > window.innerWidth;
   const isSmallScreen = window.innerWidth <= 400;
 
   if (isSmallScreen && isPortrait) {
-    // عرض تنبيه التدوير وإيقاف بدء اللعبة
     document.getElementById('orientationWarning').classList.remove('hidden');
     document.getElementById('startMenu').style.display = 'block';
     document.getElementById('gameContainer').style.display = 'none';
@@ -31,24 +26,19 @@ function startGame() {
     return;
   }
 
-  // إخفاء التنبيه وتشغيل اللعبة
   document.getElementById('orientationWarning').classList.add('hidden');
   document.getElementById('startMenu').style.display = 'none';
   document.getElementById('gameContainer').style.display = 'block';
   document.getElementById('canvas').classList.remove('hidden');
 
-  if (musicEnabled) {
-    backgroundMusic.play().catch(e => console.warn('Music blockiert:', e));
+  if (musicEnabled && soundEnabled) {
+    backgroundMusic.play().catch(e => console.warn('Music blocked:', e));
   }
 
-  if (window.innerWidth <= 768) {
-    showMobileControls();
-  }
+  if (window.innerWidth <= 768) showMobileControls();
 
   init();
 }
-
-
 
 function gameOver(won) {
   stopGame();
@@ -63,20 +53,15 @@ function gameOver(won) {
 
   if (!won) {
     const deathSound = new Audio('audio/audio_chicken_death.mp3');
-    deathSound.play().catch((e) => {
-      console.error('Failed to play death sound:', e);
-    });
+    deathSound.play().catch(e => console.error('Failed to play death sound:', e));
 
     const gameOverSound = new Audio('audio/audio_game_over.wav');
-    gameOverSound.play().catch((e) => {
-      console.warn('Game over sound blocked:', e);
-    });
+    gameOverSound.play().catch(e => console.warn('Game over sound blocked:', e));
   }
 
   screen.classList.remove('hidden');
   canvas.classList.add('hidden');
 }
-
 
 function stopGame() {
   if (world) {
@@ -94,25 +79,18 @@ function stopGame() {
 }
 
 window.addEventListener("keydown", (e) => {
-  if (e.keyCode == 39) keyboard.RIGHT = true;
-  if (e.keyCode == 37) keyboard.LEFT = true;
-  if (e.keyCode == 38) keyboard.UP = true;
-  if (e.keyCode == 40) keyboard.DOWN = true;
-  if (e.keyCode == 32) keyboard.SPACE = true;
-  if (e.keyCode == 68) keyboard.D = true;
+  const keyMap = { 39: 'RIGHT', 37: 'LEFT', 38: 'UP', 40: 'DOWN', 32: 'SPACE', 68: 'D' };
+  if (keyMap[e.keyCode]) keyboard[keyMap[e.keyCode]] = true;
 });
 
 window.addEventListener("keyup", (e) => {
-  if (e.keyCode == 39) keyboard.RIGHT = false;
-  if (e.keyCode == 37) keyboard.LEFT = false;
-  if (e.keyCode == 38) keyboard.UP = false;
-  if (e.keyCode == 40) keyboard.DOWN = false;
-  if (e.keyCode == 32) keyboard.SPACE = false;
-  if (e.keyCode == 68) keyboard.D = false;
+  const keyMap = { 39: 'RIGHT', 37: 'LEFT', 38: 'UP', 40: 'DOWN', 32: 'SPACE', 68: 'D' };
+  if (keyMap[e.keyCode]) keyboard[keyMap[e.keyCode]] = false;
 });
 
-
-
+// ====================================
+// Setup UI and Controls
+// ====================================
 window.addEventListener('DOMContentLoaded', () => {
   setupControlButtons();
   setupSoundMenu();
@@ -120,11 +98,10 @@ window.addEventListener('DOMContentLoaded', () => {
   setupFullscreenToggle();
   setupGameNavigationButtons();
   handleOrientationWarning();
-
+  resizeCanvasToFullscreen();
 });
 
-
-//*Connect the control buttons*/
+// ---------------- Control Buttons ----------------
 function setupControlButtons() {
   function bindControlButton(buttonId, key) {
     const button = document.getElementById(buttonId);
@@ -132,15 +109,8 @@ function setupControlButtons() {
 
     button.addEventListener('mousedown', () => keyboard[key] = true);
     button.addEventListener('mouseup', () => keyboard[key] = false);
-
-    button.addEventListener('touchstart', (e) => {
-      e.preventDefault();
-      keyboard[key] = true;
-    });
-    button.addEventListener('touchend', (e) => {
-      e.preventDefault();
-      keyboard[key] = false;
-    });
+    button.addEventListener('touchstart', (e) => { e.preventDefault(); keyboard[key] = true; });
+    button.addEventListener('touchend', (e) => { e.preventDefault(); keyboard[key] = false; });
   }
 
   bindControlButton('btnLeft', 'LEFT');
@@ -149,7 +119,7 @@ function setupControlButtons() {
   bindControlButton('btnThrow', 'D');
 }
 
-//Sound and Music List Count
+// ---------------- Sound & Music Menu ----------------
 function setupSoundMenu() {
   const soundIcon = document.getElementById('soundIcon');
   const soundMenu = document.querySelector('.sound-menu');
@@ -157,45 +127,36 @@ function setupSoundMenu() {
   const soundSwitch = document.getElementById('sound-switch');
   const musicSwitch = document.getElementById('music-switch');
 
-  if (soundIcon && soundMenu) {
-    soundIcon.addEventListener('click', () => {
-      soundMenu.style.display = 'flex';
-    });
-  }
+  soundIcon?.addEventListener('click', () => soundMenu.style.display = 'flex');
+  closeSoundMenu?.addEventListener('click', () => soundMenu.style.display = 'none');
 
-  if (closeSoundMenu && soundMenu) {
-    closeSoundMenu.addEventListener('click', () => {
-      soundMenu.style.display = 'none';
-    });
-  }
+  soundSwitch?.addEventListener('click', () => {
+    soundEnabled = !soundEnabled;
+    soundSwitch.src = soundEnabled
+      ? './img/11-menu/switch_on.png'
+      : './img/11-menu/switch_off.png';
 
-  if (soundSwitch) {
-    soundSwitch.addEventListener('click', () => {
-      soundEnabled = !soundEnabled;
-      soundSwitch.src = soundEnabled
-        ? './img/11-menu/switch_on.png'
-        : './img/11-menu/switch_off.png';
-    });
-  }
+    if (!soundEnabled) {
+      backgroundMusic.pause();
+      backgroundMusic.currentTime = 0;
+      document.querySelectorAll('audio').forEach(audio => { audio.pause(); audio.currentTime = 0; });
+    } else if (musicEnabled) {
+      backgroundMusic.play().catch(e => console.warn('Music not started:', e));
+    }
+  });
 
-  if (musicSwitch) {
-    musicSwitch.addEventListener('click', () => {
-      musicEnabled = !musicEnabled;
-      musicSwitch.src = musicEnabled
-        ? './img/11-menu/switch_on.png'
-        : './img/11-menu/switch_off.png';
+  musicSwitch?.addEventListener('click', () => {
+    musicEnabled = !musicEnabled;
+    musicSwitch.src = musicEnabled
+      ? './img/11-menu/switch_on.png'
+      : './img/11-menu/switch_off.png';
 
-      if (musicEnabled) {
-        backgroundMusic.play().catch(e => console.warn('Music not started:', e));
-      } else {
-        backgroundMusic.pause();
-        backgroundMusic.currentTime = 0;
-      }
-    });
-  }
+    if (musicEnabled && soundEnabled) backgroundMusic.play().catch(e => console.warn('Music not started:', e));
+    else { backgroundMusic.pause(); backgroundMusic.currentTime = 0; }
+  });
 }
 
-/** Pause button */
+// ---------------- Pause Button ----------------
 function setupPauseButton() {
   const pauseBtn = document.getElementById('pauseButton');
   if (!pauseBtn) return;
@@ -205,16 +166,15 @@ function setupPauseButton() {
 
     if (gameIsPaused) {
       backgroundMusic.pause();
-      pauseBtn.innerText = '▶️ Restarting';
+      pauseBtn.innerText = '▶️ Resume';
     } else {
-      if (musicEnabled) backgroundMusic.play();
-      pauseBtn.innerText = '⏸️ Stop ';
+      if (musicEnabled && soundEnabled) backgroundMusic.play();
+      pauseBtn.innerText = '⏸️ Pause';
     }
   });
 }
 
-/** Switch to full screen mode */
-
+// ---------------- Fullscreen Toggle ----------------
 function setupFullscreenToggle() {
   const fullscreenSwitch = document.getElementById('fullscreen-switch');
   if (!fullscreenSwitch) return;
@@ -230,38 +190,32 @@ function setupFullscreenToggle() {
   });
 }
 
-//*Preparing the back to menu and restart buttons*/
-
+// ---------------- Game Navigation Buttons ----------------
 function setupGameNavigationButtons() {
   const backBtn = document.getElementById('backToMenuButton');
   const restartBtn = document.getElementById('restartButton');
 
-  if (backBtn) {
-    backBtn.addEventListener('click', () => {
-      stopGame();
-      document.getElementById('startMenu').style.display = 'block';
-      document.getElementById('gameOverScreen').classList.add('hidden');
-      document.getElementById('canvas').classList.add('hidden');
-    });
-  }
+  backBtn?.addEventListener('click', () => {
+    stopGame();
+    document.getElementById('startMenu').style.display = 'block';
+    document.getElementById('gameOverScreen').classList.add('hidden');
+    document.getElementById('canvas').classList.add('hidden');
+  });
 
-  if (restartBtn) {
-    restartBtn.addEventListener('click', () => {
-      stopGame();
-      document.getElementById('gameOverScreen').classList.add('hidden');
-      document.getElementById('canvas').classList.remove('hidden');
-      document.querySelector('.sound-menu').style.display = 'none';
-      init();
+  restartBtn?.addEventListener('click', () => {
+    stopGame();
+    document.getElementById('gameOverScreen').classList.add('hidden');
+    document.getElementById('canvas').classList.remove('hidden');
+    document.querySelector('.sound-menu').style.display = 'none';
+    init();
 
-      if (musicEnabled) {
-        backgroundMusic.play().catch(e => console.warn('Musik nicht gestartet:', e));
-      }
-    });
-  }
+    if (musicEnabled && soundEnabled) backgroundMusic.play().catch(e => console.warn('Music not started:', e));
+  });
+}
+
+// ---------------- Canvas Resizing ----------------
 function resizeCanvasToFullscreen() {
   const canvas = document.getElementById('canvas');
-  const container = document.getElementById('gameContainer') || document.body;
-
   const screenWidth = window.innerWidth;
   const screenHeight = window.innerHeight;
   const aspectRatio = 10 / 4;
@@ -269,7 +223,6 @@ function resizeCanvasToFullscreen() {
   let newWidth = screenWidth;
   let newHeight = screenWidth / aspectRatio;
 
-  // إذا تجاوز الارتفاع حدود الشاشة، يتم التعديل
   if (newHeight > screenHeight) {
     newHeight = screenHeight;
     newWidth = newHeight * aspectRatio;
@@ -279,69 +232,21 @@ function resizeCanvasToFullscreen() {
   canvas.style.height = `${newHeight}px`;
 }
 
-// استدعاء عند التحميل وتغيير حجم الشاشة
-window.addEventListener('load', resizeCanvasToFullscreen);
 window.addEventListener('resize', resizeCanvasToFullscreen);
-window.addEventListener('orientationchange', () => {
-  setTimeout(resizeCanvasToFullscreen, 300); // تأخير لتحديث الحجم بعد تغيير الاتجاه
-});
+window.addEventListener('orientationchange', () => setTimeout(resizeCanvasToFullscreen, 300));
 
-// استدعاء عند التحميل وتغيير حجم الشاشة
-window.addEventListener('load', resizeCanvasToFullscreen);
-window.addEventListener('resize', resizeCanvasToFullscreen);
-window.addEventListener('load', handleOrientationWarning);
-window.addEventListener('resize', handleOrientationWarning);
-window.addEventListener('orientationchange', handleOrientationWarning);
+// ---------------- Mobile Controls ----------------
+function showMobileControls() { document.getElementById('bottomPanel').classList.remove('hidden'); }
+function hideMobileControls() { document.getElementById('bottomPanel').classList.add('hidden'); }
+if (window.innerWidth <= 768) showMobileControls();
 
-
-}
-
-
-
-function showMobileControls() {
-  const panel = document.getElementById('bottomPanel');
-  panel.classList.remove('hidden');
-}
-
-function hideMobileControls() {
-  const panel = document.getElementById('bottomPanel');
-  panel.classList.add('hidden');
-}
-
-// Example: Show only if the screen is small
-if (window.innerWidth <= 768) {
-  showMobileControls();
-}
-
-
+// ---------------- Orientation Warning ----------------
 function handleOrientationWarning() {
   const warning = document.getElementById('orientationWarning');
   const isPortrait = window.innerHeight > window.innerWidth;
-
-  if (window.innerWidth <= 400 && isPortrait) {
-    warning.classList.remove('hidden');
-  } else {
-    warning.classList.add('hidden');
-  }
+  if (window.innerWidth <= 400 && isPortrait) warning.classList.remove('hidden');
+  else warning.classList.add('hidden');
 }
 
-window.addEventListener('orientationchange', () => {
-  setTimeout(() => {
-    const isPortrait = window.innerHeight > window.innerWidth;
-    const isSmallScreen = window.innerWidth <= 400;
-
-    if (!isPortrait && isSmallScreen) {
-      document.getElementById('orientationWarning').classList.add('hidden');
-      startGame(); // يبدأ اللعبة تلقائيًا عند التدوير للوضع الأفقي
-    }
-  }, 300);
-});
-
-
-
-
-
-
-
-
-
+window.addEventListener('resize', handleOrientationWarning);
+window.addEventListener('orientationchange', () => setTimeout(handleOrientationWarning, 300));
