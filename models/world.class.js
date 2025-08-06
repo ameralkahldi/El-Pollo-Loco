@@ -13,7 +13,6 @@ class World {
   gameIsOver = false;
   animationFrameId;
   intervalIds = [];
-  intervalIdscons = [];
   collectedCoins = [];
   chickenDeathSound = new Audio("audio/audio_chicken_death.mp3");
   chickenBossMoveSound = new Audio("audio/audio_chickenBoss.wav");
@@ -44,33 +43,34 @@ class World {
     this.endBoss = this.level.endboss[0];
   }
 
-  checkThrowObject() {
-    this.intervalIds.push(
-      setInterval(() => {
-        if (this.keyboard.D) {
-          // تحقق من أن الشخصية لديها زجاجات قبل الرمي
-          if (this.character.bottleCount > 0) {
-            let bottle = new ThrowableObject(
-              this.character.x,
-              this.character.y + 100
-            );
-            bottle.hit = false;
-            this.throwableObjects.push(bottle);
+ checkThrowObject() {
+  this.intervalIds.push(
+    setInterval(() => {
+      if (this.keyboard.D) {
+        if (this.character.bottleCount > 0) {
+          // إنشاء الزجاجة
+          let bottle = new ThrowableObject(this.character.x, this.character.y + 100);
+          bottle.hit = false;
+          this.throwableObjects.push(bottle);
 
-            // نقص الزجاجة من الشخصية
-            this.character.bottleCount -= 1;
+          // نقص عدد الزجاجات
+          this.character.bottleCount -= 1;
 
-            // تحديث Bottles Status Bar بعد الرمي
-            this.bottleStatusBar.setPercentage(this.character.bottleCount * 20);
+          // تحديث شريط الزجاجات
+          let percentage = this.character.bottleCount * 20;
+          this.bottleStatusBar.setPercentage(percentage);
 
-            // تشغيل صوت الرمي
-            this.bottleCollectSound.currentTime = 0;
-            this.bottleCollectSound.play();
-          }
+          // تشغيل صوت الرمي
+          this.bottleCollectSound.currentTime = 0;
+          this.bottleCollectSound.play();
+
+          console.log('Bottles after throw:', this.character.bottleCount);
         }
-      }, 200)
-    );
-  }
+      }
+    }, 200)
+  );
+}
+
 
   // Main collision check loop running every 100ms
   checkCollisions() {
@@ -140,27 +140,31 @@ class World {
   }
 
   checkBottleCollisions() {
-    this.intervalIds.push(
-      setInterval(() => {
-        this.level.bottles = this.level.bottles.filter((bottle) => {
-          if (this.character.isColliding(bottle)) {
-            // زيادة عداد الزجاجات
-            this.character.bottleCount += 1;
+  this.intervalIds.push(
+    setInterval(() => {
+      this.level.bottles = this.level.bottles.filter((bottle) => {
+        if (this.character.isColliding(bottle)) {
+          // زيادة عدد الزجاجات
+          this.character.bottleCount += 1;
 
-            // تحديث Bottles Status Bar
-            this.bottleStatusBar.setPercentage(this.character.bottleCount * 20);
+          // تحديث شريط الزجاجات
+          let percentage = this.character.bottleCount * 20;
+          if (percentage > 100) percentage = 100; // الحد الأقصى 100%
+          this.bottleStatusBar.setPercentage(percentage);
 
-            // تشغيل صوت جمع الزجاجة
-            this.bottleCollectSound.currentTime = 0;
-            this.bottleCollectSound.play();
+          // تشغيل صوت جمع الزجاجة
+          this.bottleCollectSound.currentTime = 0;
+          this.bottleCollectSound.play();
 
-            return false; // إزالة الزجاجة من الأرض
-          }
-          return true;
-        });
-      }, 200)
-    );
-  }
+          console.log('Bottles after collect:', this.character.bottleCount);
+          return false; // إزالة الزجاجة من الأرض
+        }
+        return true;
+      });
+    }, 200)
+  );
+}
+
 
   checkBottleHitsEnemies() {
     this.intervalIds.push(

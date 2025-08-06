@@ -376,7 +376,9 @@ h1 {
   color: white;
   margin: 0;
 }
-
+#deviceIcon {
+    animation: rotate 2s linear infinite alternate;
+}
 #backToMenuButton {
   padding: 12px 24px;
   font-size: 20px;

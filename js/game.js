@@ -258,14 +258,14 @@ function setupGameNavigationButtons() {
       }
     });
   }
-  function resizeCanvasToFullscreen() {
+function resizeCanvasToFullscreen() {
   const canvas = document.getElementById('canvas');
   const container = document.getElementById('gameContainer') || document.body;
 
   const screenWidth = window.innerWidth;
   const screenHeight = window.innerHeight;
+  const aspectRatio = 10 / 4;
 
-  const aspectRatio = 16 / 9;
   let newWidth = screenWidth;
   let newHeight = screenWidth / aspectRatio;
 
@@ -278,6 +278,13 @@ function setupGameNavigationButtons() {
   canvas.style.width = `${newWidth}px`;
   canvas.style.height = `${newHeight}px`;
 }
+
+// استدعاء عند التحميل وتغيير حجم الشاشة
+window.addEventListener('load', resizeCanvasToFullscreen);
+window.addEventListener('resize', resizeCanvasToFullscreen);
+window.addEventListener('orientationchange', () => {
+  setTimeout(resizeCanvasToFullscreen, 300); // تأخير لتحديث الحجم بعد تغيير الاتجاه
+});
 
 // استدعاء عند التحميل وتغيير حجم الشاشة
 window.addEventListener('load', resizeCanvasToFullscreen);
