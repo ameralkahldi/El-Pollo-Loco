@@ -70,7 +70,6 @@ class World {
             this.bottleStatusBar.setPercentage(percentage);
 
             this.playSound(this.bottleCollectSound);
-
             console.log('Bottles after throw:', this.character.bottleCount);
           }
         }
@@ -123,6 +122,7 @@ class World {
             this.character.coinsCount = (this.character.coinsCount || 0) + 1;
             this.coinsStatusBar.setPercentage(this.character.coinsCount * 20);
             this.collectedCoins.push(coin);
+            console.log("Coins ist da" + coin);
             this.playSound(this.coinCollectSound);
             return false;
           }
@@ -140,6 +140,7 @@ class World {
             this.character.bottleCount += 1;
             let percentage = this.character.bottleCount * 20;
             if (percentage > 100) percentage = 100;
+            console.log(bottle)
             this.bottleStatusBar.setPercentage(percentage);
             this.playSound(this.bottleCollectSound);
             console.log('Bottles after collect:', this.character.bottleCount);
