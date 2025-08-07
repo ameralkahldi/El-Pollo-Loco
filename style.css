@@ -86,21 +86,38 @@ h1 {
   border-radius: 5px;
 }
 
-/* ✅ زر البدء */
 #startButton {
   position: absolute;
   top: 20%;
   left: 50%;
   transform: translate(-50%, -50%);
-  padding: 3vh 6vw;
-  font-size: 1.2rem;
-  background-color: #ffd800;
+  padding: 14px 36px;
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #1a1a1a;
+  background: linear-gradient(145deg, #ffd800, #ffb700);
   border: none;
-  border-radius: 10px;
+  border-radius: 12px;
   cursor: pointer;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
   z-index: 10;
+  letter-spacing: 1px;
+  font-family: 'Zabars', sans-serif;
 }
+
+#startButton:hover {
+  background: linear-gradient(145deg, #ffe85c, #ffc107);
+  color: #000;
+  transform: translate(-50%, -50%) scale(1.05);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+#startButton:active {
+  transform: translate(-50%, -50%) scale(0.98);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
 
 /* ✅ أيقونة الإعدادات */
 #soundIcon {
@@ -120,7 +137,6 @@ h1 {
   content: url('./img/11-menu/settings_icon_hover.png');
 }
 
-/* ✅ قائمة الإعدادات */
 .sound-menu {
   position: absolute;
   top: 80px;
@@ -213,9 +229,63 @@ h1 {
 }
 
 
+.info-button {
+    position: absolute;
+    top: 75px;
+    right: 17px;
+    font-size: 24px;
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 50%;
+    background-color: #ffd111;
+    color: #000;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    transition: background-color 0.2s ease;
+}
 
+.info-button:hover {
+    background-color: #ffc500;
+}
 
+.hidden {
+  display: none !important;
+}
 
+#controlDiv {
+  position: absolute;
+  top: 110px;
+  right: 40px;
+  width: 220px;
+  padding: 30px;
+  background: rgba(0, 0, 0, 0.85);
+  color: #ffd111;
+  border-radius: 12px;
+  font-family: 'Arial', sans-serif;
+  font-size: 16px;
+  z-index: 999;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+  transition: all 0.3s ease-in-out;
+}
+#controlDiv h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 18px;
+  color: #fff;
+  text-align: center;
+  text-shadow: 1px 1px 2px black;
+}
+
+#controlDiv p {
+  margin: 8px 0;
+  font-size: 16px;
+  letter-spacing: 0.5px;
+}
 @keyframes pulse {
   0% {
     transform: scale(1);
@@ -228,23 +298,74 @@ h1 {
   }
 }
 
-#startButton:hover {
-  color: #ffa500; /* Intensivere Schriftfarbe beim Hover */
-}
 
-#controlDiv {
-  display: flex;
-  justify-content: space-between;
-  width: 500px;
-  font-size: 26px;
-  margin-top: 12px;
-  margin-bottom: 12px;
-  margin: 12px auto;
-  color: white;
-}
+
 @font-face {
   font-family: "zabars";
   src: url("fonts/Zabars (1).ttf") format("truetype");
+}
+
+/* اللوحة السفلية */
+#bottomPanel.mobile-controls {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px; /* مسافة بين الأزرار */
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.4); /* نصف شفاف */
+  padding: 10px 20px;
+  border-radius: 30px;
+  backdrop-filter: blur(5px); /* تأثير ضبابي خلف اللوحة */
+}
+
+/* جميع الأزرار */
+.control-button {
+  width: 60px;
+  height: 60px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 2px solid #ffd111;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* تأثير عند الضغط */
+.control-button:active {
+  background: rgba(255, 255, 255, 0.35);
+  transform: scale(0.9);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* الصور داخل الأزرار */
+.control-button img {
+  width: 50%;
+  height: 50%;
+  pointer-events: none; /* منع الصورة من اعتراض النقر */
+}
+
+/* زر القفز أكبر قليلاً */
+#btnJump {
+  width: 70px;
+  height: 70px;
+}
+
+/* زر القذف بلون مميز */
+#btnThrow {
+  width: 65px;
+  height: 65px;
+  border-color: #ff4444;
+}
+#btnThrow img {
+  width: 60%;
+  height: 60%;
 }
 
 
@@ -259,32 +380,7 @@ h1 {
   position: relative;
   display: none;
 }
-#bottomPanel {
-  position: absolute;
-  bottom: 10px;
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  padding: 0 20px;
-  box-sizing: border-box;
-}
 
-.control-button {
-  background-color: rgba(255, 255, 255, 0.8);
-  border: 2px solid rgb(154, 76, 42);
-  border-radius: 50%;
-  width: 60px;
-  height: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-}
-
-.control-button img {
-  width: 70%;
-  height: 70%;
-}
 
 .mobile-controls {
   display: none;
@@ -329,15 +425,18 @@ h1 {
 
 #orientationWarning {
   position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.85);
+  color: #ffd111;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
   text-align: center;
-  background: rgba(0, 0, 0, 0.8);
-  color: white;
-  padding: 20px;
-  border-radius: 10px;
-  z-index: 10;
 }
 
 #orientationWarning h2 {
@@ -345,10 +444,7 @@ h1 {
   font-size: 24px;
 }
 
-#orientationWarning img {
-  width: 180px;
-  height: auto;
-}
+
 
 #gameOverScreen {
   display: flex;
