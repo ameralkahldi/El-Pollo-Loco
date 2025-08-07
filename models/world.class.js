@@ -1,9 +1,4 @@
 class World {
-  character = new Character();
-  level = createLevel1();
-  statusBar = new StatusBar();
-  coinsStatusBar = new CoinsStatusBar();
-  bottleStatusBar = new BottlesStatusBar();
   endbossStatusBar = new EndbossStatus();
   canvas;
   ctx;
@@ -21,22 +16,33 @@ class World {
   bottleCollectSound = new Audio("audio/audio_landing.wav");
 
   constructor(canvas, keyboard) {
-    this.ctx = canvas.getContext("2d");
-    this.canvas = canvas;
-    this.keyboard = keyboard;
-    this.setWorld();
+  this.ctx = canvas.getContext("2d");
+  this.canvas = canvas;
+  this.keyboard = keyboard;
 
-    this.statusBar.setPercentage(this.character.energy);
+  this.character = new Character(); // تهيئة الشخصية
+  this.level = createLevel1();      // تهيئة المستوى
 
-    this.checkCollisions();
-    this.checkThrowObject();
-    this.checkBottleCollisions();
-    this.checkBottleHitsEndboss();
-    this.checkCharacterDead();
-    this.checkBottleHitsEnemies();
-    this.checkCoinCollection();
-    this.draw();
-  }
+ this.statusBar = new StatusBar('health');
+this.coinsStatusBar = new CoinsStatusBar('coins');
+console.log("CoinsStatusBar is instance of:", this.coinsStatusBar.constructor.name);
+
+this.bottleStatusBar = new BottlesStatusBar('bottles');
+
+  this.setWorld();
+
+  this.statusBar.setPercentage(this.character.energy);
+
+  this.checkCollisions();
+  this.checkThrowObject();
+  this.checkBottleCollisions();
+  this.checkBottleHitsEndboss();
+  this.checkCharacterDead();
+  this.checkBottleHitsEnemies();
+  this.checkCoinCollection();
+  this.draw();
+}
+
 
    playSound(audio) {
     if (!audio || this.muted) return; // إذا مكتوم الصوت، لا تعمل
@@ -114,43 +120,47 @@ class World {
     this.statusBar.setPercentage(this.character.energy);
   }
 
-  checkCoinCollection() {
-    this.intervalIds.push(
-      setInterval(() => {
-        this.level.coins = this.level.coins.filter((coin) => {
-          if (this.character.isColliding(coin)) {
-            this.character.coinsCount = (this.character.coinsCount || 0) + 1;
-            this.coinsStatusBar.setPercentage(this.character.coinsCount * 20);
-            this.collectedCoins.push(coin);
-            console.log("Coins ist da" + coin);
-            this.playSound(this.coinCollectSound);
-            return false;
-          }
-          return true;
-        });
-      }, 200)
-    );
-  }
+checkCoinCollection() {
+  this.intervalIds.push(
+    setInterval(() => {
+      this.level.coins = this.level.coins.filter((coin) => {
+        if (this.character.isColliding(coin)) {
+          this.character.coinsCount = (this.character.coinsCount || 0) + 1;
+          let percentage = Math.min(this.character.coinsCount * 20, 100);
+          this.coinsStatusBar.setPercentage(percentage);
+          this.collectedCoins.push(coin); // 
+          this.playSound(this.coinCollectSound);
+          return false;
+        }
+        return true;
+      });
+    }, 200)
+  );
+}
 
-  checkBottleCollisions() {
-    this.intervalIds.push(
-      setInterval(() => {
-        this.level.bottles = this.level.bottles.filter((bottle) => {
-          if (this.character.isColliding(bottle)) {
-            this.character.bottleCount += 1;
-            let percentage = this.character.bottleCount * 20;
-            if (percentage > 100) percentage = 100;
-            console.log(bottle)
-            this.bottleStatusBar.setPercentage(percentage);
-            this.playSound(this.bottleCollectSound);
-            console.log('Bottles after collect:', this.character.bottleCount);
-            return false;
-          }
-          return true;
-        });
-      }, 200)
-    );
-  }
+checkBottleCollisions() {
+  this.intervalIds.push(
+    setInterval(() => {
+      this.level.bottles = this.level.bottles.filter((bottle) => {
+        if (this.character.isColliding(bottle)) {
+          this.character.bottleCount = this.character.bottleCount || 0;
+          this.character.bottleCount++;
+
+          let percentage = Math.min(this.character.bottleCount * 20, 100);
+          this.bottleStatusBar.setPercentage(percentage); // 
+
+          this.playSound(this.bottleCollectSound);
+          console.log('Bottles after collect:', this.character.bottleCount);
+          return false;
+        }
+        return true;
+      });
+    }, 200)
+  );
+}
+
+
+
 
   checkBottleHitsEnemies() {
     this.intervalIds.push(

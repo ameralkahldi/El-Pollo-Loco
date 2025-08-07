@@ -24,19 +24,22 @@ for (let i = 0; i < 3; i++) {
             new Chicken(2200)
         ],
         clouds, 
+    
         [
+            new Bottle(100),
+            new Bottle(200),
+            new Bottle(300),
+            new Bottle(500),
+            new Bottle(700),
+            new Bottle(900),
+            new Bottle(1200)
+        ],
+          [
             new Coins(),
             new Coins(),
             new Coins(),
             new Coins(),
             new Coins()
-        ],
-        [
-            new Bottle(),
-            new Bottle(),
-            new Bottle(),
-            new Bottle(),
-            new Bottle()
         ],
         [
             new BackgroundObject("img/5_background/complete_background.png", -719),

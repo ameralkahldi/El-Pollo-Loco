@@ -9,8 +9,7 @@ class Character extends MovableObject {
   energy = 100;
   bottles = 0;
   dead = false;
-  bottleCount = 0;
-  coinsCount=0;
+ 
   jumpSound = new Audio("audio/audio_jump.wav");
   soundEnabled = true;
   volume = 1.0;
@@ -89,6 +88,8 @@ class Character extends MovableObject {
     this.loadImages(this.IMAGEs_HURT);
     this.applyGravity();
     this.animate();
+     this.bottleCount = 0;
+  this.coinsCount=0;
   }
 
   animate() {

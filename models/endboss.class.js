@@ -37,7 +37,7 @@ class Endboss extends MovableObject {
     super();
     this.loadImage(this.IMAGE_WALKING[0]);
     this.loadImages(this.IMAGE_WALKING);
-    this.loadImages(this.IMAGE_ATTACK);  // تحميل صور الهجوم
+    this.loadImages(this.IMAGE_ATTACK);  
     this.loadImages(this.IMAGE_HURT);
     this.loadImages(this.IMAGE_DEAD);
 
@@ -89,10 +89,8 @@ class Endboss extends MovableObject {
     this.img = this.imageCache[path];
     this.currentAttackImage++;
 
-    // لو انتهت الصور نرجع للحالة الطبيعية أو الهجوم مستمر حسب منطق اللعبة
     if (this.currentAttackImage >= this.IMAGE_ATTACK.length) {
       this.currentAttackImage = 0;
-      // ممكن تبطل الهجوم بعد دورة وحدة مثلاً
       // this.isAttacking = false;
     }
   }
@@ -121,16 +119,15 @@ class Endboss extends MovableObject {
     }
   }
 
-  // دالة تحريك الـ endboss نحو الـ character
   moveTowards(character) {
     if (this.dead) return;
 
     if (this.x > character.x) {
       this.x -= this.speed;
-      this.otherDirection = true; // يتجه لليسار
+      this.otherDirection = true ;
     } else if (this.x < character.x) {
       this.x += this.speed;
-      this.otherDirection = false; // يتجه لليمين
+      this.otherDirection = false; 
     }
   }
 }
