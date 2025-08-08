@@ -1,19 +1,24 @@
-class Coins extends DrawableObject{
-   
-   IMAGES_COIN = [
+/**
+ * Represents a coin collectible in the game.
+ * Inherits from DrawableObject.
+ */
+class Coins extends DrawableObject {
+  /** Path to coin image */
+  IMAGES_COIN = [
     "img/8_coin/coin_1.png"
-   ];
+  ];
 
-
-   constructor(){
+  /**
+   * Creates a new Coin object at a specific position.
+   * @param {number} x - Horizontal position of the coin.
+   * @param {number} y - Vertical position of the coin (default: 250).
+   */
+  constructor(x, y = 250) {
     super();
-        this.loadImage('img/8_coin/coin_1.png'); // Beispielpfad
-        this.x = 300 + Math.random() * 500;
-        this.y = 200 + Math.random() * 100;
-        this.width = 100;
-        this.height = 100;
-      
-   }
-  
-   
-}  
+    this.loadImage(this.IMAGES_COIN[0]);
+    this.x = x;
+    this.y = y;
+    this.width = 100;
+    this.height = 100;
+  }
+}
