@@ -396,7 +396,6 @@ function setupInfoButton() {
   if (!infoButton || !controlDiv) return;
 
   infoButton.addEventListener("click", () => {
-    console.log("INfo button click");
     controlDiv.classList.toggle("hidden");
   });
 }

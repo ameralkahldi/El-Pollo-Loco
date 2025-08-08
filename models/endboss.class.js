@@ -1,4 +1,9 @@
+/**
+ * Represents the final boss in the game.
+ * Inherits movement and drawing capabilities from MovableObject.
+ */
 class Endboss extends MovableObject {
+  /** @type {string[]} */
   IMAGE_WALKING = [
     "img/4_enemie_boss_chicken/2_alert/G5.png",
     "img/4_enemie_boss_chicken/2_alert/G6.png",
@@ -10,6 +15,7 @@ class Endboss extends MovableObject {
     "img/4_enemie_boss_chicken/2_alert/G12.png",
   ];
 
+  /** @type {string[]} */
   IMAGE_ATTACK = [
     "img/4_enemie_boss_chicken/3_attack/G13.png",
     "img/4_enemie_boss_chicken/3_attack/G14.png",
@@ -21,55 +27,80 @@ class Endboss extends MovableObject {
     "img/4_enemie_boss_chicken/3_attack/G20.png",
   ];
 
+  /** @type {string[]} */
   IMAGE_HURT = [
     "img/4_enemie_boss_chicken/4_hurt/G21.png",
     "img/4_enemie_boss_chicken/4_hurt/G22.png",
     "img/4_enemie_boss_chicken/4_hurt/G23.png",
   ];
 
+  /** @type {string[]} */
   IMAGE_DEAD = [
     "img/4_enemie_boss_chicken/5_dead/G24.png",
     "img/4_enemie_boss_chicken/5_dead/G25.png",
     "img/4_enemie_boss_chicken/5_dead/G26.png",
   ];
 
-  constructor() {
+  /**
+   * Creates a new Endboss instance.
+   * @param {MovableObject} character - The player character the boss will move towards.
+   */
+  constructor(character) {
     super();
+    this.character = character;
+
     this.loadImage(this.IMAGE_WALKING[0]);
     this.loadImages(this.IMAGE_WALKING);
     this.loadImages(this.IMAGE_ATTACK);
     this.loadImages(this.IMAGE_HURT);
     this.loadImages(this.IMAGE_DEAD);
 
+    /** @type {number} */
     this.x = 2000;
+
+    /** @type {number} */
     this.y = -35;
+
+    /** @type {number} */
     this.width = 300;
+
+    /** @type {number} */
     this.height = 500;
 
+    /** @type {number} */
+    this.energy = 100;
+
+    /** @type {boolean} */
+    this.dead = false;
+
+    /** @type {number} */
+    this.speed = 0;
+
+    /** @type {boolean} */
+    this.isHurt = false;
+
+    /** @type {boolean} */
+    this.isAttacking = false;
+
+    /** @type {boolean} */
+    this.otherDirection = false;
+
+    /** @type {number} */
     this.currentImage = 0;
     this.currentAttackImage = 0;
     this.currentHurtImage = 0;
     this.currentDeadImage = 0;
 
-    this.energy = 100;
-    this.dead = false;
-    this.speed = 0;
-    this.isHurt = false;
-    this.isAttacking = false;
-
-    this.otherDirection = false;
-
     this.animate();
   }
 
   /**
-   * Starts the animation loop that updates the boss state and animations.
-   * @param {Object} character - The character to move towards (e.g. the player).
+   * Starts the animation and movement logic for the endboss.
    */
-  animate(character) {
+  animate() {
     setInterval(() => {
       if (!this.dead) {
-        this.moveTowards(character);
+        this.moveTowards(this.character);
       }
 
       if (this.dead) {
@@ -85,7 +116,23 @@ class Endboss extends MovableObject {
   }
 
   /**
-   * Plays the walking animation by cycling through the walking images.
+   * Moves the endboss towards the specified character horizontally.
+   * @param {{ x: number }} character - The character object with an `x` property.
+   */
+  moveTowards(character) {
+    if (this.dead || !character) return;
+
+    if (this.x > character.x) {
+      this.x -= this.speed;
+      this.otherDirection = true;
+    } else if (this.x < character.x) {
+      this.x += this.speed;
+      this.otherDirection = false;
+    }
+  }
+
+  /**
+   * Plays the walking animation by cycling through images.
    */
   playWalkingAnimation() {
     let i = this.currentImage % this.IMAGE_WALKING.length;
@@ -95,8 +142,7 @@ class Endboss extends MovableObject {
   }
 
   /**
-   * Plays the attack animation by cycling through attack images.
-   * Resets attack animation to first frame after completing.
+   * Plays the attack animation. Resets when animation finishes.
    */
   playAttackAnimation() {
     let i = this.currentAttackImage % this.IMAGE_ATTACK.length;
@@ -106,14 +152,11 @@ class Endboss extends MovableObject {
 
     if (this.currentAttackImage >= this.IMAGE_ATTACK.length) {
       this.currentAttackImage = 0;
-      // Optionally disable attack state here:
-      // this.isAttacking = false;
     }
   }
 
   /**
-   * Plays the hurt animation by cycling through hurt images.
-   * Resets the hurt state after animation completes.
+   * Plays the hurt animation. Resets hurt state when finished.
    */
   playHurtAnimation() {
     let i = this.currentHurtImage % this.IMAGE_HURT.length;
@@ -129,8 +172,7 @@ class Endboss extends MovableObject {
   }
 
   /**
-   * Plays the death animation by cycling through dead images.
-   * Stops on the last frame when animation finishes.
+   * Plays the dead animation and stops on the last frame.
    */
   playDeadAnimation() {
     let i = this.currentDeadImage % this.IMAGE_DEAD.length;
@@ -139,23 +181,7 @@ class Endboss extends MovableObject {
     this.currentDeadImage++;
 
     if (this.currentDeadImage >= this.IMAGE_DEAD.length) {
-      this.currentDeadImage = this.IMAGE_DEAD.length - 1; // Stay on last frame
-    }
-  }
-
-  /**
-   * Moves the boss towards the specified character horizontally.
-   * @param {Object} character - The character object to follow. Must have an x property.
-   */
-  moveTowards(character) {
-    if (this.dead) return;
-
-    if (this.x > character.x) {
-      this.x -= this.speed;
-      this.otherDirection = true;
-    } else if (this.x < character.x) {
-      this.x += this.speed;
-      this.otherDirection = false;
+      this.currentDeadImage = this.IMAGE_DEAD.length - 1;
     }
   }
 }

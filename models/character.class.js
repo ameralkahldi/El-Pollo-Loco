@@ -194,6 +194,17 @@ class Character extends MovableObject {
     return this.world.keyboard.LEFT && this.x > 0;
   }
 
+  
+/**
+ * Determines if the character can currently be hit.
+ * @returns {boolean}
+ */
+canBeHit() {
+  return !this.dead;
+}
+
+
+
   /**
    * Checks if character can jump based on space key and current position.
    * @returns {boolean}
@@ -230,6 +241,7 @@ class Character extends MovableObject {
       this.lastKeyPressed = new Date().getTime();
     }
   }
+  
 
   /**
    * Checks if any movement or action keys are currently pressed.

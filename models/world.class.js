@@ -14,7 +14,8 @@ class World {
   chickenBossMoveSound = new Audio("audio/audio_chickenBoss.wav");
   coinCollectSound = new Audio("audio/audio_coin_collect.wav");
   bottleCollectSound = new Audio("audio/audio_landing.wav");
-
+  maxStartMoveX = 200;        
+  startPhaseOver = false;
   /**
    * Creates an instance of the game world.
    * @param {HTMLCanvasElement} canvas - The canvas where the game will be rendered.
@@ -34,6 +35,8 @@ class World {
 
     this.setWorld();
     this.statusBar.setPercentage(this.character.energy);
+    this.endboss = new Endboss(this.character); 
+
 
     this.checkCollisions();
     this.checkThrowObject();
@@ -132,6 +135,15 @@ class World {
       this.handleCharacterHit();
     }
   }
+
+  /**
+ * Determines whether the character can currently be hit by the endboss.
+ * @returns {boolean}
+ */
+characterCanBeHit() {
+  return this.character && this.character.canBeHit();
+}
+
 
   /**
    * Applies damage to the character and updates the health bar.

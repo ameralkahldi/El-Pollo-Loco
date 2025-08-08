@@ -1,55 +1,57 @@
 function createLevel1() {
- let clouds = [];
-let cloudSpacing = 400; // المسافة بين كل غيمة والأخرى
-for (let i = 0; i < 3; i++) {
+  // الغيوم
+  let clouds = [];
+  let cloudSpacing = 400;
+  for (let i = 0; i < 5; i++) {
     let cloud = new Cloud();
-    cloud.x = i * cloudSpacing; // الغيوم جنب بعض
+    cloud.x = i * cloudSpacing;
     cloud.y = 20 + Math.random() * 80;
     clouds.push(cloud);
-} 
+  }
 
+  // ✨ الدجاج يبدأ بعد 600 بكسل من الشخصية
+  let chickens = [];
+  let firstChickenX = 600;      // أول دجاجة
+  let spacing = 300;            // المسافة بين كل دجاجة
+  let numberOfChickens = 10;
 
-    return new Level(
-        [
-            new Chicken(100),
-            new ChickenSmall(200),
-            new Chicken(500),
-            new ChickenSmall(700),
-            new Chicken(1000),
-            new ChickenSmall(1200),
-            new Chicken(1300),
-            new ChickenSmall(1600),
-            new Chicken(1700),
-            new ChickenSmall(2000),
-            new Chicken(2200)
-        ],
-        clouds, 
-    
-        [
-            new Bottle(100),
-            new Bottle(200),
-            new Bottle(300),
-            new Bottle(500),
-            new Bottle(700),
-            new Bottle(900),
-            new Bottle(1200)
-        ],
-          [
-            new Coins(),
-            new Coins(),
-            new Coins(),
-            new Coins(),
-            new Coins()
-        ],
-        [
-            new BackgroundObject("img/5_background/complete_background.png", -719),
-            new BackgroundObject("img/5_background/complete_background.png", 0),
-            new BackgroundObject("img/5_background/complete_background.png", 719),
-            new BackgroundObject("img/5_background/complete_background.png", 719 * 2),
-            new BackgroundObject("img/5_background/complete_background.png", 719 * 3),
-            new BackgroundObject("img/5_background/complete_background.png", 719 * 4),
-            new BackgroundObject("img/5_background/complete_background.png", 719 * 5)
-        ],
-        [new Endboss()]
-    );
+  for (let i = 0; i < numberOfChickens; i++) {
+    let x = firstChickenX + i * spacing;
+    if (i % 2 === 0) {
+      chickens.push(new Chicken(x));        // دجاجة كبيرة
+    } else {
+      chickens.push(new ChickenSmall(x));   // دجاجة صغيرة
+    }
+  }
+
+  // الزجاجات
+  let bottles = [
+    new Bottle(300),
+    new Bottle(600),
+    new Bottle(900),
+    new Bottle(1200),
+    new Bottle(1500),
+    new Bottle(1800),
+  ];
+
+  // العملات
+  let coins = [
+    new Coins(), new Coins(), new Coins(), new Coins(), new Coins()
+  ];
+
+  // الخلفية
+  let backgrounds = [];
+  for (let i = -1; i <= 6; i++) {
+    for (let j = 0; j < 3; j++) {
+      backgrounds.push(
+        new BackgroundObject("img/5_background/complete_background.png", 719 * i)
+      );
+    }
+  }
+
+  // الزعيم
+  let endboss = [new Endboss()];
+
+  // إرجاع المستوى
+  return new Level(chickens, clouds, bottles, coins, backgrounds, endboss);
 }
