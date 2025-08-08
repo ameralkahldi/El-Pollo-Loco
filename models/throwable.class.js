@@ -5,7 +5,7 @@ class ThrowableObject extends MovableObject {
    * @param {number} y - The starting y-position of the object.
    */
   constructor(x, y) {
-    super().loadImage('img/6_salsa_bottle/bottle_rotation/rotation_sequences.gif');
+    super().loadImage('img/6_salsa_bottle/salsa_bottle.png');
     this.x = x;
     this.y = y;
     this.height = 60;
@@ -23,8 +23,10 @@ class ThrowableObject extends MovableObject {
 
     /** @type {HTMLImageElement} The image used for the hit effect */
     this.hitEffectImg = new Image();
-    this.hitEffectImg.src = 'img/6_salsa_bottle/all_sequences.gif';
-
+    this.hitEffectImg.src = 'img/6_salsa_bottle/bottle_rotation/bottle_splash/1_bottle_splash.png';
+      
+      
+    
     this.throw();
   }
 
