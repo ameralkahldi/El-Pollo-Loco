@@ -5,12 +5,16 @@ class MovableObject extends DrawableObject {
   acceleration = 2.5;
   hurtSound = new Audio("audio/audio_pepe_hurt1.mp3");
 
-  soundEnabled = true; // التحكم في الصوت لكل كائن
-  volume = 1.0;       // مستوى الصوت (0 إلى 1)
+  soundEnabled = true; // Controls sound on/off for the object
+  volume = 1.0;        // Volume level (0 to 1)
 
   lastHit = 0;
   offset = { top: 0, left: 0, right: 0, bottom: 0 };
 
+  /**
+   * Applies gravity to the object by updating its vertical position and speed.
+   * Runs continuously with setInterval.
+   */
   applyGravity() {
     setInterval(() => {
       if (this.isAboveGround() || this.speedY > 0) {
@@ -22,6 +26,10 @@ class MovableObject extends DrawableObject {
     }, 1000 / 25);
   }
 
+  /**
+   * Returns the character properly to the ground if partially above it.
+   * Used to reset character's vertical position after jumping.
+   */
   returnCharToGroundProperly() {
     if (this instanceof Character) {
       this.speedY = 0;
@@ -29,6 +37,10 @@ class MovableObject extends DrawableObject {
     }
   }
 
+  /**
+   * Checks if the object is above the ground.
+   * @returns {boolean} True if the object is above ground or is a ThrowableObject.
+   */
   isAboveGround() {
     if (this instanceof ThrowableObject) {
       return true;
@@ -37,11 +49,19 @@ class MovableObject extends DrawableObject {
     }
   }
 
+  /**
+   * Loads an image for this object from the given path.
+   * @param {string} path - Path to the image file.
+   */
   loadImage(path) {
     this.img = new Image();
     this.img.src = path;
   }
 
+  /**
+   * Loads multiple images into the object's image cache.
+   * @param {string[]} arr - Array of image paths.
+   */
   loadImages(arr) {
     arr.forEach((path) => {
       let img = new Image();
@@ -50,6 +70,11 @@ class MovableObject extends DrawableObject {
     });
   }
 
+  /**
+   * Checks if this object is colliding with another movable object.
+   * @param {MovableObject} mo - Another movable object to check collision against.
+   * @returns {boolean} True if the two objects are colliding.
+   */
   isColliding(mo) {
     return (
       this.x + this.width > mo.x &&
@@ -59,15 +84,27 @@ class MovableObject extends DrawableObject {
     );
   }
 
+  /**
+   * Checks if the object is currently falling (vertical speed < 0).
+   * @returns {boolean} True if the object is falling.
+   */
   isFalling() {
     return this.speedY < 0;
   }
 
+  /**
+   * Checks if the object was hit within the last second.
+   * @returns {boolean} True if the object is still considered hurt.
+   */
   isHurt() {
     let timepassed = (new Date().getTime() - this.lastHit) / 1000;
     return timepassed < 1;
   }
 
+  /**
+   * Applies a hit to the object, reducing energy and triggering hurt state.
+   * Special handling for Endboss objects.
+   */
   hit() {
     if (this instanceof Endboss) {
       if (this.energy < 0) {
@@ -87,6 +124,10 @@ class MovableObject extends DrawableObject {
   }
 
   // ===================== Sound =====================
+
+  /**
+   * Plays the hurt sound if sound is enabled.
+   */
   playHurtSound() {
     if (this.hurtSound && this.soundEnabled) {
       this.hurtSound.volume = this.volume;
@@ -95,34 +136,59 @@ class MovableObject extends DrawableObject {
     }
   }
 
+  /**
+   * Enables or disables sound for this object.
+   * @param {boolean} enabled - True to enable sound, false to disable.
+   */
   setSoundEnabled(enabled) {
     this.soundEnabled = enabled;
     if (!enabled) this.hurtSound.pause();
   }
 
+  /**
+   * Sets the volume level for the object's sounds.
+   * Clamps the volume between 0 and 1.
+   * @param {number} vol - Volume level (0 to 1).
+   */
   setVolume(vol) {
-    this.volume = Math.max(0, Math.min(1, vol)); // تقييد القيمة بين 0 و 1
+    this.volume = Math.max(0, Math.min(1, vol));
     if (this.hurtSound) this.hurtSound.volume = this.volume;
   }
 
+  /**
+   * Checks if the object is dead (energy is zero).
+   * @returns {boolean} True if dead.
+   */
   isDead() {
     return this.energy == 0;
   }
 
+  /**
+   * Moves the object to the right by its speed.
+   */
   moveRight() {
     this.x += this.speed;
     this.otherDirection = false;
   }
 
+  /**
+   * Moves the object to the left by its speed.
+   */
   moveLeft() {
     this.x -= this.speed;
     this.otherDirection = true;
   }
 
+  /**
+   * Makes the object jump with a strong vertical speed.
+   */
   jump() {
     this.speedY = 20;
   }
 
+  /**
+   * Makes the object jump with a smaller vertical speed.
+   */
   smallJump() {
     this.speedY = 10;
   }

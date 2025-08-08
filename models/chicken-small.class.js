@@ -1,64 +1,93 @@
+/**
+ * Represents a small chicken enemy in the game.
+ * Inherits from MovableObject.
+ */
 class ChickenSmall extends MovableObject {
-    y = 370;
-    height = 60;
-    width = 60;
-    speed = 0.7;
-    isDead = false;
-    currentImage = 0;
+  /** Vertical position of the chicken */
+  y = 370;
 
+  /** Height of the chicken */
+  height = 60;
 
-    IMAGES_WALKING = [
-        'img/3_enemies_chicken/chicken_small/1_walk/1_w.png',
-        'img/3_enemies_chicken/chicken_small/1_walk/2_w.png',
-        'img/3_enemies_chicken/chicken_small/1_walk/3_w.png'
-    ];
+  /** Width of the chicken */
+  width = 60;
 
-    IMAGE_DEAD = [
-        'img/3_enemies_chicken/chicken_small/2_dead/dead.png'
-    ];
+  /** Movement speed of the chicken */
+  speed = 0.7;
 
-constructor(x) {
+  /** Indicates whether the chicken is dead */
+  isDead = false;
+
+  /** Current image index used for animation */
+  currentImage = 0;
+
+  /** Interval for movement */
+  moveInterval;
+
+  /** Interval for animation */
+  animationInterval;
+
+  /** Walking animation image paths */
+  IMAGES_WALKING = [
+    'img/3_enemies_chicken/chicken_small/1_walk/1_w.png',
+    'img/3_enemies_chicken/chicken_small/1_walk/2_w.png',
+    'img/3_enemies_chicken/chicken_small/1_walk/3_w.png'
+  ];
+
+  /** Image path for dead state */
+  IMAGE_DEAD = [
+    'img/3_enemies_chicken/chicken_small/2_dead/dead.png'
+  ];
+
+  /**
+   * Creates a new instance of ChickenSmall.
+   * Loads images, applies gravity, and starts animation.
+   * @param {number} x - The horizontal position of the chicken.
+   */
+  constructor(x) {
     super().loadImage(this.IMAGES_WALKING[0]);
     this.loadImages(this.IMAGES_WALKING);
     this.loadImages(this.IMAGE_DEAD);
     this.applyGravity();
     this.animate();
-    this.x = x; // ✅ هذه السطر المهم
-}
+    this.x = x; // Set initial x position
+  }
 
-    
+  /**
+   * Starts the movement and animation of the chicken.
+   * If the chicken is not dead, it moves left and plays walking animation.
+   */
+  animate() {
+    this.moveInterval = setInterval(() => {
+      if (!this.isDead) this.moveLeft();
+    }, 1000 / 60);
 
-   animate() {
-  this.moveInterval = setInterval(() => {
-    if (!this.isDead) this.moveLeft();
-  }, 1000 / 60);
+    this.animationInterval = setInterval(() => {
+      if (!this.isDead) this.playWalkingAnimation(this.IMAGES_WALKING);
+    }, 200);
+  }
 
-  this.animationInterval = setInterval(() => {
-    if (!this.isDead) this.playWalkingAnimation(this.IMAGES_WALKING);
-  
-  }, 200);
-}
+  /**
+   * Kills the chicken: stops its movement and switches to the dead image.
+   */
+  kill() {
+    this.isDead = true;
+    this.speed = 0;
+    this.img = this.imageCache[this.IMAGE_DEAD[0]];
 
-    /**
-     * Kills the chicken: stops movement and changes image
-     */
-    kill() {
-        this.isDead = true;
-        this.speed = 0;
-        this.img = this.imageCache[this.IMAGE_DEAD[0]];
+    // Stop movement and animation intervals
+    clearInterval(this.moveInterval);
+    clearInterval(this.animationInterval);
+  }
 
-        // Stop animation
-        clearInterval(this.moveInterval);
-        clearInterval(this.walkAnimationInterval);
-    }
-
-
-    playWalkingAnimation(images) {
+  /**
+   * Cycles through the walking animation frames.
+   * @param {string[]} images - Array of image paths to animate.
+   */
+  playWalkingAnimation(images) {
     let i = this.currentImage % images.length;
     let path = images[i];
     this.img = this.imageCache[path];
     this.currentImage++;
-  
-}
-
+  }
 }

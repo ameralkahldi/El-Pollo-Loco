@@ -35,7 +35,7 @@ class Character extends MovableObject {
     "img/2_character_pepe/3_jump/J-39.png",
   ];
 
-  IMAGEs_DEAD = [
+  IMAGEs_DEAD = [   
     "img/2_character_pepe/5_dead/D-51.png",
     "img/2_character_pepe/5_dead/D-52.png",
     "img/2_character_pepe/5_dead/D-53.png",
@@ -92,25 +92,21 @@ class Character extends MovableObject {
   this.coinsCount=0;
   }
 
+  /**
+   * Handles the animation logic of the character including movement and image switching.
+   */
   animate() {
     let levelEnd = 2200;
 
-    // Bewegung
+    // Movement animation
     setInterval(() => {
       if (gameIsPaused) return;
-      if (this.world.keyboard.RIGHT && this.x < levelEnd) {
-        this.moveRight();
-      }
-      if (this.world.keyboard.LEFT && this.x > 0) {
-        this.moveLeft();
-      }
-
-      if (this.world.keyboard.SPACE && !this.isAboveGround()) {
-        this.jump();
-      }
+      if (this.world.keyboard.RIGHT && this.x < levelEnd) this.moveRight();
+      if (this.world.keyboard.LEFT && this.x > 0) this.moveLeft();
+      if (this.world.keyboard.SPACE && !this.isAboveGround()) this.jump();
     }, 1000 / 60);
 
-    // Bildanimation (alle 50 ms)
+    // Sprite animation
     setInterval(() => {
       if (this.isDead()) {
         this.playWalkingAnimation(this.IMAGEs_DEAD);
@@ -128,6 +124,10 @@ class Character extends MovableObject {
     }, 50);
   }
 
+  /**
+   * Updates the character image to the next frame in the provided animation sequence.
+   * @param {string[]} images - Array of image paths for animation.
+   */
   playWalkingAnimation(images) {
     let i = this.currentImage % images.length;
     let path = images[i];
@@ -135,7 +135,9 @@ class Character extends MovableObject {
     this.currentImage++;
   }
 
-  /**This function handles the movement of the main player if certain conditions are met. */
+  /**
+   * Handles overall character movement (left, right, jump) and camera update.
+   */
   moveCharacter() {
     this.walking_sound.pause();
     if (!gameIsPaused) {
@@ -147,64 +149,92 @@ class Character extends MovableObject {
     this.lastPressedKey();
   }
 
+  /**
+   * Checks if character is jumping above an enemy.
+   * @param {MovableObject} enemy - The enemy to check collision with.
+   * @returns {boolean} Whether character is above the enemy.
+   */
   isAbove(enemy) {
     return (
       this.speedY < 0 && this.y + this.height <= enemy.y + enemy.height / 2
     );
   }
 
-  /**This function moves the character right, sets the movement direction so that the main player is drawn properly on the canvas and plays the walk sound effect.  */
+  /**
+   * Moves the character to the right and plays walking sound.
+   */
   characterMovesRight() {
     this.moveRight();
     this.otherDirection = false;
     this.walking_sound.play();
   }
 
-  /**This function moves the character leftt, sets the movement direction so that the main player is drawn properly on the canvas and plays the walk sound effect.  */
+  /**
+   * Moves the character to the left and plays walking sound.
+   */
   characterMovesLeft() {
     this.moveLeft();
     this.otherDirection = true;
     this.walking_sound.play();
   }
 
-  /**This is a small help function that checks if the criteria is met for the main player to move to the right */
+  /**
+   * Checks if character can move to the right based on position and key press.
+   * @returns {boolean}
+   */
   canMoveRight() {
     return this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x;
   }
 
-  /**This is a small help function that checks if the criteria is met for the main player to move to the left */
+  /**
+   * Checks if character can move to the left based on position and key press.
+   * @returns {boolean}
+   */
   canMoveLeft() {
     return this.world.keyboard.LEFT && this.x > 0;
   }
 
-  /**This is a small help function that checks if the criteria is met for the main player to jump */
+  /**
+   * Checks if character can jump based on space key and current position.
+   * @returns {boolean}
+   */
   canJump() {
     return this.world.keyboard.SPACE && !this.isAboveGround();
   }
 
-  /**This function makes the movable object jump, by setting the speed on the Y axis to a certain value. */
+  /**
+   * Makes the character jump and plays the jump sound effect.
+   */
   jump() {
     this.speedY = 30;
-    this.jumpSound.currentTime = 0; // اعادة الصوت من البداية
+    this.jumpSound.currentTime = 0;
     this.jumpSound.play();
   }
 
-  /**This function checks if the difference in time between the last keypress and the current time is greater than a predetermined value, so that when it is greater the character
-   * can go enter a "long idle" state.*/
+  /**
+   * Determines whether the character should enter long idle animation
+   * based on time since last key press.
+   * @returns {boolean}
+   */
   startLongIdle() {
     let timepassed = new Date().getTime() - this.lastKeyPressed;
     timepassed = timepassed / 1000;
     return timepassed > 8;
   }
 
-  /**This function saves the time of the last keypress as a variable. */
+  /**
+   * Stores the current time as the last key press time.
+   */
   lastPressedKey() {
     if (this.keyIsPressed()) {
       this.lastKeyPressed = new Date().getTime();
     }
   }
 
-  /**This function checks if any of the predetermined keys was pressed. */
+  /**
+   * Checks if any movement or action keys are currently pressed.
+   * @returns {boolean}
+   */
   keyIsPressed() {
     return (
       keyboard.LEFT ||

@@ -8,18 +8,26 @@ backgroundMusic.loop = true;
 backgroundMusic.volume = 0.3;
 let gameIsPaused = false;
 
+/**
+ * Initializes the game canvas and world.
+ */
+
 function init() {
   canvas = document.getElementById("canvas");
   world = new World(canvas, keyboard);
   console.log("My Character is: ", world.character);
 }
 
+
+/**
+ * Starts the game, checks screen orientation, and handles music & controls.
+ */
+
 function startGame() {
   const isPortrait = window.innerHeight > window.innerWidth;
   const isSmallScreen = window.innerWidth <= 400;
 
   if (isSmallScreen && isPortrait) {
-    // عرض تنبيه التدوير وإيقاف بدء اللعبة
     document.getElementById("orientationWarning").classList.remove("hidden");
     document.getElementById("startMenu").style.display = "block";
     document.getElementById("gameContainer").style.display = "none";
@@ -27,7 +35,6 @@ function startGame() {
     return;
   }
 
-  // إخفاء التنبيه وتشغيل اللعبة
   document.getElementById("orientationWarning").classList.add("hidden");
   document.getElementById("startMenu").style.display = "none";
   document.getElementById("gameContainer").style.display = "block";
@@ -43,6 +50,12 @@ function startGame() {
 
   init();
 }
+
+
+/**
+ * Handles game over logic including showing win/lose screen and sounds.
+ * @param {boolean} won - Indicates if the player won.
+ */
 
 function gameOver(won) {
   stopGame();
@@ -71,6 +84,13 @@ function gameOver(won) {
   canvas.classList.add("hidden");
 }
 
+
+
+/**
+ * Stops the game, clears the canvas and resets audio.
+ */
+
+
 function stopGame() {
   if (world) {
     world.stop();
@@ -86,6 +106,10 @@ function stopGame() {
   backgroundMusic.currentTime = 0;
 }
 
+/**
+ * Handles binding of keyboard key down events.
+ */
+
 window.addEventListener("keydown", (e) => {
   if (e.keyCode == 39) keyboard.RIGHT = true;
   if (e.keyCode == 37) keyboard.LEFT = true;
@@ -95,6 +119,11 @@ window.addEventListener("keydown", (e) => {
   if (e.keyCode == 68) keyboard.D = true;
 });
 
+
+/**
+ * Handles binding of keyboard key up events.
+ */
+
 window.addEventListener("keyup", (e) => {
   if (e.keyCode == 39) keyboard.RIGHT = false;
   if (e.keyCode == 37) keyboard.LEFT = false;
@@ -103,6 +132,11 @@ window.addEventListener("keyup", (e) => {
   if (e.keyCode == 32) keyboard.SPACE = false;
   if (e.keyCode == 68) keyboard.D = false;
 });
+
+
+/**
+ * Initializes UI and game setup on page load.
+ */
 
 window.addEventListener("DOMContentLoaded", () => {
   setupControlButtons();
@@ -138,8 +172,9 @@ function setupControlButtons() {
   bindControlButton("btnThrow", "D");
 }
 
-//Sound and Music List Count
-function setupSoundMenu() {
+/**
+ * Sets up sound and music toggle behavior in the menu.
+ */function setupSoundMenu() {
   const soundIcon = document.getElementById("soundIcon");
   const soundMenu = document.querySelector(".sound-menu");
   const closeSoundMenu = document.querySelector(".sound-menu .close-icon");
@@ -165,18 +200,15 @@ function setupSoundMenu() {
         ? "./img/11-menu/switch_on.png"
         : "./img/11-menu/switch_off.png";
 
-      // إيقاف كل الأصوات إذا تم كتم الصوت
       if (!soundEnabled) {
         backgroundMusic.pause();
         backgroundMusic.currentTime = 0;
 
-        // إيقاف أي أصوات audio تعمل حاليا
         document.querySelectorAll("audio").forEach((audio) => {
           audio.pause();
           audio.currentTime = 0;
         });
       } else {
-        // إعادة تشغيل الموسيقى إذا كانت مفعلة
         if (musicEnabled)
           backgroundMusic
             .play()
@@ -251,6 +283,13 @@ function setupGameNavigationButtons() {
       }
     });
   }
+
+
+
+   /**
+   * Resizes canvas to fit screen while maintaining aspect ratio.
+   */
+
   function resizeCanvasToFullscreen() {
     const canvas = document.getElementById("canvas");
     const container = document.getElementById("gameContainer") || document.body;
@@ -262,7 +301,6 @@ function setupGameNavigationButtons() {
     let newWidth = screenWidth;
     let newHeight = screenWidth / aspectRatio;
 
-    // إذا تجاوز الارتفاع حدود الشاشة، يتم التعديل
     if (newHeight > screenHeight) {
       newHeight = screenHeight;
       newWidth = newHeight * aspectRatio;
@@ -272,14 +310,12 @@ function setupGameNavigationButtons() {
     canvas.style.height = `${newHeight}px`;
   }
 
-  // استدعاء عند التحميل وتغيير حجم الشاشة
   window.addEventListener("load", resizeCanvasToFullscreen);
   window.addEventListener("resize", resizeCanvasToFullscreen);
   window.addEventListener("orientationchange", () => {
-    setTimeout(resizeCanvasToFullscreen, 300); // تأخير لتحديث الحجم بعد تغيير الاتجاه
-  });
+    setTimeout(resizeCanvasToFullscreen, 300); 
+    });
 
-  // استدعاء عند التحميل وتغيير حجم الشاشة
   window.addEventListener("load", resizeCanvasToFullscreen);
   window.addEventListener("resize", resizeCanvasToFullscreen);
   window.addEventListener("load", handleOrientationWarning);
@@ -287,10 +323,22 @@ function setupGameNavigationButtons() {
   window.addEventListener("orientationchange", handleOrientationWarning);
 }
 
+
+/**
+ * Displays mobile control panel.
+ */
+
+
 function showMobileControls() {
   const panel = document.getElementById("bottomPanel");
   panel.classList.remove("hidden");
 }
+
+
+/**
+ * Hides mobile control panel.
+ */
+
 
 function hideMobileControls() {
   const panel = document.getElementById("bottomPanel");
@@ -301,6 +349,13 @@ function hideMobileControls() {
 if (window.innerWidth <= 768) {
   showMobileControls();
 }
+
+
+
+/**
+ * Displays orientation warning if in portrait mode on small screen.
+ */
+
 
 function handleOrientationWarning() {
   const warning = document.getElementById("orientationWarning");
@@ -313,7 +368,9 @@ function handleOrientationWarning() {
   }
 }
 
-
+/**
+ * Automatically starts the game on orientation change to landscape.
+ */
 
 window.addEventListener("orientationchange", () => {
   setTimeout(() => {
@@ -322,12 +379,15 @@ window.addEventListener("orientationchange", () => {
 
     if (!isPortrait && isSmallScreen) {
       document.getElementById("orientationWarning").classList.add("hidden");
-      startGame(); // يبدأ اللعبة تلقائيًا عند التدوير للوضع الأفقي
+      startGame();
     }
   }, 300);
 });
 
 
+/**
+ * Toggles info panel visibility.
+ */
 
 function setupInfoButton() {
   const infoButton = document.getElementById("infoButton");

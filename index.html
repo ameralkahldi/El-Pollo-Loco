@@ -4,9 +4,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>El Pollo Loco</title>
   <link rel="stylesheet" href="style.css">
   <link rel="icon" href="./img/4_enemie_boss_chicken/1_walk/G1.png" />
-  <title>El Pollo Loco</title>
+
+  <!-- JS Model Files -->
   <script src="models/drawable.class.js"></script>
   <script src="models/movable-object.class.js"></script>
   <script src="models/endboss.class.js"></script>
@@ -25,37 +27,40 @@
   <script src="models/keyboard.class.js"></script>
   <script src="models/level.class.js"></script>
   <script src="models/throwable.class.js"></script>
-  <script src="levels/level1.js"></script>
-  <script src="js/game.js"></script>
 
+  <!-- Level Definition -->
+  <script src="levels/level1.js"></script>
+
+  <!-- Game Logic -->
+  <script src="js/game.js"></script>
 </head>
 
 <body>
   <h1 id="gameTitel">El Pollo Loco</h1>
 
-
+  <!-- Start Menu -->
   <div id="startMenu">
     <div id="menuWrapper">
       <img id="menuImage" src="./img/9_intro_outro_screens/start/startscreen_2.png" alt="Start Menu Image" />
       <button id="startButton" onclick="startGame()">Start Game</button>
 
-
+      <!-- Settings Icon and Info Button -->
       <img id="soundIcon" src="./img/11-menu/settings_icon.png" alt="Settings Icon">
       <button id="infoButton" class="info-button">ℹ</button>
+
+      <!-- Controls Info (Hidden by Default) -->
       <div id="controlDiv" class="hidden">
         <h3>🎮 Game Controls</h3>
         <p>⬅️ / ➡️ — Move Left / Right</p>
         <p>⬆️ — Jump</p>
         <p>D — Throw Salsa</p>
-
       </div>
 
-
-
+      <!-- Sound and Display Settings -->
       <div class="sound-menu">
         <div>
           Fullscreen
-          <img id="fullscreen-switch" src="./img/11-menu/switch_off.png" alt="Sound Switch">
+          <img id="fullscreen-switch" src="./img/11-menu/switch_off.png" alt="Fullscreen Switch">
         </div>
         <div>
           Sounds
@@ -65,20 +70,16 @@
           Music
           <img id="music-switch" src="./img/11-menu/switch_on.png" alt="Music Switch">
         </div>
-        <img class="close-icon" src="./img/11-menu/close_icon.png" alt="Close">
+        <img class="close-icon" src="./img/11-menu/close_icon.png" alt="Close Settings">
       </div>
-
     </div>
   </div>
 
-
-
+  <!-- Game Canvas -->
   <div id="gameContainer">
-    <canvas id="canvas" width="720" height="500">
-      
-    </canvas>
+    <canvas id="canvas" width="720" height="500"></canvas>
 
-
+    <!-- Mobile Touch Controls (Hidden on Desktop) -->
     <div id="bottomPanel" class="mobile-controls hidden">
       <button id="btnLeft" class="control-button">
         <img src="./img/10-mobile/arrow_left.png" alt="Left" />
@@ -94,17 +95,16 @@
       </button>
     </div>
 
-
-
+    <!-- Game Over Screen -->
     <div id="gameOverScreen" class="hidden">
       <img id="gameOverImage" src="" alt="Game Over" />
       <div id="gameOverButtons">
-        <button id="restartButton"> Retry</button>
-        <button id="backToMenuButton"> Back to Menu</button>
+        <button id="restartButton">Retry</button>
+        <button id="backToMenuButton">Back to Menu</button>
       </div>
     </div>
 
-
+    <!-- Orientation Warning for Mobile -->
     <div id="orientationWarning" class="hidden">
       <h2>PLEASE ROTATE YOUR DEVICE TO PLAY</h2>
       <svg id="deviceIcon" xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512">
@@ -113,8 +113,7 @@
         </path>
       </svg>
     </div>
-
-
+  </div>
 </body>
 
 </html>
