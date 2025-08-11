@@ -25,7 +25,7 @@ function init() {
 
 function startGame() {
   const isPortrait = window.innerHeight > window.innerWidth;
-  const isSmallScreen = window.innerWidth <= 400;
+  const isSmallScreen = window.innerWidth <= 500;
 
   if (isSmallScreen && isPortrait) {
     document.getElementById("orientationWarning").classList.remove("hidden");
@@ -145,6 +145,7 @@ window.addEventListener("DOMContentLoaded", () => {
   setupGameNavigationButtons();
   handleOrientationWarning();
   setupInfoButton();
+  checkStartMenuOrientation();
 });
 
 //*Connect the control buttons*/
@@ -310,18 +311,26 @@ function setupGameNavigationButtons() {
     canvas.style.height = `${newHeight}px`;
   }
 
-  window.addEventListener("load", resizeCanvasToFullscreen);
-  window.addEventListener("resize", resizeCanvasToFullscreen);
-  window.addEventListener("orientationchange", () => {
-    setTimeout(resizeCanvasToFullscreen, 300); 
-    });
 
-  window.addEventListener("load", resizeCanvasToFullscreen);
-  window.addEventListener("resize", resizeCanvasToFullscreen);
-  window.addEventListener("load", handleOrientationWarning);
-  window.addEventListener("resize", handleOrientationWarning);
-  window.addEventListener("orientationchange", handleOrientationWarning);
+
+
+
+
+window.addEventListener("load", () => {
+  resizeCanvasToFullscreen();
+  handleOrientationWarning();
+
+});
+
+window.addEventListener("resize", () => {
+  resizeCanvasToFullscreen();
+  handleOrientationWarning();
+});
+
+  
+  
 }
+
 
 
 /**
@@ -361,28 +370,40 @@ function handleOrientationWarning() {
   const warning = document.getElementById("orientationWarning");
   const isPortrait = window.innerHeight > window.innerWidth;
 
-  if (window.innerWidth <= 400 && isPortrait) {
+  if (window.innerWidth <= 500 && isPortrait) {
     warning.classList.remove("hidden");
   } else {
     warning.classList.add("hidden");
   }
 }
 
+
 /**
  * Automatically starts the game on orientation change to landscape.
  */
 
-window.addEventListener("orientationchange", () => {
-  setTimeout(() => {
-    const isPortrait = window.innerHeight > window.innerWidth;
-    const isSmallScreen = window.innerWidth <= 400;
+function checkStartMenuOrientation() {
+  const orientationWarning = document.getElementById('orientationWarning');
+  const startMenu = document.getElementById('startMenu');
+  const isPortrait = window.innerHeight > window.innerWidth;
+  const isNarrow = window.innerWidth <= 750;
 
-    if (!isPortrait && isSmallScreen) {
-      document.getElementById("orientationWarning").classList.add("hidden");
-      startGame();
-    }
-  }, 300);
+  if (isNarrow && isPortrait) {
+    orientationWarning.classList.remove('hidden');  
+    startMenu.style.display = "block";           
+    console.log('orientationWarning is shown');
+  } else {
+    orientationWarning.classList.add('hidden');
+    console.log('orientationWarning is hidden');
+  }
+}
+
+window.addEventListener("orientationchange", () => {
+
+  setTimeout(checkStartMenuOrientation, 300); 
 });
+
+
 
 
 /**

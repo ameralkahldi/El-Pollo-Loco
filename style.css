@@ -48,10 +48,29 @@ h1 {
 }
 
 
+/* تحذير الاتجاه */
+#orientationWarning {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  color: #ffd111;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  text-align: center;
+}
 
+#orientationWarning h2 {
+  margin: 20px 0 0;
+  font-size: 24px;
+}
 
-
-
+/* قائمة البداية */
 #startMenu {
   display: flex;
   flex-direction: column;
@@ -69,14 +88,13 @@ h1 {
   box-sizing: border-box;
 }
 
-
+/* محتوى القائمة */
 #menuWrapper {
   position: relative;
   display: inline-block;
   width: 100%;
   height: 100%;
 }
-
 
 #menuImage {
   display: block;
@@ -86,6 +104,7 @@ h1 {
   border-radius: 5px;
 }
 
+/* زر البدء */
 #startButton {
   position: absolute;
   top: 20%;
@@ -118,7 +137,7 @@ h1 {
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
 
-
+/* زر الإعدادات */
 #soundIcon {
   position: absolute;
   top: 2%;
@@ -136,6 +155,7 @@ h1 {
   content: url('./img/11-menu/settings_icon_hover.png');
 }
 
+/* قائمة الصوت */
 .sound-menu {
   position: absolute;
   top: 80px;
@@ -178,39 +198,7 @@ h1 {
   max-height: 60px;
 }
 
-
-@media (max-width: 600px) {
-  #startMenu {
-    height: 95vh;
-    width: 95vw;
-  }
-
-  #startButton {
-    padding: 2.5vh 5vw;
-    font-size: 1rem;
-  }
-
-  #soundIcon {
-    width: 32px;
-  }
-
-  .sound-menu {
-    top: 60px;
-    right: 10px;
-    width: 90vw;
-    font-size: 1.2rem;
-    padding: 20px;
-  }
-
-  .sound-menu img {
-    height: 36px;
-  }
-
-  .sound-menu div {
-    width: 100%;
-  }
-}
-
+/* إعدادات الشاشة الصغيرة */
 @media (max-width: 400px) {
   #startButton {
     font-size: 0.9rem;
@@ -225,6 +213,12 @@ h1 {
     height: 30px;
   }
 }
+
+/* إخفاء العناصر */
+.hidden {
+  display: none !important;
+}
+
 
 
 .info-button {
@@ -415,26 +409,6 @@ h1 {
   }
 }
 
-#orientationWarning {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.85);
-  color: #ffd111;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  text-align: center;
-}
-
-#orientationWarning h2 {
-  margin: 20px 0 0;
-  font-size: 24px;
-}
 
 
 
