@@ -319,12 +319,14 @@ function setupGameNavigationButtons() {
 window.addEventListener("load", () => {
   resizeCanvasToFullscreen();
   handleOrientationWarning();
+  checkStartMenuOrientation();
 
 });
 
 window.addEventListener("resize", () => {
   resizeCanvasToFullscreen();
   handleOrientationWarning();
+  checkStartMenuOrientation();
 });
 
   
@@ -370,7 +372,7 @@ function handleOrientationWarning() {
   const warning = document.getElementById("orientationWarning");
   const isPortrait = window.innerHeight > window.innerWidth;
 
-  if (window.innerWidth <= 500 && isPortrait) {
+  if (window.innerWidth <= 800 && isPortrait) {
     warning.classList.remove("hidden");
   } else {
     warning.classList.add("hidden");
@@ -383,28 +385,28 @@ function handleOrientationWarning() {
  */
 
 function checkStartMenuOrientation() {
-  const orientationWarning = document.getElementById('orientationWarning');
-  const startMenu = document.getElementById('startMenu');
-  const isPortrait = window.innerHeight > window.innerWidth;
-  const isNarrow = window.innerWidth <= 750;
 
-  if (isNarrow && isPortrait) {
-    orientationWarning.classList.remove('hidden');  
-    startMenu.style.display = "block";           
-    console.log('orientationWarning is shown');
-  } else {
-    orientationWarning.classList.add('hidden');
-    console.log('orientationWarning is hidden');
+    const orientationWarning = document.getElementById('orientationWarning');
+    const startMenu = document.getElementById('startMenu');
+    const gameCon = document.getElementById('gameContainer');
+    const isPortrait = window.innerHeight > window.innerWidth;
+    const isNarrow = window.innerWidth <= 750;
+
+
+    if (isNarrow && isPortrait) {
+      orientationWarning.classList.remove('hidden');
+      startMenu.style.display = "block";
+            gameCon.style.display = 'none';
+
+    } else {
+      orientationWarning.classList.add('hidden');
+    }
   }
-}
 
-window.addEventListener("orientationchange", () => {
-
-  setTimeout(checkStartMenuOrientation, 300); 
-});
-
-
-
+  window.addEventListener("load", checkStartMenuOrientation);
+  window.addEventListener("orientationchange", () => {
+    setTimeout(checkStartMenuOrientation, 300);
+  });
 
 /**
  * Toggles info panel visibility.
