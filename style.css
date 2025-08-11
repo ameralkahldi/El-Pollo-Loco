@@ -297,66 +297,11 @@ h1 {
   src: url("fonts/Zabars (1).ttf") format("truetype");
 }
 
-#bottomPanel.mobile-controls {
-  position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 15px; 
-  z-index: 1000;
-  background: rgba(0, 0, 0, 0.4); 
-  padding: 10px 20px;
-  border-radius: 30px;
-  backdrop-filter: blur(5px); 
-}
-
-.control-button {
-  width: 60px;
-  height: 60px;
-  background: rgba(255, 255, 255, 0.15);
-  border: 2px solid #ffd111;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-}
-
-.control-button:active {
-  background: rgba(255, 255, 255, 0.35);
-  transform: scale(0.9);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-.control-button img {
-  width: 50%;
-  height: 50%;
-  pointer-events: none;  
-}
-
-#btnJump {
-  width: 70px;
-  height: 70px;
-}
-
-#btnThrow {
-  width: 65px;
-  height: 65px;
-  border-color: #ff4444;
-}
-#btnThrow img {
-  width: 60%;
-  height: 60%;
-}
 
 
 
-@media (min-width: 769px) {
+/* إخفاء لوحة التحكم على الشاشات الكبيرة */
+@media (min-width: 1200px) {
   #bottomPanel {
     display: none !important;
   }
@@ -367,48 +312,54 @@ h1 {
   display: none;
 }
 
-
+/* مخفية افتراضياً */
 .mobile-controls {
   display: none;
 }
 
+/* زر مخفي */
 .hidden {
   display: none !important;
 }
 
+/* إظهار لوحة التحكم على الشاشات اللمسية */
 @media (pointer: coarse) {
   .mobile-controls {
     display: flex;
-  }
-
-  #btnLeft {
+    justify-content: space-between;
     position: absolute;
-    bottom: 20px;
-    left: 20px;
+    bottom: 10px;
+    left: 0;
+    right: 0;
+    padding: 10px 20px;
+    z-index: 999;
+    pointer-events: none; /* لا تتداخل مع اللعب */
   }
 
-  #btnRight {
-    position: absolute;
-    bottom: 20px;
-    left: 100px;
+  .left-controls,
+  .right-controls {
+    display: flex;
+    gap: 15px;
+    pointer-events: auto; /* فقط الأزرار تتفاعل */
   }
 
-  #btnJump {
-    position: absolute;
-    bottom: 20px;
-    right: 100px;
+  .control-button {
+    width: 55px;
+    height: 55px;
+    background: rgba(255, 255, 255, 0.25); /* خلفية شفافة */
+    border: none;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(5px);
   }
 
-  #btnJumpImg {
-    height: 32px;
-  }
-
-  #btnThrow {
-    position: absolute;
-   
+  .control-button img {
+    width: 60%;
+    height: auto;
   }
 }
-
 
 
 
@@ -477,23 +428,3 @@ h1 {
 }
 
 
-@media (max-width: 768px) {
-  #bottomPanel {
-    display: flex !important; /* block */
-    justify-content: center;
-    position: fixed;
-    bottom: 10px;
-    width: 100%;
-    background: rgba(255, 255, 255, 0.8); 
-    z-index: 1000;
-  }
-
-  .control-button {
-    background: none;
-    border: none;
-  }
-
-  #bottomPanel.hidden {
-    display: none !important;
-  }
-}

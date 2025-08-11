@@ -44,7 +44,7 @@ function startGame() {
     backgroundMusic.play().catch((e) => console.warn("Music blockiert:", e));
   }
 
-  if (window.innerWidth <= 768) {
+  if (window.innerWidth <= 1000) {
     showMobileControls();
   }
 
@@ -63,6 +63,8 @@ function gameOver(won) {
   const screen = document.getElementById("gameOverScreen");
   const img = document.getElementById("gameOverImage");
   const canvas = document.getElementById("canvas");
+
+  document.getElementById("bottomPanel").classList.add("hidden");
 
   img.src = won
     ? "./img/9_intro_outro_screens/win_2.png"
@@ -83,6 +85,7 @@ function gameOver(won) {
   screen.classList.remove("hidden");
   canvas.classList.add("hidden");
 }
+
 
 
 
@@ -275,6 +278,7 @@ function setupGameNavigationButtons() {
       document.getElementById("gameOverScreen").classList.add("hidden");
       document.getElementById("canvas").classList.remove("hidden");
       document.querySelector(".sound-menu").style.display = "none";
+      document.getElementById("bottomPanel").classList.remove("hidden");
       init();
 
       if (musicEnabled) {
@@ -357,7 +361,7 @@ function hideMobileControls() {
 }
 
 // Example: Show only if the screen is small
-if (window.innerWidth <= 768) {
+if (window.innerWidth <= 1000) {
   showMobileControls();
 }
 
@@ -366,6 +370,7 @@ if (window.innerWidth <= 768) {
 /**
  * Displays orientation warning if in portrait mode on small screen.
  */
+
 
 
 function handleOrientationWarning() {

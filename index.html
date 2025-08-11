@@ -80,25 +80,33 @@
     <canvas id="canvas" width="720" height="500"></canvas>
 
     <!-- Mobile Touch Controls (Hidden on Desktop) -->
-    <div id="bottomPanel" class="mobile-controls hidden">
-      <button id="btnLeft" class="control-button">
-        <img src="./img/10-mobile/arrow_left.png" alt="Left" />
-      </button>
-      <button id="btnRight" class="control-button">
-        <img src="./img/10-mobile/arrow_right.png" alt="Right" />
-      </button>
-      <button id="btnJump" class="control-button">
-        <img id="btnJumpImg" src="./img/10-mobile/arrow_up.png" alt="Jump" />
-      </button>
-      <button id="btnThrow" class="control-button">
-        <img src="./img/10-mobile/salsa_bottle.png" alt="Throw" />
-      </button>
-    </div>
+<div id="bottomPanel" class="mobile-controls hidden">
+  <div class="left-controls">
+    <button id="btnLeft" class="control-button">
+      <img src="./img/10-mobile/arrow_left.png" alt="Left" />
+    </button>
+    <button id="btnRight" class="control-button">
+      <img src="./img/10-mobile/arrow_right.png" alt="Right" />
+    </button>
+  </div>
+
+  <div class="right-controls">
+    <button id="btnJump" class="control-button">
+      <img id="btnJumpImg" src="./img/10-mobile/arrow_up.png" alt="Jump" />
+    </button>
+    <button id="btnThrow" class="control-button">
+      <img src="./img/10-mobile/salsa_bottle.png" alt="Throw" />
+    </button>
+  </div>
+</div>
+
+
+
 
     <!-- Game Over Screen -->
     <div id="gameOverScreen" class="hidden">
       <img id="gameOverImage" src="" alt="Game Over" />
-      <div id="gameOverButtons">
+      <div id="gameOverButtons">+
         <button id="restartButton">Retry</button>
         <button id="backToMenuButton">Back to Menu</button>
       </div>
