@@ -14,7 +14,7 @@ class World {
   chickenBossMoveSound = new Audio("audio/audio_chickenBoss.wav");
   coinCollectSound = new Audio("audio/audio_coin_collect.wav");
   bottleCollectSound = new Audio("audio/audio_landing.wav");
-  maxStartMoveX = 200;        
+  maxStartMoveX = 200;
   startPhaseOver = false;
   /**
    * Creates an instance of the game world.
@@ -29,14 +29,13 @@ class World {
     this.character = new Character();
     this.level = createLevel1();
 
-    this.statusBar = new StatusBar('health');
-    this.coinsStatusBar = new CoinsStatusBar('coins');
-    this.bottleStatusBar = new BottlesStatusBar('bottles');
+    this.statusBar = new StatusBar("health");
+    this.coinsStatusBar = new CoinsStatusBar("coins");
+    this.bottleStatusBar = new BottlesStatusBar("bottles");
 
     this.setWorld();
     this.statusBar.setPercentage(this.character.energy);
-    this.endboss = new Endboss(this.character); 
-
+    this.endboss = new Endboss(this.character);
 
     this.checkCollisions();
     this.checkThrowObject();
@@ -82,7 +81,10 @@ class World {
     this.intervalIds.push(
       setInterval(() => {
         if (this.keyboard.D && this.character.bottleCount > 0) {
-          let bottle = new ThrowableObject(this.character.x, this.character.y + 100);
+          let bottle = new ThrowableObject(
+            this.character.x,
+            this.character.y + 100
+          );
           bottle.hit = false;
           this.throwableObjects.push(bottle);
           this.character.bottleCount--;
@@ -137,13 +139,12 @@ class World {
   }
 
   /**
- * Determines whether the character can currently be hit by the endboss.
- * @returns {boolean}
- */
-characterCanBeHit() {
-  return this.character && this.character.canBeHit();
-}
-
+   * Determines whether the character can currently be hit by the endboss.
+   * @returns {boolean}
+   */
+  characterCanBeHit() {
+    return this.character && this.character.canBeHit();
+  }
 
   /**
    * Applies damage to the character and updates the health bar.
@@ -197,36 +198,74 @@ characterCanBeHit() {
 
   /**
    * Checks if a thrown bottle hits any enemy.
+   * This function loops through all bottles and enemies,
+   * and triggers appropriate actions if a collision is detected.
    */
   checkBottleHitsEnemies() {
     this.intervalIds.push(
       setInterval(() => {
         this.throwableObjects.forEach((bottle) => {
           this.level.enemises.forEach((enemy) => {
-            if (!enemy.dead && !bottle.hit && bottle.isColliding(enemy)) {
-              bottle.hit = true;
-              bottle.showHitEffect = true;
-              bottle.hitEffectStart = Date.now();
-              bottle.stop();
-
-              enemy.dead = true;
-              enemy.speed = 0;
-              this.character.smallJump();
-
-              setTimeout(() => {
-                const index = this.level.enemises.indexOf(enemy);
-                if (index > -1) this.level.enemises.splice(index, 1);
-              }, 200);
-
-              setTimeout(() => {
-                const bottleIndex = this.throwableObjects.indexOf(bottle);
-                if (bottleIndex > -1) this.throwableObjects.splice(bottleIndex, 1);
-              }, bottle.hitEffectDuration || 500);
-            }
+            this.handleBottleEnemyCollision(bottle, enemy);
           });
         });
       }, 100)
     );
+  }
+
+  /**
+   * Handles the collision logic between a single bottle and a single enemy.
+   * @param {Object} bottle - The throwable bottle object.
+   * @param {Object} enemy - The enemy object.
+   */
+  handleBottleEnemyCollision(bottle, enemy) {
+    if (!enemy.dead && !bottle.hit && bottle.isColliding(enemy)) {
+      this.processBottleHit(bottle, enemy);
+    }
+  }
+
+  /**
+   * Processes the effects of a bottle hitting an enemy.
+   * Stops the bottle, marks enemy dead, triggers jump and cleans up objects.
+   * @param {Object} bottle - The throwable bottle object.
+   * @param {Object} enemy - The enemy object.
+   */
+  processBottleHit(bottle, enemy) {
+    bottle.hit = true;
+    bottle.showHitEffect = true;
+    bottle.hitEffectStart = Date.now();
+    bottle.stop();
+
+    enemy.dead = true;
+    enemy.speed = 0;
+    this.character.smallJump();
+
+    this.removeEnemyAfterDelay(enemy, 200);
+    this.removeBottleAfterDelay(bottle, bottle.hitEffectDuration || 500);
+  }
+
+  /**
+   * Removes the enemy from the level after a delay.
+   * @param {Object} enemy - The enemy to remove.
+   * @param {number} delay - Delay in milliseconds.
+   */
+  removeEnemyAfterDelay(enemy, delay) {
+    setTimeout(() => {
+      const index = this.level.enemises.indexOf(enemy);
+      if (index > -1) this.level.enemises.splice(index, 1);
+    }, delay);
+  }
+
+  /**
+   * Removes the bottle from throwable objects after a delay.
+   * @param {Object} bottle - The bottle to remove.
+   * @param {number} delay - Delay in milliseconds.
+   */
+  removeBottleAfterDelay(bottle, delay) {
+    setTimeout(() => {
+      const bottleIndex = this.throwableObjects.indexOf(bottle);
+      if (bottleIndex > -1) this.throwableObjects.splice(bottleIndex, 1);
+    }, delay);
   }
 
   /**
@@ -296,7 +335,6 @@ characterCanBeHit() {
     this.endBoss.speed = 0;
     this.endBoss.isHurt = false;
     this.gameIsOver = true;
-
     setTimeout(() => gameOver(true), 2000);
   }
 
@@ -314,13 +352,10 @@ characterCanBeHit() {
     );
   }
 
-  /**
-   * Determines if the character can be hit
-*/
- /**
+/**
  * Handles the event when the character successfully jumps on an enemy.
  * Kills the enemy, plays sound, makes character jump, and removes enemy.
- * 
+ *
  * @param {Enemy} enemy - The enemy that was jumped on.
  */
 hitTargetSuccessfully(enemy) {
@@ -328,27 +363,45 @@ hitTargetSuccessfully(enemy) {
 
   if (this.character.isAbove(enemy) && !enemy.dead) {
     this.character.smallJump();
- 
-    if (typeof enemy.kill === 'function') {
-      enemy.kill();
-    } else {
-      enemy.energy = 0;
-      enemy.speed = 0;
-      enemy.dead = true;
-      enemy.img = enemy.imageCache ? enemy.imageCache[enemy.IMAGE_DEAD[0]] : enemy.img;
-    }
-
+    this.killEnemy(enemy);
     this.playSound(this.chickenDeathSound);
-
-    setTimeout(() => {
-      let index = this.level.enemises.indexOf(enemy);
-      if (index > -1) this.level.enemises.splice(index, 1);
-    }, 200);
+    this.removeEnemyAfterDelay(enemy, 200);
   }
 }
 
+/**
+ * Kills the enemy by setting its state and image.
+ * Uses enemy.kill() if available.
+ *
+ * @param {Enemy} enemy
+ */
+killEnemy(enemy) {
+  if (typeof enemy.kill === "function") {
+    enemy.kill();
+  } else {
+    enemy.energy = 0;
+    enemy.speed = 0;
+    enemy.dead = true;
+    enemy.img = enemy.imageCache
+      ? enemy.imageCache[enemy.IMAGE_DEAD[0]]
+      : enemy.img;
+  }
+}
+
+/**
+ * Removes an enemy from the enemies list after a delay.
+ * @param {Enemy} enemy
+ * @param {number} delay - milliseconds
+ */
+removeEnemyAfterDelay(enemy, delay) {
+  setTimeout(() => {
+    let index = this.level.enemises.indexOf(enemy);
+    if (index > -1) this.level.enemises.splice(index, 1);
+  }, delay);
+}
+
   stop() {
-    if (this.animationFrameId) cancelAnimationFrame(this.animationFrameId);            
+    if (this.animationFrameId) cancelAnimationFrame(this.animationFrameId);
     this.intervalIds.forEach((id) => clearInterval(id));
     this.intervalIds = [];
     this.gameIsOver = true;
@@ -367,10 +420,8 @@ hitTargetSuccessfully(enemy) {
    */
   updateEndbossBehavior() {
     if (!this.endBoss || this.endBoss.dead) return;
-
     const distance = Math.abs(this.character.x - this.endBoss.x);
     const detectionRange = 400;
-
     if (distance < detectionRange) {
       if (this.endBoss.speed === 0) this.playSound(this.chickenBossMoveSound);
       this.endBoss.speed = 2;
@@ -508,5 +559,4 @@ hitTargetSuccessfully(enemy) {
     // Schedule next frame
     this.animationFrameId = requestAnimationFrame(() => this.draw());
   }
-
 }

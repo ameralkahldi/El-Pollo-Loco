@@ -44,7 +44,9 @@ function createLevel1() {
    */
   let bottles = [
     new Bottle(300),
+    new Bottle(450),
     new Bottle(600),
+    new Bottle(750),
     new Bottle(900),
     new Bottle(1200),
     new Bottle(1500),
