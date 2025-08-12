@@ -17,81 +17,122 @@ function init() {
   world = new World(canvas, keyboard);
 }
 
-
 /**
  * Starts the game, checks screen orientation, and handles music & controls.
  */
-
 function startGame() {
-  const isPortrait = window.innerHeight > window.innerWidth;
-  const isSmallScreen = window.innerWidth <= 500;
-
-  if (isSmallScreen && isPortrait) {
-    document.getElementById("orientationWarning").classList.remove("hidden");
-    document.getElementById("startMenu").style.display = "block";
-    document.getElementById("gameContainer").style.display = "none";
-    document.getElementById("canvas").classList.add("hidden");
+  if (isPortraitOnSmallScreen()) {
+    showOrientationWarning();
     return;
   }
 
+  hideStartMenuAndShowGame();
+  startBackgroundMusicIfEnabled();
+  showControlsIfNeeded();
+  init();
+}
+
+/**
+ * Checks if the device is in portrait mode and on a small screen.
+ */
+function isPortraitOnSmallScreen() {
+  const isPortrait = window.innerHeight > window.innerWidth;
+  const isSmallScreen = window.innerWidth <= 500;
+  return isPortrait && isSmallScreen;
+}
+
+/**
+ * Shows the orientation warning and resets game display.
+ */
+function showOrientationWarning() {
+  document.getElementById("orientationWarning").classList.remove("hidden");
+  document.getElementById("startMenu").style.display = "block";
+  document.getElementById("gameContainer").style.display = "none";
+  document.getElementById("canvas").classList.add("hidden");
+}
+
+/**
+ * Hides the menu and shows the game canvas.
+ */
+function hideStartMenuAndShowGame() {
   document.getElementById("orientationWarning").classList.add("hidden");
   document.getElementById("startMenu").style.display = "none";
   document.getElementById("gameContainer").style.display = "block";
   document.getElementById("canvas").classList.remove("hidden");
+}
 
+/**
+ * Plays background music if music is enabled.
+ */
+function startBackgroundMusicIfEnabled() {
   if (musicEnabled) {
     backgroundMusic.play().catch((e) => console.warn("Music blockiert:", e));
   }
+}
 
+/**
+ * Shows mobile controls if screen width is less than or equal to 1400.
+ */
+function showControlsIfNeeded() {
   if (window.innerWidth <= 1400) {
     showMobileControls();
   }
-
-  init();
 }
-
 
 /**
  * Handles game over logic including showing win/lose screen and sounds.
  * @param {boolean} won - Indicates if the player won.
  */
-
 function gameOver(won) {
   stopGame();
+  hideMobileControlsOnGameOver();
+  updateGameOverImage(won);
+  playGameOverSoundsIfLost(won);
+  showGameOverScreen();
+}
 
-  const screen = document.getElementById("gameOverScreen");
-  const img = document.getElementById("gameOverImage");
-  const canvas = document.getElementById("canvas");
-
+/**
+ * Hides the bottom control panel when the game ends.
+ */
+function hideMobileControlsOnGameOver() {
   document.getElementById("bottomPanel").classList.add("hidden");
+}
 
+/**
+ * Updates the game over image depending on whether the player won.
+ * @param {boolean} won
+ */
+function updateGameOverImage(won) {
+  const img = document.getElementById("gameOverImage");
   img.src = won
     ? "./img/9_intro_outro_screens/win_2.png"
     : "./img/9_intro_outro_screens/game_over/game over.png";
-
-  if (!won) {
-    const deathSound = new Audio("audio/audio_chicken_death.mp3");
-    deathSound.play().catch((e) => {
-      console.error("Failed to play death sound:", e);
-    });
-
-    const gameOverSound = new Audio("audio/audio_game_over.wav");
-    gameOverSound.play().catch((e) => {
-      console.warn("Game over sound blocked:", e);
-    });
-  }
-
-  screen.classList.remove("hidden");
-  canvas.classList.add("hidden");
 }
 
 
+/**
+ * Plays sound effects if the player lost.
+ * @param {boolean} won
+ */
+function playGameOverSoundsIfLost(won) {
+  if (won) return;
 
+  playSound("audio/audio_chicken_death.mp3");
+  playSound("audio/audio_game_over.wav");
+}
+
+
+/**
+ * Displays the game over screen and hides the canvas.
+ */
+function showGameOverScreen() {
+  document.getElementById("gameOverScreen").classList.remove("hidden");
+  document.getElementById("canvas").classList.add("hidden");
+}
 
 /**
  * Stops the game, clears the canvas and resets audio.
  */
-
 
 function stopGame() {
   if (world) {
@@ -121,7 +162,6 @@ window.addEventListener("keydown", (e) => {
   if (e.keyCode == 68) keyboard.D = true;
 });
 
-
 /**
  * Handles binding of keyboard key up events.
  */
@@ -134,7 +174,6 @@ window.addEventListener("keyup", (e) => {
   if (e.keyCode == 32) keyboard.SPACE = false;
   if (e.keyCode == 68) keyboard.D = false;
 });
-
 
 /**
  * Initializes UI and game setup on page load.
@@ -177,12 +216,20 @@ function setupControlButtons() {
 
 /**
  * Sets up sound and music toggle behavior in the menu.
- */function setupSoundMenu() {
+ */
+function setupSoundMenu() {
+  setupSoundMenuToggle();
+  setupSoundToggle();
+  setupMusicToggle();
+}
+
+/**
+ * Handles opening and closing of the sound menu.
+ */
+function setupSoundMenuToggle() {
   const soundIcon = document.getElementById("soundIcon");
   const soundMenu = document.querySelector(".sound-menu");
   const closeSoundMenu = document.querySelector(".sound-menu .close-icon");
-  const soundSwitch = document.getElementById("sound-switch");
-  const musicSwitch = document.getElementById("music-switch");
 
   if (soundIcon && soundMenu) {
     soundIcon.addEventListener("click", () => {
@@ -195,48 +242,69 @@ function setupControlButtons() {
       soundMenu.style.display = "none";
     });
   }
+}
 
-  if (soundSwitch) {
-    soundSwitch.addEventListener("click", () => {
-      soundEnabled = !soundEnabled;
-      soundSwitch.src = soundEnabled
-        ? "./img/11-menu/switch_on.png"
-        : "./img/11-menu/switch_off.png";
+/**
+ * Toggles general sound on/off and updates the switch UI.
+ */
+function setupSoundToggle() {
+  const soundSwitch = document.getElementById("sound-switch");
 
-      if (!soundEnabled) {
-        backgroundMusic.pause();
-        backgroundMusic.currentTime = 0;
+  if (!soundSwitch) return;
 
-        document.querySelectorAll("audio").forEach((audio) => {
-          audio.pause();
-          audio.currentTime = 0;
-        });
-      } else {
-        if (musicEnabled)
-          backgroundMusic
-            .play()
-            .catch((e) => console.warn("Music not started:", e));
-      }
-    });
-  }
+  soundSwitch.addEventListener("click", () => {
+    soundEnabled = !soundEnabled;
+    soundSwitch.src = soundEnabled
+      ? "./img/11-menu/switch_on.png"
+      : "./img/11-menu/switch_off.png";
 
-  if (musicSwitch) {
-    musicSwitch.addEventListener("click", () => {
-      musicEnabled = !musicEnabled;
-      musicSwitch.src = musicEnabled
-        ? "./img/11-menu/switch_on.png"
-        : "./img/11-menu/switch_off.png";
+    if (!soundEnabled) {
+      backgroundMusic.pause();
+      backgroundMusic.currentTime = 0;
 
-      if (musicEnabled && soundEnabled) {
-        backgroundMusic
-          .play()
-          .catch((e) => console.warn("Music not started:", e));
-      } else {
-        backgroundMusic.pause();
-        backgroundMusic.currentTime = 0;
-      }
-    });
-  }
+      document.querySelectorAll("audio").forEach((audio) => {
+        audio.pause();
+        audio.currentTime = 0;
+      });
+    } else if (musicEnabled) {
+      backgroundMusic
+        .play()
+        .catch((e) => console.warn("Music not started:", e));
+    }
+  });
+}
+
+function playSound(path, volume = 1) {
+  if (!soundEnabled) return;
+  const audio = new Audio(path);
+  audio.volume = volume;
+  audio.play().catch(e => console.warn(`Audio blocked: ${e}`));
+}
+
+
+/**
+ * Toggles background music on/off and updates the switch UI.
+ */
+function setupMusicToggle() {
+  const musicSwitch = document.getElementById("music-switch");
+
+  if (!musicSwitch) return;
+
+  musicSwitch.addEventListener("click", () => {
+    musicEnabled = !musicEnabled;
+    musicSwitch.src = musicEnabled
+      ? "./img/11-menu/switch_on.png"
+      : "./img/11-menu/switch_off.png";
+
+    if (musicEnabled && soundEnabled) {
+      backgroundMusic
+        .play()
+        .catch((e) => console.warn("Music not started:", e));
+    } else {
+      backgroundMusic.pause();
+      backgroundMusic.currentTime = 0;
+    }
+  });
 }
 
 /** Switch to full screen mode */
@@ -259,70 +327,75 @@ function setupFullscreenToggle() {
 //*Preparing the back to menu and restart buttons*/
 
 function setupGameNavigationButtons() {
+  setupBackToMenuButton();
+  setupRestartButton();
+}
+
+/**
+ * Sets up the back-to-menu button functionality.
+ */
+function setupBackToMenuButton() {
   const backBtn = document.getElementById("backToMenuButton");
+  if (!backBtn) return;
+
+  backBtn.addEventListener("click", () => {
+    stopGame();
+    document.getElementById("startMenu").style.display = "block";
+    document.getElementById("gameOverScreen").classList.add("hidden");
+    document.getElementById("canvas").classList.add("hidden");
+  });
+}
+
+/**
+ * Sets up the restart button functionality.
+ */
+function setupRestartButton() {
   const restartBtn = document.getElementById("restartButton");
+  if (!restartBtn) return;
 
-  if (backBtn) {
-    backBtn.addEventListener("click", () => {
-      stopGame();
-      document.getElementById("startMenu").style.display = "block";
-      document.getElementById("gameOverScreen").classList.add("hidden");
-      document.getElementById("canvas").classList.add("hidden");
-    });
-  }
+  restartBtn.addEventListener("click", () => {
+    stopGame();
+    document.getElementById("gameOverScreen").classList.add("hidden");
+    document.getElementById("canvas").classList.remove("hidden");
+    document.querySelector(".sound-menu").style.display = "none";
+    document.getElementById("bottomPanel").classList.remove("hidden");
+    init();
 
-  if (restartBtn) {
-    restartBtn.addEventListener("click", () => {
-      stopGame();
-      document.getElementById("gameOverScreen").classList.add("hidden");
-      document.getElementById("canvas").classList.remove("hidden");
-      document.querySelector(".sound-menu").style.display = "none";
-      document.getElementById("bottomPanel").classList.remove("hidden");
-      init();
-
-      if (musicEnabled) {
-        backgroundMusic
-          .play()
-          .catch((e) => console.warn("Musik nicht gestartet:", e));
-      }
-    });
-  }
-
-
-
-   /**
-   * Resizes canvas to fit screen while maintaining aspect ratio.
-   */
-
-  function resizeCanvasToFullscreen() {
-    const canvas = document.getElementById("canvas");
-    const container = document.getElementById("gameContainer") || document.body;
-    const screenWidth = window.innerWidth;
-    const screenHeight = window.innerHeight;
-    const aspectRatio = 10 / 4;
-
-    let newWidth = screenWidth;
-    let newHeight = screenWidth / aspectRatio;
-
-    if (newHeight > screenHeight) {
-      newHeight = screenHeight;
-      newWidth = newHeight * aspectRatio;
+    if (musicEnabled) {
+      backgroundMusic
+        .play()
+        .catch((e) => console.warn("Music not started:", e));
     }
+  });
+}
 
-    canvas.style.width = `${newWidth}px`;
-    canvas.style.height = `${newHeight}px`;
+/**
+ * Resizes canvas to fit screen while maintaining aspect ratio.
+ */
+
+function resizeCanvasToFullscreen() {
+  const canvas = document.getElementById("canvas");
+  const container = document.getElementById("gameContainer") || document.body;
+  const screenWidth = window.innerWidth;
+  const screenHeight = window.innerHeight;
+  const aspectRatio = 10 / 4;
+
+  let newWidth = screenWidth;
+  let newHeight = screenWidth / aspectRatio;
+
+  if (newHeight > screenHeight) {
+    newHeight = screenHeight;
+    newWidth = newHeight * aspectRatio;
   }
 
-
-
-
-
+  canvas.style.width = `${newWidth}px`;
+  canvas.style.height = `${newHeight}px`;
+}
 
 window.addEventListener("load", () => {
   resizeCanvasToFullscreen();
   handleOrientationWarning();
   checkStartMenuOrientation();
-
 });
 
 window.addEventListener("resize", () => {
@@ -331,45 +404,33 @@ window.addEventListener("resize", () => {
   checkStartMenuOrientation();
 });
 
-  
-  
-}
-
-
-
 /**
  * Displays mobile control panel.
  */
-
 
 function showMobileControls() {
   const panel = document.getElementById("bottomPanel");
   panel.classList.remove("hidden");
 }
 
-
 /**
  * Hides mobile control panel.
  */
-
-
 function hideMobileControls() {
   const panel = document.getElementById("bottomPanel");
   panel.classList.add("hidden");
 }
 
-// Example: Show only if the screen is small
-if (window.innerWidth <= 1400) {
-  showMobileControls();
-}
-
+window.addEventListener('DOMContentLoaded', () => {
+  if (window.innerWidth <= 1400) {
+    showMobileControls();
+  }
+});
 
 
 /**
  * Displays orientation warning if in portrait mode on small screen.
  */
-
-
 
 function handleOrientationWarning() {
   const warning = document.getElementById("orientationWarning");
@@ -382,34 +443,30 @@ function handleOrientationWarning() {
   }
 }
 
-
 /**
  * Automatically starts the game on orientation change to landscape.
  */
 
 function checkStartMenuOrientation() {
+  const orientationWarning = document.getElementById("orientationWarning");
+  const startMenu = document.getElementById("startMenu");
+  const gameCon = document.getElementById("gameContainer");
+  const isPortrait = window.innerHeight > window.innerWidth;
+  const isNarrow = window.innerWidth <= 750;
 
-    const orientationWarning = document.getElementById('orientationWarning');
-    const startMenu = document.getElementById('startMenu');
-    const gameCon = document.getElementById('gameContainer');
-    const isPortrait = window.innerHeight > window.innerWidth;
-    const isNarrow = window.innerWidth <= 750;
-
-
-    if (isNarrow && isPortrait) {
-      orientationWarning.classList.remove('hidden');
-      startMenu.style.display = "block";
-            gameCon.style.display = 'none';
-
-    } else {
-      orientationWarning.classList.add('hidden');
-    }
+  if (isNarrow && isPortrait) {
+    orientationWarning.classList.remove("hidden");
+    startMenu.style.display = "block";
+    gameCon.style.display = "none";
+  } else {
+    orientationWarning.classList.add("hidden");
   }
+}
 
-  window.addEventListener("load", checkStartMenuOrientation);
-  window.addEventListener("orientationchange", () => {
-    setTimeout(checkStartMenuOrientation, 300);
-  });
+window.addEventListener("load", checkStartMenuOrientation);
+window.addEventListener("orientationchange", () => {
+  setTimeout(checkStartMenuOrientation, 300);
+});
 
 /**
  * Toggles info panel visibility.
