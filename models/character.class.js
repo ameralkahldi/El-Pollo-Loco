@@ -2,14 +2,12 @@ class Character extends MovableObject {
   y = 150;
   height = 200;
   width = 120;
-  speed = 7;
   currentImage = 0;
   world;
   otherDirection = false;
   energy = 100;
   bottles = 0;
   dead = false;
- 
   jumpSound = new Audio("audio/audio_jump.wav");
   soundEnabled = true;
   volume = 1.0;
@@ -78,6 +76,7 @@ class Character extends MovableObject {
 
   constructor() {
     super();
+    this.speed= 1;
 
     this.loadImage(this.IMAGE_WALKING[0]);
     this.loadImages(this.IMAGE_WALKING);
@@ -121,7 +120,7 @@ class Character extends MovableObject {
       } else if (this.speedY == 0 && !this.isAboveGround()) {
         this.playWalkingAnimation(this.IMAGES_IDLE);
       }
-    }, 50);
+    }, 120);
   }
 
   /**

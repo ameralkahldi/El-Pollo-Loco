@@ -51,6 +51,14 @@ class ChickenSmall extends MovableObject {
     this.applyGravity();
     this.animate();
     this.x = x; // Set initial x position
+
+    this.offset = {
+  top: 40,
+  bottom: 30,
+  left: 20,
+  right: 10,
+};
+
   }
 
   /**

@@ -301,7 +301,7 @@ h1 {
 
 
 /* إخفاء لوحة التحكم على الشاشات الكبيرة */
-@media (min-width: 1200px) {
+@media (min-width: 1400px) {
   #bottomPanel {
     display: none !important;
   }

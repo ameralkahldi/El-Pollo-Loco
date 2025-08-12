@@ -75,14 +75,18 @@ class MovableObject extends DrawableObject {
    * @param {MovableObject} mo - Another movable object to check collision against.
    * @returns {boolean} True if the two objects are colliding.
    */
-  isColliding(mo) {
-    return (
-      this.x + this.width > mo.x &&
-      this.y + this.height > mo.y &&
-      this.x < mo.x &&
-      this.y < mo.y + mo.height
-    );
-  }
+isColliding(mo) {
+  const a = this.offset || { top: 0, bottom: 0, left: 0, right: 0 };
+  const b = mo.offset || { top: 0, bottom: 0, left: 0, right: 0 };
+
+  return (
+    this.x + this.width - a.right > mo.x + b.left &&
+    this.y + this.height - a.bottom > mo.y + b.top &&
+    this.x + a.left < mo.x + mo.width - b.right &&
+    this.y + a.top < mo.y + mo.height - b.bottom
+  );
+}
+
 
   /**
    * Checks if the object is currently falling (vertical speed < 0).

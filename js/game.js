@@ -15,7 +15,6 @@ let gameIsPaused = false;
 function init() {
   canvas = document.getElementById("canvas");
   world = new World(canvas, keyboard);
-  console.log("My Character is: ", world.character);
 }
 
 
