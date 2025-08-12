@@ -322,8 +322,7 @@ h1 {
   display: none !important;
 }
 
-/* إظهار لوحة التحكم على الشاشات اللمسية */
-@media (pointer: coarse) {
+@media (max-width: 1280px) {
   .mobile-controls {
     display: flex;
     justify-content: space-between;
@@ -346,7 +345,7 @@ h1 {
   .control-button {
     width: 55px;
     height: 55px;
-    background: rgba(255, 255, 255, 0.25); /* خلفية شفافة */
+    background: rgba(255, 255, 255, 0.25);
     border: none;
     border-radius: 10px;
     display: flex;
@@ -360,7 +359,6 @@ h1 {
     height: auto;
   }
 }
-
 
 
 #gameOverScreen {

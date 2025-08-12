@@ -43,7 +43,7 @@ function startGame() {
     backgroundMusic.play().catch((e) => console.warn("Music blockiert:", e));
   }
 
-  if (window.innerWidth <= 1000) {
+  if (window.innerWidth <= 1400) {
     showMobileControls();
   }
 
@@ -297,7 +297,6 @@ function setupGameNavigationButtons() {
   function resizeCanvasToFullscreen() {
     const canvas = document.getElementById("canvas");
     const container = document.getElementById("gameContainer") || document.body;
-
     const screenWidth = window.innerWidth;
     const screenHeight = window.innerHeight;
     const aspectRatio = 10 / 4;
@@ -360,7 +359,7 @@ function hideMobileControls() {
 }
 
 // Example: Show only if the screen is small
-if (window.innerWidth <= 1000) {
+if (window.innerWidth <= 1400) {
   showMobileControls();
 }
 
