@@ -55,9 +55,10 @@ class Chicken extends MovableObject {
     this.x = x; // Set initial x position
     this.speed = 0.4; // ثابت بدل عشوائي
     this.animate();
-    this.offset = {
-  top: 10,
-  bottom: 10,
+ 
+  this.offset = {
+  top: 0,
+  bottom: 20,
   left: 5,
   right: 5,
 };
