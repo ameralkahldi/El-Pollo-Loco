@@ -77,10 +77,17 @@ class World {
   /**
    * Checks if the player throws a bottle and handles it.
    */
+  /**
+   * Checks if the player throws a bottle (only once per key press).
+   */
   checkThrowObject() {
+    let canThrow = true; 
+
     this.intervalIds.push(
       setInterval(() => {
-        if (this.keyboard.D && this.character.bottleCount > 0) {
+        if (this.keyboard.D && canThrow && this.character.bottleCount > 0) {
+          canThrow = false;
+
           let bottle = new ThrowableObject(
             this.character.x,
             this.character.y + 100
@@ -93,7 +100,11 @@ class World {
           this.bottleStatusBar.setPercentage(percentage);
           this.playSound(this.bottleCollectSound);
         }
-      }, 200)
+
+        if (!this.keyboard.D) {
+          canThrow = true;
+        }
+      }, 100)
     );
   }
 
@@ -178,23 +189,25 @@ class World {
   /**
    * Checks if character collects a bottle.
    */
+  /**
+   * Checks if character collects a bottle.
+   * Updates bottle count and status bar immediately.
+   */
   checkBottleCollisions() {
     this.intervalIds.push(
       setInterval(() => {
         this.level.bottles = this.level.bottles.filter((bottle) => {
           if (this.character.isColliding(bottle)) {
-            this.character.bottleCount = this.character.bottleCount || 0;
+            if (typeof this.character.bottleCount !== "number") {
+              this.character.bottleCount = 0; }
             this.character.bottleCount++;
-            let percentage = Math.min(this.character.bottleCount * 20, 100);
+            const percentage = Math.min(this.character.bottleCount * 20, 100);
             this.bottleStatusBar.setPercentage(percentage);
             this.playSound(this.bottleCollectSound);
-            return false;
-          }
+            return false; }
           return true;
-        });
-      }, 200)
-    );
-  }
+        }); }, 100)
+    );}
 
   /**
    * Checks if a thrown bottle hits any enemy.
