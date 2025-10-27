@@ -34,13 +34,18 @@ class Chicken extends MovableObject {
   IMAGE_WALKING = [
     "img/3_enemies_chicken/chicken_normal/1_walk/1_w.png",
     "img/3_enemies_chicken/chicken_normal/1_walk/2_w.png",
-    "img/3_enemies_chicken/chicken_normal/1_walk/3_w.png"
+    "img/3_enemies_chicken/chicken_normal/1_walk/3_w.png",
   ];
 
   /** Image path for dead state */
-  IMAGE_DEAD = [
-    "img/3_enemies_chicken/chicken_normal/2_dead/dead.png"
-  ];
+  IMAGE_DEAD = ["img/3_enemies_chicken/chicken_normal/2_dead/dead.png"];
+   
+   offset = {
+        top: -50,
+        bottom: 0,
+        left: 20,
+        right: -10
+    };
 
   /**
    * Creates a new instance of Chicken.
@@ -55,8 +60,6 @@ class Chicken extends MovableObject {
     this.x = x; // Set initial x position
     this.speed = 0.4; // ثابت بدل عشوائي
     this.animate();
- 
-
   }
 
   /**
