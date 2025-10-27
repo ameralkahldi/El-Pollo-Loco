@@ -109,7 +109,6 @@ function updateGameOverImage(won) {
     : "./img/9_intro_outro_screens/game_over/game over.png";
 }
 
-
 /**
  * Plays sound effects if the player lost.
  * @param {boolean} won
@@ -120,7 +119,6 @@ function playGameOverSoundsIfLost(won) {
   playSound("audio/audio_chicken_death.mp3");
   playSound("audio/audio_game_over.wav");
 }
-
 
 /**
  * Displays the game over screen and hides the canvas.
@@ -250,7 +248,6 @@ function setupSoundMenuToggle() {
  */
 function setupSoundToggle() {
   const soundSwitch = document.getElementById("sound-switch");
-
   if (!soundSwitch) return;
 
   soundSwitch.addEventListener("click", () => {
@@ -259,10 +256,11 @@ function setupSoundToggle() {
       ? "./img/11-menu/switch_on.png"
       : "./img/11-menu/switch_off.png";
 
+    localStorage.setItem("soundEnabled", soundEnabled);
+
     if (!soundEnabled) {
       backgroundMusic.pause();
       backgroundMusic.currentTime = 0;
-
       document.querySelectorAll("audio").forEach((audio) => {
         audio.pause();
         audio.currentTime = 0;
@@ -274,21 +272,50 @@ function setupSoundToggle() {
     }
   });
 }
+// On page load, retrieve the saved sound and music settings
+window.addEventListener("DOMContentLoaded", () => {
+  // Retrieve saved sound setting from localStorage
+  const savedSound = localStorage.getItem("soundEnabled");
+  if (savedSound !== null) {
+    soundEnabled = savedSound === "true";
+    const soundSwitch = document.getElementById("sound-switch");
+    if (soundSwitch) {
+      soundSwitch.src = soundEnabled
+        ? "./img/11-menu/switch_on.png" // If sound is enabled, show "on" switch
+        : "./img/11-menu/switch_off.png"; // If sound is disabled, show "off" switch
+    }
+  }
+
+  // Retrieve saved music setting from localStorage
+  const savedMusic = localStorage.getItem("musicEnabled");
+  if (savedMusic !== null) {
+    musicEnabled = savedMusic === "true";
+    const musicSwitch = document.getElementById("music-switch");
+    if (musicSwitch) {
+      musicSwitch.src = musicEnabled
+        ? "./img/11-menu/switch_on.png" // If music is enabled, show "on" switch
+        : "./img/11-menu/switch_off.png"; // If music is disabled, show "off" switch
+    }
+  }
+
+  // Play background music if both music and sound are enabled
+  if (musicEnabled && soundEnabled) {
+    backgroundMusic.play().catch((e) => console.warn("Music not started:", e));
+  }
+});
 
 function playSound(path, volume = 1) {
   if (!soundEnabled) return;
   const audio = new Audio(path);
   audio.volume = volume;
-  audio.play().catch(e => console.warn(`Audio blocked: ${e}`));
+  audio.play().catch((e) => console.warn(`Audio blocked: ${e}`));
 }
-
 
 /**
  * Toggles background music on/off and updates the switch UI.
  */
 function setupMusicToggle() {
   const musicSwitch = document.getElementById("music-switch");
-
   if (!musicSwitch) return;
 
   musicSwitch.addEventListener("click", () => {
@@ -296,6 +323,8 @@ function setupMusicToggle() {
     musicSwitch.src = musicEnabled
       ? "./img/11-menu/switch_on.png"
       : "./img/11-menu/switch_off.png";
+
+    localStorage.setItem("musicEnabled", musicEnabled);
 
     if (musicEnabled && soundEnabled) {
       backgroundMusic
@@ -307,7 +336,6 @@ function setupMusicToggle() {
     }
   });
 }
-
 /** Switch to full screen mode */
 
 function setupFullscreenToggle() {
@@ -422,12 +450,11 @@ function hideMobileControls() {
   panel.classList.add("hidden");
 }
 
-window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener("DOMContentLoaded", () => {
   if (window.innerWidth <= 1400) {
     showMobileControls();
   }
 });
-
 
 /**
  * Displays orientation warning if in portrait mode on small screen.
@@ -486,22 +513,30 @@ function setupInfoButton() {
 
 function setupInfoPopups() {
   // Impressum
-  const impressumBtn = document.getElementById('impressumButton');
-  const impressumPopup = document.getElementById('impressumPopup');
-  const impressumClose = impressumPopup?.querySelector('.closePopup');
+  const impressumBtn = document.getElementById("impressumButton");
+  const impressumPopup = document.getElementById("impressumPopup");
+  const impressumClose = impressumPopup?.querySelector(".closePopup");
 
   if (impressumBtn && impressumPopup && impressumClose) {
-    impressumBtn.addEventListener('click', () => impressumPopup.classList.remove('hidden'));
-    impressumClose.addEventListener('click', () => impressumPopup.classList.add('hidden'));
+    impressumBtn.addEventListener("click", () =>
+      impressumPopup.classList.remove("hidden")
+    );
+    impressumClose.addEventListener("click", () =>
+      impressumPopup.classList.add("hidden")
+    );
   }
 
   // Datenschutz
-  const datenschutzBtn = document.getElementById('datenschutzButton');
-  const datenschutzPopup = document.getElementById('datenschutzPopup');
-  const datenschutzClose = datenschutzPopup?.querySelector('.closePopup');
+  const datenschutzBtn = document.getElementById("datenschutzButton");
+  const datenschutzPopup = document.getElementById("datenschutzPopup");
+  const datenschutzClose = datenschutzPopup?.querySelector(".closePopup");
 
   if (datenschutzBtn && datenschutzPopup && datenschutzClose) {
-    datenschutzBtn.addEventListener('click', () => datenschutzPopup.classList.remove('hidden'));
-    datenschutzClose.addEventListener('click', () => datenschutzPopup.classList.add('hidden'));
+    datenschutzBtn.addEventListener("click", () =>
+      datenschutzPopup.classList.remove("hidden")
+    );
+    datenschutzClose.addEventListener("click", () =>
+      datenschutzPopup.classList.add("hidden")
+    );
   }
 }
