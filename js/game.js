@@ -187,6 +187,7 @@ window.addEventListener("DOMContentLoaded", () => {
   handleOrientationWarning();
   setupInfoButton();
   checkStartMenuOrientation();
+  setupInfoPopups();
 });
 
 //*Connect the control buttons*/
@@ -481,4 +482,26 @@ function setupInfoButton() {
   infoButton.addEventListener("click", () => {
     controlDiv.classList.toggle("hidden");
   });
+}
+
+function setupInfoPopups() {
+  // Impressum
+  const impressumBtn = document.getElementById('impressumButton');
+  const impressumPopup = document.getElementById('impressumPopup');
+  const impressumClose = impressumPopup?.querySelector('.closePopup');
+
+  if (impressumBtn && impressumPopup && impressumClose) {
+    impressumBtn.addEventListener('click', () => impressumPopup.classList.remove('hidden'));
+    impressumClose.addEventListener('click', () => impressumPopup.classList.add('hidden'));
+  }
+
+  // Datenschutz
+  const datenschutzBtn = document.getElementById('datenschutzButton');
+  const datenschutzPopup = document.getElementById('datenschutzPopup');
+  const datenschutzClose = datenschutzPopup?.querySelector('.closePopup');
+
+  if (datenschutzBtn && datenschutzPopup && datenschutzClose) {
+    datenschutzBtn.addEventListener('click', () => datenschutzPopup.classList.remove('hidden'));
+    datenschutzClose.addEventListener('click', () => datenschutzPopup.classList.add('hidden'));
+  }
 }

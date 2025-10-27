@@ -47,32 +47,87 @@
       <!-- Settings Icon and Info Button -->
       <img id="soundIcon" src="./img/11-menu/settings_icon.png" alt="Settings Icon">
       <button id="infoButton" class="info-button">ℹ</button>
-
-      <!-- Controls Info (Hidden by Default) -->
-      <div id="controlDiv" class="hidden">
-        <h3>🎮 Game Controls</h3>
-        <p>⬅️ / ➡️ — Move Left / Right</p>
-        <p>⬆️ — Jump</p>
-        <p>D — Throw Salsa</p>
+      <!-- Impressum + Datenschutz Buttons -->
+      <div class="info-buttons">
+        <button id="impressumButton" class="impressum-button">Impressum</button>
+        <button id="datenschutzButton" class="impressum-button">Datenschutz</button>
       </div>
 
-      <!-- Sound and Display Settings -->
-      <div class="sound-menu">
-        <div>
-          Fullscreen
-          <img id="fullscreen-switch" src="./img/11-menu/switch_off.png" alt="Fullscreen Switch">
-        </div>
-        <div>
-          Sounds
-          <img id="sound-switch" src="./img/11-menu/switch_on.png" alt="Sound Switch">
-        </div>
-        <div>
-          Music
-          <img id="music-switch" src="./img/11-menu/switch_on.png" alt="Music Switch">
-        </div>
-        <img class="close-icon" src="./img/11-menu/close_icon.png" alt="Close Settings">
+      <!-- Impressum Popup -->
+      <div id="impressumPopup" class="hidden">
+        <h3> Impressum</h3>
+        <h4>Frontend Developer:</h4><p>Amer Alkhalidy</p>
+        <p><strong>Postanschrift:</strong><br>Robert-Koch-Str. 9<br>56073, Koblenz</p>
+        <h4>Kontakt:</h4><p>Telefon: +49 1511 0610345<br>E-Mail: <a
+            href="mailto:amer.alkhalidy@icloud.com">amer.alkhalidy@icloud.com</a></p>
+        <h4>Portfolio:</h4><p> <a href="https://ameralkhalidy.de" target="_blank">ameralkhalidy.de</a></p>
+        <button class="closePopup" data-popup="impressumPopup">Schließen</button>
       </div>
+      <!-- Datenschutz Popup -->
+      <div id="datenschutzPopup" class="hidden">
+        <h3> Datenschutz</h3>
+        <p>Wir nehmen den Schutz Ihrer persönlichen Daten sehr ernst. Hier erfahren Sie, welche Daten wir erheben und
+          wie wir sie verwenden:</p>
+
+        <h4>1. Erhebung und Verarbeitung personenbezogener Daten</h4>
+        <p>Personenbezogene Daten werden nur erhoben, wenn Sie uns diese freiwillig zur Verfügung stellen, z.B. über
+          Kontaktformulare oder E-Mail.</p>
+
+        <h4>2. Verwendung von Cookies</h4>
+        <p>Unsere Website verwendet keine Tracking-Cookies. Nur notwendige Cookies für die Funktionalität des Spiels
+          werden gesetzt.</p>
+
+        <h4>3. Datenweitergabe</h4>
+        <p>Eine Weitergabe Ihrer Daten an Dritte erfolgt nicht ohne Ihre ausdrückliche Zustimmung.</p>
+
+        <h4>4. Sicherheit Ihrer Daten</h4>
+        <p>Wir schützen Ihre Daten durch technische und organisatorische Maßnahmen vor unbefugtem Zugriff, Verlust oder
+          Manipulation.</p>
+
+        <h4>5. Rechte der Nutzer</h4>
+        <ul>
+          <li>Recht auf Auskunft über die gespeicherten Daten</li>
+          <li>Recht auf Berichtigung unrichtiger Daten</li>
+          <li>Recht auf Löschung Ihrer Daten</li>
+        </ul>
+
+        <h4>6. Kontakt</h4>
+        <p>Bei Fragen zum Datenschutz wenden Sie sich bitte an: <br>
+          <strong>Amer Alkhalidy</strong><br>
+          E-Mail: <a href="mailto:amer.alkhaldi@icloud.com">amer.alkhaldi@icloud.com</a>
+        </p>
+
+        <button class="closePopup" data-popup="datenschutzPopup">Schließen</button>
+      </div>
+
+
+
     </div>
+    <!-- Controls Info (Hidden by Default) -->
+    <div id="controlDiv" class="hidden">
+      <h3>🎮 Game Controls</h3>
+      <p>⬅️ / ➡️ — Move Left / Right</p>
+      <p>⬆️ — Jump</p>
+      <p>D — Throw Salsa</p>
+    </div>
+
+    <!-- Sound and Display Settings -->
+    <div class="sound-menu">
+      <div>
+        Fullscreen
+        <img id="fullscreen-switch" src="./img/11-menu/switch_off.png" alt="Fullscreen Switch">
+      </div>
+      <div>
+        Sounds
+        <img id="sound-switch" src="./img/11-menu/switch_on.png" alt="Sound Switch">
+      </div>
+      <div>
+        Music
+        <img id="music-switch" src="./img/11-menu/switch_on.png" alt="Music Switch">
+      </div>
+      <img class="close-icon" src="./img/11-menu/close_icon.png" alt="Close Settings">
+    </div>
+  </div>
   </div>
 
   <!-- Game Canvas -->
@@ -80,25 +135,25 @@
     <canvas id="canvas" width="720" height="500"></canvas>
 
     <!-- Mobile Touch Controls (Hidden on Desktop) -->
-<div id="bottomPanel" class="mobile-controls hidden">
-  <div class="left-controls">
-    <button id="btnLeft" class="control-button">
-      <img src="./img/10-mobile/arrow_left.png" alt="Left" />
-    </button>
-    <button id="btnRight" class="control-button">
-      <img src="./img/10-mobile/arrow_right.png" alt="Right" />
-    </button>
-  </div>
+    <div id="bottomPanel" class="mobile-controls hidden">
+      <div class="left-controls">
+        <button id="btnLeft" class="control-button">
+          <img src="./img/10-mobile/arrow_left.png" alt="Left" />
+        </button>
+        <button id="btnRight" class="control-button">
+          <img src="./img/10-mobile/arrow_right.png" alt="Right" />
+        </button>
+      </div>
 
-  <div class="right-controls">
-    <button id="btnJump" class="control-button">
-      <img id="btnJumpImg" src="./img/10-mobile/arrow_up.png" alt="Jump" />
-    </button>
-    <button id="btnThrow" class="control-button">
-      <img src="./img/10-mobile/salsa_bottle.png" alt="Throw" />
-    </button>
-  </div>
-</div>
+      <div class="right-controls">
+        <button id="btnJump" class="control-button">
+          <img id="btnJumpImg" src="./img/10-mobile/arrow_up.png" alt="Jump" />
+        </button>
+        <button id="btnThrow" class="control-button">
+          <img src="./img/10-mobile/salsa_bottle.png" alt="Throw" />
+        </button>
+      </div>
+    </div>
 
 
 
@@ -111,19 +166,19 @@
         <button id="backToMenuButton">Back to Menu</button>
       </div>
     </div>
-    </div>
+  </div>
 
 
-    <!-- Orientation Warning for Mobile -->
-    <div id="orientationWarning" class="hidden">
-      <h2>PLEASE ROTATE YOUR DEVICE TO PLAY</h2>
-      <svg id="deviceIcon" xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512">
-        <path fill="#ffd111"
-          d="M16 64C16 28.7 44.7 0 80 0H304c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H80c-35.3 0-64-28.7-64-64V64zM144 448c0 8.8 7.2 16 16 16h64c8.8 0 16-7.2 16-16s-7.2-16-16-16H160c-8.8 0-16 7.2-16 16zM304 64H80V384H304V64z">
-        </path>
-      </svg>
-    </div>
-  
+  <!-- Orientation Warning for Mobile -->
+  <div id="orientationWarning" class="hidden">
+    <h2>PLEASE ROTATE YOUR DEVICE TO PLAY</h2>
+    <svg id="deviceIcon" xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512">
+      <path fill="#ffd111"
+        d="M16 64C16 28.7 44.7 0 80 0H304c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H80c-35.3 0-64-28.7-64-64V64zM144 448c0 8.8 7.2 16 16 16h64c8.8 0 16-7.2 16-16s-7.2-16-16-16H160c-8.8 0-16 7.2-16 16zM304 64H80V384H304V64z">
+      </path>
+    </svg>
+  </div>
+
 </body>
 
 </html>

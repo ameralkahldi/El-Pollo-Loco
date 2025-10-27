@@ -18,7 +18,6 @@ h1 {
   color: white;
 }
 
-
 #canvas {
   display: block;
   margin: auto;
@@ -31,7 +30,6 @@ h1 {
   height: auto;
   aspect-ratio: 16 / 9;
 }
-
 
 @media (max-width: 768px) {
   #canvas {
@@ -47,8 +45,6 @@ h1 {
   }
 }
 
-
-/* تحذير الاتجاه */
 #orientationWarning {
   position: fixed;
   top: 0;
@@ -70,7 +66,6 @@ h1 {
   font-size: 24px;
 }
 
-/* قائمة البداية */
 #startMenu {
   display: flex;
   flex-direction: column;
@@ -88,7 +83,6 @@ h1 {
   box-sizing: border-box;
 }
 
-/* محتوى القائمة */
 #menuWrapper {
   position: relative;
   display: inline-block;
@@ -104,7 +98,6 @@ h1 {
   border-radius: 5px;
 }
 
-/* زر البدء */
 #startButton {
   position: absolute;
   top: 20%;
@@ -122,7 +115,7 @@ h1 {
   transition: all 0.3s ease;
   z-index: 10;
   letter-spacing: 1px;
-  font-family: 'Zabars', sans-serif;
+  font-family: "Zabars", sans-serif;
 }
 
 #startButton:hover {
@@ -137,7 +130,6 @@ h1 {
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
 
-/* زر الإعدادات */
 #soundIcon {
   position: absolute;
   top: 2%;
@@ -148,14 +140,13 @@ h1 {
 }
 
 #soundIcon:active {
-  transform: scale(1.2); 
+  transform: scale(1.2);
 }
 
 #soundIcon:hover {
-  content: url('./img/11-menu/settings_icon_hover.png');
+  content: url("./img/11-menu/settings_icon_hover.png");
 }
 
-/* قائمة الصوت */
 .sound-menu {
   position: absolute;
   top: 80px;
@@ -182,7 +173,7 @@ h1 {
 }
 
 .sound-menu .close-icon:hover {
-  content: url('./img/11-menu/close_icon_hover.png');
+  content: url("./img/11-menu/close_icon_hover.png");
 }
 
 .sound-menu div {
@@ -198,7 +189,6 @@ h1 {
   max-height: 60px;
 }
 
-/* إعدادات الشاشة الصغيرة */
 @media (max-width: 400px) {
   #startButton {
     font-size: 0.9rem;
@@ -214,35 +204,223 @@ h1 {
   }
 }
 
-/* إخفاء العناصر */
 .hidden {
   display: none !important;
 }
+/* Buttons Wrapper */
+.info-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 15px;
+}
 
+/* Buttons */
+.impressum-button {
+  background-color: #ffd111;
+  border: none;
+  padding: 12px 28px;
+  font-weight: 600;
+  font-size: 18px;
+  cursor: pointer;
+  border-radius: 10px;
+  color: #2c2c2c;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25);
+  transition: all 0.2s ease;
+}
 
+.impressum-button:hover {
+  background-color: #ffcc00;
+  transform: scale(1.05);
+}
+
+/* Popups */
+#impressumPopup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60%;
+  max-width: 700px;
+  background-color: #fff;
+  border: 3px solid #444;
+  border-radius: 16px;
+  padding: 30px 40px;
+  text-align: left;
+  z-index: 2000;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+  font-family: "Segoe UI", Arial, sans-serif;
+  line-height: 1.6;
+  color: #222;
+  overflow-y: auto;
+  max-height: 80vh;
+}
+
+#impressumPopup.hidden {
+  display: none;
+}
+
+/* Headings */
+#impressumPopup h3 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 26px;
+  font-weight: 700;
+  color: #b30000; 
+}
+
+#impressumPopup h4 {
+  color: #ff8800;
+  font-size: 20px;
+  margin-top: 15px;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+#impressumPopup p {
+  font-size: 16px;
+  margin: 8px 0;
+  color: #333;
+}
+/* Links */
+#impressumPopup a {
+  color: #b30000;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s ease, text-shadow 0.2s ease;
+}
+
+#impressumPopup a:hover {
+  color: #ff8800;
+  text-shadow: 0 0 5px rgba(255, 136, 0, 0.6);
+}
+
+/* Buttons */
+#impressumPopup button {
+  display: block;
+  margin: 25px auto 0 auto;
+  background-color: #ffd111;
+  border: none;
+  padding: 12px 28px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 16px;
+  color: #2c2c2c;
+  transition: all 0.2s ease;
+}
+
+#impressumPopup button:hover {
+  background-color: #ffcc00;
+  transform: scale(1.05);
+}
+
+/* === Datenschutz Popup === */
+#datenschutzPopup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60%;
+  max-width: 700px;
+  background-color: #ffffff;
+  color: #222;
+  border: 3px solid #ff8800;
+  border-radius: 16px;
+  padding: 30px 40px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+  font-family: "Segoe UI", Arial, sans-serif;
+  line-height: 1.6;
+  text-align: left;
+  z-index: 3000;
+  overflow-y: auto;
+  max-height: 80vh;
+}
+
+#datenschutzPopup.hidden {
+  display: none;
+}
+
+#datenschutzPopup h3 {
+  text-align: center;
+  color: #b30000;
+  font-size: 26px;
+  margin-bottom: 20px;
+  font-weight: 700;
+}
+
+#datenschutzPopup h4 {
+  color: #ff8800;
+  font-size: 20px;
+  margin-top: 15px;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+#datenschutzPopup p {
+  font-size: 16px;
+  margin: 8px 0;
+  color: #333;
+}
+
+#datenschutzPopup ul {
+  margin: 8px 0 15px 20px;
+  font-size: 16px;
+}
+
+#datenschutzPopup a {
+  color: #b30000;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s ease, text-shadow 0.2s ease;
+}
+
+#datenschutzPopup a:hover {
+  color: #ff8800;
+  text-shadow: 0 0 5px rgba(255, 136, 0, 0.6);
+}
+
+#datenschutzPopup button.closePopup {
+  display: block;
+  margin: 25px auto 5px auto;
+  background-color: #ffd111;
+  border: none;
+  padding: 12px 28px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 16px;
+  color: #2c2c2c;
+  transition: all 0.2s ease;
+}
+
+#datenschutzPopup button.closePopup:hover {
+  background-color: #ffcc00;
+  transform: scale(1.05);
+}
 
 .info-button {
-    position: absolute;
-    top: 75px;
-    right: 17px;
-    font-size: 24px;
-    width: 40px;
-    height: 40px;
-    border: none;
-    border-radius: 50%;
-    background-color: #ffd111;
-    color: #000;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-    transition: background-color 0.2s ease;
+  position: absolute;
+  top: 75px;
+  right: 17px;
+  font-size: 24px;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background-color: #ffd111;
+  color: #000;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  transition: background-color 0.2s ease;
 }
 
 .info-button:hover {
-    background-color: #ffc500;
+  background-color: #ffc500;
 }
 
 .hidden {
@@ -258,7 +436,7 @@ h1 {
   background: rgba(0, 0, 0, 0.85);
   color: #ffd111;
   border-radius: 12px;
-  font-family: 'Arial', sans-serif;
+  font-family: "Arial", sans-serif;
   font-size: 16px;
   z-index: 999;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
@@ -290,17 +468,11 @@ h1 {
   }
 }
 
-
-
 @font-face {
   font-family: "zabars";
   src: url("fonts/Zabars (1).ttf") format("truetype");
 }
 
-
-
-
-/* إخفاء لوحة التحكم على الشاشات الكبيرة */
 @media (min-width: 1400px) {
   #bottomPanel {
     display: none !important;
@@ -312,12 +484,10 @@ h1 {
   display: none;
 }
 
-/* مخفية افتراضياً */
 .mobile-controls {
   display: none;
 }
 
-/* زر مخفي */
 .hidden {
   display: none !important;
 }
@@ -332,14 +502,14 @@ h1 {
     right: 0;
     padding: 10px 20px;
     z-index: 999;
-    pointer-events: none; /* لا تتداخل مع اللعب */
+    pointer-events: none;
   }
 
   .left-controls,
   .right-controls {
     display: flex;
     gap: 15px;
-    pointer-events: auto; /* فقط الأزرار تتفاعل */
+    pointer-events: auto;
   }
 
   .control-button {
@@ -360,7 +530,6 @@ h1 {
   }
 }
 
-
 #gameOverScreen {
   display: flex;
   flex-direction: column;
@@ -373,7 +542,6 @@ h1 {
   display: flex;
   gap: 20px;
 }
-
 
 #gameOverImage {
   width: 100%;
@@ -388,7 +556,7 @@ h1 {
   margin: 0;
 }
 #deviceIcon {
-    animation: rotate 2s linear infinite alternate;
+  animation: rotate 2s linear infinite alternate;
 }
 #backToMenuButton {
   padding: 12px 24px;
@@ -399,15 +567,14 @@ h1 {
   border-radius: 8px;
   cursor: pointer;
 }
-#restartButton{
-   padding: 12px 24px;
+#restartButton {
+  padding: 12px 24px;
   font-size: 20px;
   background-color: #ff9900;
   color: white;
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  
 }
 
 #restartButton:hover {
@@ -418,11 +585,8 @@ h1 {
   background-color: #cc7a00;
 }
 
-
 #gameOverScreen.won #gameOverImage {
   width: 72%;
   height: auto;
   object-fit: contain; /* Bild behält sein Seitenverhältnis bei */
 }
-
-
