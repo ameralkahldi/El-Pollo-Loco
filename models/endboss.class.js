@@ -92,6 +92,13 @@ class Endboss extends MovableObject {
     this.currentDeadImage = 0;
 
     this.animate();
+
+    this.offset = {
+      top: 100,
+      bottom: 0,
+      left: 50,
+      right: 50,
+    };
   }
 
   /**
@@ -175,13 +182,29 @@ class Endboss extends MovableObject {
    * Plays the dead animation and stops on the last frame.
    */
   playDeadAnimation() {
-    let i = this.currentDeadImage % this.IMAGE_DEAD.length;
-    let path = this.IMAGE_DEAD[i];
-    this.img = this.imageCache[path];
-    this.currentDeadImage++;
+    if (this.deadAnimationPlayed) return; 
+    this.deadAnimationPlayed = true; 
+    let i = 0;
+    const deadAnimation = setInterval(() => {
+      if (i < this.IMAGE_DEAD.length) {
+        let path = this.IMAGE_DEAD[i];
+        this.img = this.imageCache[path];
+        i++;
+      } else {
+        clearInterval(deadAnimation); 
+      }
+    }, 300); 
+  }
 
-    if (this.currentDeadImage >= this.IMAGE_DEAD.length) {
-      this.currentDeadImage = this.IMAGE_DEAD.length - 1;
-    }
+  die() {
+    this.dead = true;
+    this.isAttacking = false;
+    this.isHurt = false;
+    this.speed = 0;
+
+    this.playDeadAnimation();
+    setTimeout(() => {
+      gameOver(true);
+    }, this.IMAGE_DEAD.length * 300 + 500); 
   }
 }

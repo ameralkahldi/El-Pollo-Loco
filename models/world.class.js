@@ -294,6 +294,10 @@ class World {
    * Handles the logic when a bottle hits the endboss.
    * @param {ThrowableObject} bottle - The bottle that hit.
    */
+  /**
+   * Handles the logic when a bottle hits the endboss.
+   * @param {ThrowableObject} bottle - The bottle that hit.
+   */
   handleBottleHit(bottle) {
     bottle.hit = true;
     bottle.showHitEffect = true;
@@ -303,7 +307,9 @@ class World {
     this.reduceEndbossEnergy(20);
     this.scheduleBottleRemoval(bottle);
 
-    if (this.endBoss.energy <= 0) this.killEndboss();
+    if (this.endBoss.energy <= 0 && !this.endBoss.dead) {
+      this.endBoss.die();
+    }
   }
 
   /**
@@ -352,53 +358,53 @@ class World {
     );
   }
 
-/**
- * Handles the event when the character successfully jumps on an enemy.
- * Kills the enemy, plays sound, makes character jump, and removes enemy.
- *
- * @param {Enemy} enemy - The enemy that was jumped on.
- */
-hitTargetSuccessfully(enemy) {
-  if (enemy === this.endBoss) return;
+  /**
+   * Handles the event when the character successfully jumps on an enemy.
+   * Kills the enemy, plays sound, makes character jump, and removes enemy.
+   *
+   * @param {Enemy} enemy - The enemy that was jumped on.
+   */
+  hitTargetSuccessfully(enemy) {
+    if (enemy === this.endBoss) return;
 
-  if (this.character.isAbove(enemy) && !enemy.dead) {
-    this.character.smallJump();
-    this.killEnemy(enemy);
-    this.playSound(this.chickenDeathSound);
-    this.removeEnemyAfterDelay(enemy, 200);
+    if (this.character.isAbove(enemy) && !enemy.dead) {
+      this.character.smallJump();
+      this.killEnemy(enemy);
+      this.playSound(this.chickenDeathSound);
+      this.removeEnemyAfterDelay(enemy, 200);
+    }
   }
-}
 
-/**
- * Kills the enemy by setting its state and image.
- * Uses enemy.kill() if available.
- *
- * @param {Enemy} enemy
- */
-killEnemy(enemy) {
-  if (typeof enemy.kill === "function") {
-    enemy.kill();
-  } else {
-    enemy.energy = 0;
-    enemy.speed = 0;
-    enemy.dead = true;
-    enemy.img = enemy.imageCache
-      ? enemy.imageCache[enemy.IMAGE_DEAD[0]]
-      : enemy.img;
+  /**
+   * Kills the enemy by setting its state and image.
+   * Uses enemy.kill() if available.
+   *
+   * @param {Enemy} enemy
+   */
+  killEnemy(enemy) {
+    if (typeof enemy.kill === "function") {
+      enemy.kill();
+    } else {
+      enemy.energy = 0;
+      enemy.speed = 0;
+      enemy.dead = true;
+      enemy.img = enemy.imageCache
+        ? enemy.imageCache[enemy.IMAGE_DEAD[0]]
+        : enemy.img;
+    }
   }
-}
 
-/**
- * Removes an enemy from the enemies list after a delay.
- * @param {Enemy} enemy
- * @param {number} delay - milliseconds
- */
-removeEnemyAfterDelay(enemy, delay) {
-  setTimeout(() => {
-    let index = this.level.enemises.indexOf(enemy);
-    if (index > -1) this.level.enemises.splice(index, 1);
-  }, delay);
-}
+  /**
+   * Removes an enemy from the enemies list after a delay.
+   * @param {Enemy} enemy
+   * @param {number} delay - milliseconds
+   */
+  removeEnemyAfterDelay(enemy, delay) {
+    setTimeout(() => {
+      let index = this.level.enemises.indexOf(enemy);
+      if (index > -1) this.level.enemises.splice(index, 1);
+    }, delay);
+  }
 
   stop() {
     if (this.animationFrameId) cancelAnimationFrame(this.animationFrameId);
