@@ -9,6 +9,7 @@ body {
   height: 100vh;
   margin: 0;
   font-family: "zabars";
+  cursor: pointer;
 }
 h1 {
   font-size: 32px;
@@ -160,8 +161,10 @@ h1 {
   z-index: 1000;
   color: white;
   font-size: 1.5rem;
-  width: 260px;
+  width: 300px;
+  height: 300px;
   box-sizing: border-box;
+  cursor: pointer;
 }
 
 .sound-menu .close-icon {
@@ -181,6 +184,8 @@ h1 {
   align-items: center;
   justify-content: space-between;
   width: 100%;
+  padding: 10px;
+    cursor: pointer;
 }
 
 .sound-menu img {
