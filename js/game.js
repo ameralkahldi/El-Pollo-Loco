@@ -404,18 +404,11 @@ function setupRestartButton() {
 
 function resizeCanvasToFullscreen() {
   const canvas = document.getElementById("canvas");
-  const container = document.getElementById("gameContainer") || document.body;
   const screenWidth = window.innerWidth;
   const screenHeight = window.innerHeight;
-  const aspectRatio = 10 / 4;
 
-  let newWidth = screenWidth;
-  let newHeight = screenWidth / aspectRatio;
-
-  if (newHeight > screenHeight) {
-    newHeight = screenHeight;
-    newWidth = newHeight * aspectRatio;
-  }
+  const newWidth = screenWidth * 0.5; 
+  const newHeight = screenHeight * 0.5; 
 
   canvas.style.width = `${newWidth}px`;
   canvas.style.height = `${newHeight}px`;
