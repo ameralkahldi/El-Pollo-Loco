@@ -81,7 +81,7 @@ class World {
    * Checks if the player throws a bottle (only once per key press).
    */
   checkThrowObject() {
-    let canThrow = true; 
+    let canThrow = true;
 
     this.intervalIds.push(
       setInterval(() => {
@@ -199,15 +199,19 @@ class World {
         this.level.bottles = this.level.bottles.filter((bottle) => {
           if (this.character.isColliding(bottle)) {
             if (typeof this.character.bottleCount !== "number") {
-              this.character.bottleCount = 0; }
+              this.character.bottleCount = 0;
+            }
             this.character.bottleCount++;
             const percentage = Math.min(this.character.bottleCount * 20, 100);
             this.bottleStatusBar.setPercentage(percentage);
             this.playSound(this.bottleCollectSound);
-            return false; }
+            return false;
+          }
           return true;
-        }); }, 100)
-    );}
+        });
+      }, 100)
+    );
+  }
 
   /**
    * Checks if a thrown bottle hits any enemy.
@@ -363,9 +367,8 @@ class World {
   checkCharacterDead() {
     this.intervalIds.push(
       setInterval(() => {
-        if (this.character.energy <= 0) {
-          this.character.dead = true;
-          gameOver(false);
+        if (this.character.energy <= 0 && !this.character.dead) {
+          this.character.die();
         }
       }, 200)
     );

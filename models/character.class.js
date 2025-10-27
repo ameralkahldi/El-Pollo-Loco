@@ -33,14 +33,11 @@ class Character extends MovableObject {
     "img/2_character_pepe/3_jump/J-39.png",
   ];
 
-  IMAGEs_DEAD = [   
+  IMAGEs_DEAD = [
     "img/2_character_pepe/5_dead/D-51.png",
     "img/2_character_pepe/5_dead/D-52.png",
     "img/2_character_pepe/5_dead/D-53.png",
     "img/2_character_pepe/5_dead/D-54.png",
-    "img/2_character_pepe/5_dead/D-55.png",
-    "img/2_character_pepe/5_dead/D-56.png",
-    "img/2_character_pepe/5_dead/D-57.png",
   ];
 
   IMAGEs_HURT = [
@@ -76,7 +73,7 @@ class Character extends MovableObject {
 
   constructor() {
     super();
-    this.speed= 3;
+    this.speed = 3;
 
     this.loadImage(this.IMAGE_WALKING[0]);
     this.loadImages(this.IMAGE_WALKING);
@@ -87,8 +84,8 @@ class Character extends MovableObject {
     this.loadImages(this.IMAGEs_HURT);
     this.applyGravity();
     this.animate();
-     this.bottleCount = 0;
-  this.coinsCount=0;
+    this.bottleCount = 0;
+    this.coinsCount = 0;
   }
 
   /**
@@ -193,16 +190,13 @@ class Character extends MovableObject {
     return this.world.keyboard.LEFT && this.x > 0;
   }
 
-  
-/**
- * Determines if the character can currently be hit.
- * @returns {boolean}
- */
-canBeHit() {
-  return !this.dead;
-}
-
-
+  /**
+   * Determines if the character can currently be hit.
+   * @returns {boolean}
+   */
+  canBeHit() {
+    return !this.dead;
+  }
 
   /**
    * Checks if character can jump based on space key and current position.
@@ -240,7 +234,6 @@ canBeHit() {
       this.lastKeyPressed = new Date().getTime();
     }
   }
-  
 
   /**
    * Checks if any movement or action keys are currently pressed.
@@ -255,5 +248,27 @@ canBeHit() {
       keyboard.SPACE ||
       keyboard.D
     );
+  }
+
+  /**
+   * Plays death animation, then triggers Game Over screen.
+   */
+  die() {
+    if (this.dead) return;
+    this.dead = true;
+    this.speed = 0;
+    let i = 0;
+    const deathInterval = setInterval(() => {
+      if (i < this.IMAGEs_DEAD.length) {
+        let path = this.IMAGEs_DEAD[i];
+        this.img = this.imageCache[path];
+        i++;
+      } else {
+        clearInterval(deathInterval);
+        setTimeout(() => {
+          gameOver(false);
+        }, 500);
+      }
+    }, 150);
   }
 }
