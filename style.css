@@ -534,6 +534,24 @@ h1 {
     height: auto;
   }
 }
+@media (max-height: 500px) {
+  .mobile-controls{
+    bottom: -5px;
+  }
+  .control-button {
+    width: 25px;
+    height: 25px;
+    padding: 4px;
+    
+  }}
+  @media (max-height: 1000px) {
+  
+  .control-button {
+    width: 40px;
+    height: 40px;
+    padding: 4px;
+    
+  }}
 
 #gameOverScreen {
   display: flex;
