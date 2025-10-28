@@ -473,7 +473,7 @@ function checkStartMenuOrientation() {
   const startMenu = document.getElementById("startMenu");
   const gameCon = document.getElementById("gameContainer");
   const isPortrait = window.innerHeight > window.innerWidth;
-  const isNarrow = window.innerWidth <= 750;
+  const isNarrow = window.innerWidth <= 1400;
 
   if (isNarrow && isPortrait) {
     orientationWarning.classList.remove("hidden");

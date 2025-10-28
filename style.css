@@ -497,7 +497,7 @@ h1 {
   display: none !important;
 }
 
-@media (max-width: 1280px) {
+@media (max-width: 1400px) {
   .mobile-controls {
     display: flex;
     justify-content: space-between;
