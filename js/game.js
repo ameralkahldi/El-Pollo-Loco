@@ -67,6 +67,9 @@ function hideStartMenuAndShowGame() {
 function startBackgroundMusicIfEnabled() {
   if (musicEnabled) {
     backgroundMusic.play().catch((e) => console.warn("Music blockiert:", e));
+  } else {
+    backgroundMusic.pause();
+    backgroundMusic.currentTime = 0;
   }
 }
 
@@ -244,34 +247,29 @@ function setupSoundMenuToggle() {
 }
 
 /**
- * Toggles general sound on/off and updates the switch UI.
+ * Toggles game sound effects (character, chicken, coins) on/off and updates the switch UI.
  */
 function setupSoundToggle() {
   const soundSwitch = document.getElementById("sound-switch");
   if (!soundSwitch) return;
 
   soundSwitch.addEventListener("click", () => {
+    // قلب حالة الصوت (تشغيل/إيقاف)
     soundEnabled = !soundEnabled;
+
+    // تغيير صورة المفتاح بناءً على الحالة
     soundSwitch.src = soundEnabled
       ? "./img/11-menu/switch_on.png"
       : "./img/11-menu/switch_off.png";
 
+    // حفظ الإعداد في التخزين المحلي
     localStorage.setItem("soundEnabled", soundEnabled);
 
-    if (!soundEnabled) {
-      backgroundMusic.pause();
-      backgroundMusic.currentTime = 0;
-      document.querySelectorAll("audio").forEach((audio) => {
-        audio.pause();
-        audio.currentTime = 0;
-      });
-    } else if (musicEnabled) {
-      backgroundMusic
-        .play()
-        .catch((e) => console.warn("Music not started:", e));
-    }
+    // ✅ لا تلمس الموسيقى الخلفية هنا!
+    // هذا الزر يتحكم فقط في أصوات اللعبة الداخلية
   });
 }
+
 // On page load, retrieve the saved sound and music settings
 window.addEventListener("DOMContentLoaded", () => {
   // Retrieve saved sound setting from localStorage
@@ -326,7 +324,7 @@ function setupMusicToggle() {
 
     localStorage.setItem("musicEnabled", musicEnabled);
 
-    if (musicEnabled && soundEnabled) {
+    if (musicEnabled) {
       backgroundMusic
         .play()
         .catch((e) => console.warn("Music not started:", e));
@@ -336,6 +334,7 @@ function setupMusicToggle() {
     }
   });
 }
+
 /** Switch to full screen mode */
 
 function setupFullscreenToggle() {
@@ -407,8 +406,8 @@ function resizeCanvasToFullscreen() {
   const screenWidth = window.innerWidth;
   const screenHeight = window.innerHeight;
 
-  const newWidth = screenWidth * 0.5; 
-  const newHeight = screenHeight * 0.5; 
+  const newWidth = screenWidth * 0.5;
+  const newHeight = screenHeight * 0.5;
 
   canvas.style.width = `${newWidth}px`;
   canvas.style.height = `${newHeight}px`;
