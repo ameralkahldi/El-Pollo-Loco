@@ -377,6 +377,8 @@ function setupBackToMenuButton() {
 /**
  * Sets up the restart button functionality.
  */
+
+
 function setupRestartButton() {
   const restartBtn = document.getElementById("restartButton");
   if (!restartBtn) return;
@@ -385,10 +387,12 @@ function setupRestartButton() {
     stopGame();
     document.getElementById("gameOverScreen").classList.add("hidden");
     document.getElementById("canvas").classList.remove("hidden");
-    document.querySelector(".sound-menu").style.display = "none";
+    const soundMenu = document.querySelector(".sound-menu");
+    if (soundMenu) {
+      soundMenu.style.display = "none";
+    }
     document.getElementById("bottomPanel").classList.remove("hidden");
     init();
-
     if (musicEnabled) {
       backgroundMusic
         .play()

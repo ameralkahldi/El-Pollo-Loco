@@ -11,6 +11,7 @@ class Character extends MovableObject {
   jumpSound = new Audio("audio/audio_jump.wav");
   soundEnabled = true;
   volume = 1.0;
+  lastKeyPressed = new Date().getTime();
 
   IMAGE_WALKING = [
     "img/2_character_pepe/2_walk/W-21.png",
@@ -59,16 +60,16 @@ class Character extends MovableObject {
   ];
 
   IMAGES_LONG_IDLE = [
-    "./img/2_character_pepe/1_idle/long_idle/I-11.png",
-    "./img/2_character_pepe/1_idle/long_idle/I-12.png",
-    "./img/2_character_pepe/1_idle/long_idle/I-13.png",
-    "./img/2_character_pepe/1_idle/long_idle/I-14.png",
-    "./img/2_character_pepe/1_idle/long_idle/I-15.png",
-    "./img/2_character_pepe/1_idle/long_idle/I-16.png",
-    "./img/2_character_pepe/1_idle/long_idle/I-17.png",
-    "./img/2_character_pepe/1_idle/long_idle/I-18.png",
-    "./img/2_character_pepe/1_idle/long_idle/I-19.png",
-    "./img/2_character_pepe/1_idle/long_idle/I-20.png",
+    "img/2_character_pepe/1_idle/long_idle/I-11.png",
+    "img/2_character_pepe/1_idle/long_idle/I-12.png",
+    "img/2_character_pepe/1_idle/long_idle/I-13.png",
+    "img/2_character_pepe/1_idle/long_idle/I-14.png",
+    "img/2_character_pepe/1_idle/long_idle/I-15.png",
+    "img/2_character_pepe/1_idle/long_idle/I-16.png",
+    "img/2_character_pepe/1_idle/long_idle/I-17.png",
+    "img/2_character_pepe/1_idle/long_idle/I-18.png",
+    "img/2_character_pepe/1_idle/long_idle/I-19.png",
+    "img/2_character_pepe/1_idle/long_idle/I-20.png",
   ];
 
   constructor() {
@@ -94,15 +95,15 @@ class Character extends MovableObject {
   animate() {
     let levelEnd = 2200;
 
-    // Movement animation
     setInterval(() => {
       if (gameIsPaused) return;
       if (this.world.keyboard.RIGHT && this.x < levelEnd) this.moveRight();
       if (this.world.keyboard.LEFT && this.x > 0) this.moveLeft();
       if (this.world.keyboard.SPACE && !this.isAboveGround()) this.jump();
+
+      this.lastPressedKey(); // تحديث الوقت عند ضغط أي مفتاح
     }, 1000 / 60);
 
-    // Sprite animation
     setInterval(() => {
       if (this.isDead()) {
         this.playWalkingAnimation(this.IMAGEs_DEAD);
@@ -113,7 +114,7 @@ class Character extends MovableObject {
       } else if (this.world?.keyboard.RIGHT || this.world?.keyboard.LEFT) {
         this.playWalkingAnimation(this.IMAGE_WALKING);
       } else if (this.startLongIdle()) {
-        this.playWalkingAnimation(this.IMAGES_LONG_IDLE);
+        this.playWalkingAnimation(this.IMAGES_LONG_IDLE); // استخدام الصور عند التوقف لفترة طويلة
       } else if (this.speedY == 0 && !this.isAboveGround()) {
         this.playWalkingAnimation(this.IMAGES_IDLE);
       }
@@ -130,7 +131,22 @@ class Character extends MovableObject {
     this.img = this.imageCache[path];
     this.currentImage++;
   }
+  /**
+   * Determines whether the character should enter long idle animation
+   * based on time since last key press.
+   * @returns {boolean}
+   */
+  startLongIdle() {
+    let timepassed = new Date().getTime() - this.lastKeyPressed;
+    timepassed = timepassed / 1000; 
+    return timepassed > 2; 
+  }
 
+  lastPressedKey() {
+    if (this.keyIsPressed()) {
+      this.lastKeyPressed = new Date().getTime(); 
+    }
+  }
   /**
    * Handles overall character movement (left, right, jump) and camera update.
    */
@@ -241,14 +257,15 @@ class Character extends MovableObject {
    */
   keyIsPressed() {
     return (
-      keyboard.LEFT ||
-      keyboard.RIGHT ||
-      keyboard.UP ||
-      keyboard.DOWN ||
-      keyboard.SPACE ||
-      keyboard.D
+      this.world.keyboard.LEFT ||
+      this.world.keyboard.RIGHT ||
+      this.world.keyboard.UP ||
+      this.world.keyboard.DOWN ||
+      this.world.keyboard.SPACE ||
+      this.world.keyboard.D
     );
   }
+
 
   /**
    * Plays death animation, then triggers Game Over screen.
