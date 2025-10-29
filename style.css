@@ -158,7 +158,6 @@ h1 {
   font-size: 16px;
   cursor: pointer;
   border-radius: 50%;
-  
 }
 
 /* Mute button background */
@@ -166,7 +165,6 @@ h1 {
   background-image: url("img/11-menu/mute.svg");
   background-repeat: no-repeat;
   background-position: center;
-
 }
 
 /* Unmute button background */
@@ -174,7 +172,6 @@ h1 {
   background-image: url("img/11-menu/unmute.svg");
   background-repeat: no-repeat;
   background-position: center;
-
 }
 
 /* Fullscreen button background */
@@ -383,7 +380,7 @@ h1 {
 
 .info-button {
   position: absolute;
-  top: 75px;
+  top: 10px;
   right: 17px;
   font-size: 24px;
   width: 40px;
@@ -411,33 +408,62 @@ h1 {
 
 #controlDiv {
   position: absolute;
-  top: 110px;
-  right: 40px;
-  width: 220px;
-  padding: 30px;
-  background: rgba(0, 0, 0, 0.85);
-  color: #ffd111;
-  border-radius: 12px;
+  top: 10%;
+  right: 20px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   font-family: "Arial", sans-serif;
-  font-size: 16px;
-  z-index: 999;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
-  transition: all 0.3s ease-in-out;
-}
-#controlDiv h3 {
-  margin-top: 0;
-  margin-bottom: 10px;
-  font-size: 18px;
-  color: #fff;
-  text-align: center;
-  text-shadow: 1px 1px 2px black;
 }
 
-#controlDiv p {
-  margin: 8px 0;
-  font-size: 16px;
-  letter-spacing: 0.5px;
+.controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
+
+.control-item {
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+  font-size: 18px;
+  transition: transform 0.3s ease;
+  color: #ffd111;
+}
+
+.control-item:hover {
+  transform: scale(1.1);
+}
+
+.control-icon {
+  width: 30px;
+  height: 30px;
+  margin-right: 10px;
+  transition: transform 0.3s ease;
+}
+
+.control-item:hover .control-icon {
+  transform: rotate(15deg);
+}
+
+.hidden {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  #controlDiv {
+    width: 80%;
+    font-size: 14px;
+  }
+
+  .control-icon {
+    width: 25px;
+    height: 25px;
+  }
+}
+
 @keyframes pulse {
   0% {
     transform: scale(1);
