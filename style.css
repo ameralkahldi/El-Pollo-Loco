@@ -9,7 +9,6 @@ body {
   height: 100vh;
   margin: 0;
   font-family: "zabars";
-  cursor: pointer;
 }
 h1 {
   font-size: 32px;
@@ -131,87 +130,65 @@ h1 {
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
 
-#soundIcon {
-  position: absolute;
-  top: 2%;
-  right: 2%;
-  width: 40px;
-  cursor: pointer;
-  z-index: 1000;
-}
-
-#soundIcon:active {
-  transform: scale(1.2);
-}
-
-#soundIcon:hover {
-  content: url("./img/11-menu/settings_icon_hover.png");
-}
-
-.sound-menu {
-  position: absolute;
-  top: 80px;
-  right: 20px;
-  background: rgba(0, 0, 0, 0.8);
-  padding: 15px;
-  border-radius: 8px;
-  display: none;
-  flex-direction: column;
-  gap: 10px;
-  z-index: 1000;
-  color: white;
-  font-size: 1.5rem;
-  width: 300px;
-  height: 300px;
-  box-sizing: border-box;
-  cursor: pointer;
-}
-
-.sound-menu .close-icon {
-  position: absolute;
-  top: 6px;
-  right: 6px;
-  height: 24px !important;
-  cursor: pointer;
-}
-
-.sound-menu .close-icon:hover {
-  content: url("./img/11-menu/close_icon_hover.png");
-}
-
-.sound-menu div {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  padding: 10px;
-    cursor: pointer;
-}
-
-.sound-menu img {
-  height: 48px;
-  cursor: pointer;
-  max-height: 60px;
-}
-
-@media (max-width: 400px) {
-  #startButton {
-    font-size: 0.9rem;
-    padding: 2vh 4vw;
-  }
-
-  .sound-menu {
-    font-size: 1rem;
-  }
-
-  .sound-menu img {
-    height: 30px;
-  }
-}
-
 .hidden {
   display: none !important;
 }
+/* Container for buttons */
+.button-setting {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  margin: 15px auto;
+}
+
+/* Style for each button */
+.button {
+  background-color: #ffdd03;
+  margin-right: 10px;
+  border: none;
+  color: black;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 50%;
+  
+}
+
+/* Mute button background */
+#mute {
+  background-image: url("img/11-menu/mute.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+
+}
+
+/* Unmute button background */
+#unmute {
+  background-image: url("img/11-menu/unmute.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+
+}
+
+/* Fullscreen button background */
+#fullscreen {
+  background-image: url("img/11-menu/fullscreen.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+/* Optionally add a hover effect */
+.button:hover {
+  opacity: 0.8; /* Slightly fade the image on hover */
+}
+
 /* Buttons Wrapper */
 .info-buttons {
   display: flex;
@@ -271,7 +248,7 @@ h1 {
   margin-bottom: 20px;
   font-size: 26px;
   font-weight: 700;
-  color: #b30000; 
+  color: #b30000;
 }
 
 #impressumPopup h4 {
@@ -535,23 +512,22 @@ h1 {
   }
 }
 @media (max-height: 500px) {
-  .mobile-controls{
+  .mobile-controls {
     bottom: -5px;
   }
   .control-button {
     width: 25px;
     height: 25px;
     padding: 4px;
-    
-  }}
-  @media (max-height: 1000px) {
-  
+  }
+}
+@media (max-height: 1000px) {
   .control-button {
     width: 40px;
     height: 40px;
     padding: 4px;
-    
-  }}
+  }
+}
 
 #gameOverScreen {
   display: flex;
