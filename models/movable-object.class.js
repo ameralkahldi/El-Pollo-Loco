@@ -9,7 +9,7 @@ class MovableObject extends DrawableObject {
   volume = 1.0;        // Volume level (0 to 1)
 
   lastHit = 0;
-  offset = { top: 0, left: 0, right: 0, bottom: 0 };
+  offset = { top: 0, left: 20, right: 50, bottom: 0 };
 
   /**
    * Applies gravity to the object by updating its vertical position and speed.
