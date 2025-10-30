@@ -3,13 +3,13 @@ class MovableObject extends DrawableObject {
   otherDirection = false;
   speedY = 0;
   acceleration = 2.5;
-  hurtSound = new Audio("audio/audio_pepe_hurt1.mp3");
+
 
   soundEnabled = true; // Controls sound on/off for the object
   volume = 1.0;        // Volume level (0 to 1)
 
   lastHit = 0;
-  offset = { top: 0, left: 20, right: 50, bottom: 0 };
+  offset = { top: 0, left: 10, right: 30, bottom: 0 };
 
   /**
    * Applies gravity to the object by updating its vertical position and speed.

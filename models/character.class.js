@@ -8,10 +8,12 @@ class Character extends MovableObject {
   energy = 100;
   bottles = 0;
   dead = false;
-  jumpSound = new Audio("audio/audio_jump.wav");
   soundEnabled = true;
   volume = 1.0;
   lastKeyPressed = new Date().getTime();
+  jumpSound = new Audio("audio/audio_jump.wav");
+
+
 
   IMAGE_WALKING = [
     "img/2_character_pepe/2_walk/W-21.png",
@@ -72,9 +74,10 @@ class Character extends MovableObject {
     "img/2_character_pepe/1_idle/long_idle/I-20.png",
   ];
 
-  constructor() {
+  constructor(audioManager) {
     super();
     this.speed = 3;
+    this.audioManager = audioManager; 
 
     this.loadImage(this.IMAGE_WALKING[0]);
     this.loadImages(this.IMAGE_WALKING);
@@ -101,7 +104,7 @@ class Character extends MovableObject {
       if (this.world.keyboard.LEFT && this.x > 0) this.moveLeft();
       if (this.world.keyboard.SPACE && !this.isAboveGround()) this.jump();
 
-      this.lastPressedKey(); // تحديث الوقت عند ضغط أي مفتاح
+      this.lastPressedKey(); 
     }, 1000 / 60);
 
     setInterval(() => {
@@ -114,7 +117,7 @@ class Character extends MovableObject {
       } else if (this.world?.keyboard.RIGHT || this.world?.keyboard.LEFT) {
         this.playWalkingAnimation(this.IMAGE_WALKING);
       } else if (this.startLongIdle()) {
-        this.playWalkingAnimation(this.IMAGES_LONG_IDLE); // استخدام الصور عند التوقف لفترة طويلة
+        this.playWalkingAnimation(this.IMAGES_LONG_IDLE); 
       } else if (this.speedY == 0 && !this.isAboveGround()) {
         this.playWalkingAnimation(this.IMAGES_IDLE);
       }
@@ -138,13 +141,13 @@ class Character extends MovableObject {
    */
   startLongIdle() {
     let timepassed = new Date().getTime() - this.lastKeyPressed;
-    timepassed = timepassed / 1000; 
-    return timepassed > 2; 
+    timepassed = timepassed / 1000;
+    return timepassed > 2;
   }
 
   lastPressedKey() {
     if (this.keyIsPressed()) {
-      this.lastKeyPressed = new Date().getTime(); 
+      this.lastKeyPressed = new Date().getTime();
     }
   }
   /**
@@ -225,11 +228,15 @@ class Character extends MovableObject {
   /**
    * Makes the character jump and plays the jump sound effect.
    */
-  jump() {
-    this.speedY = 30;
-    this.jumpSound.currentTime = 0;
-    this.jumpSound.play();
+ jump() {
+  this.speedY = 30;
+  if (this.audioManager) {
+    this.audioManager.playSound("jumpSound"); 
+  } else {
+    console.warn("AudioManager is not defined!");
   }
+}
+
 
   /**
    * Determines whether the character should enter long idle animation
@@ -265,7 +272,6 @@ class Character extends MovableObject {
       this.world.keyboard.D
     );
   }
-
 
   /**
    * Plays death animation, then triggers Game Over screen.

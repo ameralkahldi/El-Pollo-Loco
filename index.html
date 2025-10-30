@@ -32,7 +32,9 @@
   <script src="levels/level1.js"></script>
 
   <!-- Game Logic -->
-  <script src="js/game.js"></script>
+ <script src="models/audioManager.class.js"></script>
+
+
 </head>
 
 <body>
@@ -46,9 +48,9 @@
 
 
       <div class="button-setting" id="buttons_menu">
-        <button id="mute" onclick="toggleMuted()" class="mute button"></button>
-        <button id="mute" onclick="toggleMuted()" class="unmute button"></button>
-        <button id="fullscreen" onclick="fullscreen()" class="fullscreen button"></button>
+        <button id="mute"class="mute button"></button>
+        <button id="unmute" class="unmute button" ></button>
+        <button id="fullscreen"  class="fullscreen button"></button>
 
 
       </div>
@@ -191,6 +193,7 @@
       </path>
     </svg>
   </div>
+    <script src="js/game.js"></script>
 
 </body>
 

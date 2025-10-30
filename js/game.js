@@ -3,19 +3,21 @@ let world;
 let keyboard = new Keyboard();
 let soundEnabled = true;
 let musicEnabled = true;
-const backgroundMusic = new Audio("audio/audio_music.mp3");
-backgroundMusic.loop = true;
-backgroundMusic.volume = 0.3;
 let gameIsPaused = false;
 
 /**
  * Initializes the game canvas and world.
  */
-
 function init() {
   canvas = document.getElementById("canvas");
-  world = new World(canvas, keyboard);
+  world = new World(canvas, keyboard, audioManager);
+  if (musicEnabled) {
+    audioManager.toggleBackgroundMusic(true);
+  }
 }
+window.addEventListener("DOMContentLoaded", () => {
+  audioManager = new AudioManager();
+});
 
 /**
  * Starts the game, checks screen orientation, and handles music & controls.
@@ -27,7 +29,6 @@ function startGame() {
   }
 
   hideStartMenuAndShowGame();
-  startBackgroundMusicIfEnabled();
   showControlsIfNeeded();
   init();
 }
@@ -59,18 +60,6 @@ function hideStartMenuAndShowGame() {
   document.getElementById("startMenu").style.display = "none";
   document.getElementById("gameContainer").style.display = "block";
   document.getElementById("canvas").classList.remove("hidden");
-}
-
-/**
- * Plays background music if music is enabled.
- */
-function startBackgroundMusicIfEnabled() {
-  if (musicEnabled) {
-    backgroundMusic.play().catch((e) => console.warn("Music blockiert:", e));
-  } else {
-    backgroundMusic.pause();
-    backgroundMusic.currentTime = 0;
-  }
 }
 
 /**
@@ -119,8 +108,8 @@ function updateGameOverImage(won) {
 function playGameOverSoundsIfLost(won) {
   if (won) return;
 
-  playSound("audio/audio_chicken_death.mp3");
-  playSound("audio/audio_game_over.wav");
+  audioManager.playSound("chickenDeath");
+  audioManager.playSound("gameOver");
 }
 
 /**
@@ -146,8 +135,9 @@ function stopGame() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
   }
 
-  backgroundMusic.pause();
-  backgroundMusic.currentTime = 0;
+  if (audioManager) {
+    audioManager.toggleBackgroundMusic(false);
+  }
 }
 
 /**
@@ -182,8 +172,6 @@ window.addEventListener("keyup", (e) => {
 
 window.addEventListener("DOMContentLoaded", () => {
   setupControlButtons();
-  setupSoundMenu();
-  setupFullscreenToggle();
   setupGameNavigationButtons();
   handleOrientationWarning();
   setupInfoButton();
@@ -209,147 +197,10 @@ function setupControlButtons() {
       keyboard[key] = false;
     });
   }
-
   bindControlButton("btnLeft", "LEFT");
   bindControlButton("btnRight", "RIGHT");
   bindControlButton("btnJump", "SPACE");
   bindControlButton("btnThrow", "D");
-}
-
-/**
- * Sets up sound and music toggle behavior in the menu.
- */
-function setupSoundMenu() {
-  setupSoundMenuToggle();
-  setupSoundToggle();
-  setupMusicToggle();
-}
-
-/**
- * Handles opening and closing of the sound menu.
- */
-function setupSoundMenuToggle() {
-  const soundIcon = document.getElementById("soundIcon");
-  const soundMenu = document.querySelector(".sound-menu");
-  const closeSoundMenu = document.querySelector(".sound-menu .close-icon");
-
-  if (soundIcon && soundMenu) {
-    soundIcon.addEventListener("click", () => {
-      soundMenu.style.display = "flex";
-    });
-  }
-
-  if (closeSoundMenu && soundMenu) {
-    closeSoundMenu.addEventListener("click", () => {
-      soundMenu.style.display = "none";
-    });
-  }
-}
-
-/**
- * Toggles game sound effects (character, chicken, coins) on/off and updates the switch UI.
- */
-function setupSoundToggle() {
-  const soundSwitch = document.getElementById("sound-switch");
-  if (!soundSwitch) return;
-
-  soundSwitch.addEventListener("click", () => {
-    // قلب حالة الصوت (تشغيل/إيقاف)
-    soundEnabled = !soundEnabled;
-
-    // تغيير صورة المفتاح بناءً على الحالة
-    soundSwitch.src = soundEnabled
-      ? "./img/11-menu/switch_on.png"
-      : "./img/11-menu/switch_off.png";
-
-    // حفظ الإعداد في التخزين المحلي
-    localStorage.setItem("soundEnabled", soundEnabled);
-
-    // ✅ لا تلمس الموسيقى الخلفية هنا!
-    // هذا الزر يتحكم فقط في أصوات اللعبة الداخلية
-  });
-}
-
-// On page load, retrieve the saved sound and music settings
-window.addEventListener("DOMContentLoaded", () => {
-  // Retrieve saved sound setting from localStorage
-  const savedSound = localStorage.getItem("soundEnabled");
-  if (savedSound !== null) {
-    soundEnabled = savedSound === "true";
-    const soundSwitch = document.getElementById("sound-switch");
-    if (soundSwitch) {
-      soundSwitch.src = soundEnabled
-        ? "./img/11-menu/switch_on.png" // If sound is enabled, show "on" switch
-        : "./img/11-menu/switch_off.png"; // If sound is disabled, show "off" switch
-    }
-  }
-
-  // Retrieve saved music setting from localStorage
-  const savedMusic = localStorage.getItem("musicEnabled");
-  if (savedMusic !== null) {
-    musicEnabled = savedMusic === "true";
-    const musicSwitch = document.getElementById("music-switch");
-    if (musicSwitch) {
-      musicSwitch.src = musicEnabled
-        ? "./img/11-menu/switch_on.png" // If music is enabled, show "on" switch
-        : "./img/11-menu/switch_off.png"; // If music is disabled, show "off" switch
-    }
-  }
-
-  // Play background music if both music and sound are enabled
-  if (musicEnabled && soundEnabled) {
-    backgroundMusic.play().catch((e) => console.warn("Music not started:", e));
-  }
-});
-
-function playSound(path, volume = 1) {
-  if (!soundEnabled) return;
-  const audio = new Audio(path);
-  audio.volume = volume;
-  audio.play().catch((e) => console.warn(`Audio blocked: ${e}`));
-}
-
-/**
- * Toggles background music on/off and updates the switch UI.
- */
-function setupMusicToggle() {
-  const musicSwitch = document.getElementById("music-switch");
-  if (!musicSwitch) return;
-
-  musicSwitch.addEventListener("click", () => {
-    musicEnabled = !musicEnabled;
-    musicSwitch.src = musicEnabled
-      ? "./img/11-menu/switch_on.png"
-      : "./img/11-menu/switch_off.png";
-
-    localStorage.setItem("musicEnabled", musicEnabled);
-
-    if (musicEnabled) {
-      backgroundMusic
-        .play()
-        .catch((e) => console.warn("Music not started:", e));
-    } else {
-      backgroundMusic.pause();
-      backgroundMusic.currentTime = 0;
-    }
-  });
-}
-
-/** Switch to full screen mode */
-
-function setupFullscreenToggle() {
-  const fullscreenSwitch = document.getElementById("fullscreen-switch");
-  if (!fullscreenSwitch) return;
-
-  fullscreenSwitch.addEventListener("click", () => {
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen();
-      fullscreenSwitch.src = "./img/11-menu/switch_on.png";
-    } else {
-      document.exitFullscreen();
-      fullscreenSwitch.src = "./img/11-menu/switch_off.png";
-    }
-  });
 }
 
 //*Preparing the back to menu and restart buttons*/
@@ -378,7 +229,6 @@ function setupBackToMenuButton() {
  * Sets up the restart button functionality.
  */
 
-
 function setupRestartButton() {
   const restartBtn = document.getElementById("restartButton");
   if (!restartBtn) return;
@@ -401,21 +251,45 @@ function setupRestartButton() {
   });
 }
 
+function fullscreen() {
+  const canvas = document.getElementById("canvas");
+
+  if (!document.fullscreenElement) {
+    // طلب fullscreen للـ canvas
+    canvas.requestFullscreen().catch((err) => {
+      console.error(
+        `Error attempting to enable fullscreen mode: ${err.message}`
+      );
+    });
+  } else {
+    // إذا كانت بالفعل fullscreen، أخرج منها
+    document.exitFullscreen();
+  }
+}
+
+const fullscreenBtn = document.getElementById("fullscreen");
+fullscreenBtn.addEventListener("click", fullscreen);
+
 /**
  * Resizes canvas to fit screen while maintaining aspect ratio.
  */
 
 function resizeCanvasToFullscreen() {
   const canvas = document.getElementById("canvas");
-  const screenWidth = window.innerWidth;
-  const screenHeight = window.innerHeight;
 
-  const newWidth = screenWidth * 0.5;
-  const newHeight = screenHeight * 0.5;
-
-  canvas.style.width = `${newWidth}px`;
-  canvas.style.height = `${newHeight}px`;
+  if (document.fullscreenElement) {
+    // إذا في fullscreen، اجعل canvas يملأ الشاشة
+    canvas.style.width = `${window.innerWidth}px`;
+    canvas.style.height = `${window.innerHeight}px`;
+  } else {
+    // الحجم العادي عند عدم fullscreen
+    canvas.style.width = `${window.innerWidth * 0.5}px`;
+    canvas.style.height = `${window.innerHeight * 0.5}px`;
+  }
 }
+
+// إعادة ضبط الحجم عند تغيير fullscreen
+document.addEventListener("fullscreenchange", resizeCanvasToFullscreen);
 
 window.addEventListener("load", () => {
   resizeCanvasToFullscreen();
@@ -491,6 +365,32 @@ window.addEventListener("load", checkStartMenuOrientation);
 window.addEventListener("orientationchange", () => {
   setTimeout(checkStartMenuOrientation, 300);
 });
+
+function setupAudioButtons() {
+  const muteBtn = document.getElementById("mute");
+  const unmuteBtn = document.getElementById("unmute");
+  if (!muteBtn || !unmuteBtn) return;
+  if (audioManager.soundEnabled) {
+    muteBtn.classList.remove("hidden");
+    unmuteBtn.classList.add("hidden");
+  } else {
+    muteBtn.classList.add("hidden");
+    unmuteBtn.classList.remove("hidden");
+  }
+
+  muteBtn.addEventListener("click", () => {
+    audioManager.setSoundEnabled(false);
+    muteBtn.classList.add("hidden");
+    unmuteBtn.classList.remove("hidden");
+  });
+
+  unmuteBtn.addEventListener("click", () => {
+    audioManager.setSoundEnabled(true);
+    muteBtn.classList.remove("hidden");
+    unmuteBtn.classList.add("hidden");
+  });
+}
+window.addEventListener("DOMContentLoaded", setupAudioButtons);
 
 /**
  * Toggles info panel visibility.
