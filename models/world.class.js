@@ -290,7 +290,7 @@ class World {
     if (this.animationFrameId) cancelAnimationFrame(this.animationFrameId);
     this.intervalIds.forEach((id) => clearInterval(id));
     this.intervalIds = [];
-    this.audioManager.stopAllSounds(); // ✅
+    this.audioManager.stopAllSounds(); /
     this.gameIsOver = true;
   }
 
