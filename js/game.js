@@ -5,6 +5,12 @@ let soundEnabled = true;
 let musicEnabled = true;
 let gameIsPaused = false;
 
+window.addEventListener("DOMContentLoaded", () => {
+  audioManager = new AudioManager();
+  init();
+});
+
+
 /**
  * Initializes the game canvas and world.
  */
@@ -251,24 +257,6 @@ function setupRestartButton() {
   });
 }
 
-function fullscreen() {
-  const canvas = document.getElementById("canvas");
-
-  if (!document.fullscreenElement) {
-    // طلب fullscreen للـ canvas
-    canvas.requestFullscreen().catch((err) => {
-      console.error(
-        `Error attempting to enable fullscreen mode: ${err.message}`
-      );
-    });
-  } else {
-    // إذا كانت بالفعل fullscreen، أخرج منها
-    document.exitFullscreen();
-  }
-}
-
-const fullscreenBtn = document.getElementById("fullscreen");
-fullscreenBtn.addEventListener("click", fullscreen);
 
 /**
  * Resizes canvas to fit screen while maintaining aspect ratio.
@@ -278,17 +266,14 @@ function resizeCanvasToFullscreen() {
   const canvas = document.getElementById("canvas");
 
   if (document.fullscreenElement) {
-    // إذا في fullscreen، اجعل canvas يملأ الشاشة
     canvas.style.width = `${window.innerWidth}px`;
     canvas.style.height = `${window.innerHeight}px`;
   } else {
-    // الحجم العادي عند عدم fullscreen
     canvas.style.width = `${window.innerWidth * 0.5}px`;
     canvas.style.height = `${window.innerHeight * 0.5}px`;
   }
 }
 
-// إعادة ضبط الحجم عند تغيير fullscreen
 document.addEventListener("fullscreenchange", resizeCanvasToFullscreen);
 
 window.addEventListener("load", () => {
@@ -306,7 +291,7 @@ window.addEventListener("resize", () => {
 /**
  * Displays mobile control panel.
  */
-
+ 
 function showMobileControls() {
   const panel = document.getElementById("bottomPanel");
   panel.classList.remove("hidden");

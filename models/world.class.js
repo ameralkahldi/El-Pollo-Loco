@@ -18,22 +18,18 @@ class World {
     this.canvas = canvas;
     this.keyboard = keyboard;
     this.audioManager = audioManager;
-    
-  this.container = null;
-
+    this.container = document.getElementById("gameContainer");
+    this.fullscreenBtn = document.getElementById("fullscreen-btn");
+    this.fullscreenBtn.addEventListener("click", () => this.toggleFullScreen());
     this.character = new Character(audioManager);
     this.level = createLevel1();
-
     this.statusBar = new StatusBar("health");
     this.coinsStatusBar = new CoinsStatusBar("coins");
     this.bottleStatusBar = new BottlesStatusBar("bottles");
-
     this.setWorld();
     this.statusBar.setPercentage(this.character.energy);
     this.endboss = new Endboss(this.character);
-
     this.audioManager.toggleBackgroundMusic(false);
-
     this.checkCollisions();
     this.checkThrowObject();
     this.checkBottleCollisions();
@@ -49,8 +45,6 @@ class World {
       this.audioManager.playSound(name);
     }
   }
-
- 
 
   setWorld() {
     this.character.world = this;
@@ -160,8 +154,6 @@ class World {
       }, 100)
     );
   }
-
-  /** تصادم الزجاجات مع الأعداء **/
   checkBottleHitsEnemies() {
     this.intervalIds.push(
       setInterval(() => {
@@ -234,7 +226,7 @@ class World {
 
     if (this.endBoss.energy <= 0 && !this.endBoss.dead) {
       this.endBoss.die();
-      this.playSound("gameOver"); // ✅
+      this.playSound("gameOver"); 
     }
   }
 
@@ -256,10 +248,19 @@ class World {
       setInterval(() => {
         if (this.character.energy <= 0 && !this.character.dead) {
           this.character.die();
-          this.playSound("gameOver"); // ✅
+          this.playSound("gameOver"); 
         }
       }, 200)
     );
+  }
+  toggleFullScreen() {
+    if (!document.fullscreenElement) {
+      this.container.requestFullscreen().catch((err) => {
+        console.error("Fullscreen error:", err);
+      });
+    } else {
+      document.exitFullscreen();
+    }
   }
 
   hitTargetSuccessfully(enemy) {
@@ -267,7 +268,7 @@ class World {
     if (this.character.isAbove(enemy) && !enemy.dead) {
       this.character.smallJump();
       this.killEnemy(enemy);
-      this.playSound("chickenDeath"); // ✅
+      this.playSound("chickenDeath"); 
       this.removeEnemyAfterDelay(enemy, 200);
     }
   }
@@ -302,7 +303,7 @@ class World {
     const distance = Math.abs(this.character.x - this.endBoss.x);
     const detectionRange = 400;
     if (distance < detectionRange) {
-      if (this.endBoss.speed === 0) this.playSound("bossMove"); // ✅
+      if (this.endBoss.speed === 0) this.playSound("bossMove"); 
       this.endBoss.speed = 2;
       this.endBoss.isAttacking = true;
       this.endBoss.moveTowards(this.character);

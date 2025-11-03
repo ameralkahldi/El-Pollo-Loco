@@ -174,13 +174,6 @@ h1 {
   background-position: center;
 }
 
-/* Fullscreen button background */
-#fullscreen {
-  background-image: url("img/11-menu/fullscreen.svg");
-  background-repeat: no-repeat;
-  background-position: center;
-}
-
 /* Optionally add a hover effect */
 .button:hover {
   opacity: 0.8; /* Slightly fade the image on hover */

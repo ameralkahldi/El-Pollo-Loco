@@ -32,7 +32,7 @@
   <script src="levels/level1.js"></script>
 
   <!-- Game Logic -->
- <script src="models/audioManager.class.js"></script>
+  <script src="models/audioManager.class.js"></script>
 
 
 </head>
@@ -48,9 +48,9 @@
 
 
       <div class="button-setting" id="buttons_menu">
-        <button id="mute"class="mute button"></button>
-        <button id="unmute" class="unmute button" ></button>
-        <button id="fullscreen"  class="fullscreen button"></button>
+        <button id="mute" class="mute button"></button>
+        <button id="unmute" class="unmute button"></button>
+        <button id="fullscreen" class="fullscreen button"></button>
 
 
       </div>
@@ -130,11 +130,11 @@
           <p>Move Right</p>
         </div>
         <div class="control-item">
-          <p>SPACE -  </p>
+          <p>SPACE - </p>
           <p>Jump</p>
         </div>
         <div class="control-item">
-          <p >D -</p>
+          <p>D -</p>
           <p>Throw Salsa</p>
         </div>
       </div>
@@ -147,7 +147,10 @@
 
   <!-- Game Canvas -->
   <div id="gameContainer">
-    <canvas id="canvas" width="720" height="500"></canvas>
+    <canvas id="canvas" width="720" height="500">
+    </canvas>
+    <img id="fullscreen-btn" src="img/11-menu/fullscreen.svg"
+      style="position: absolute; top:60px; right: 10px; width: 40px; cursor: pointer;" alt="Fullscreen">
 
     <!-- Mobile Touch Controls (Hidden on Desktop) -->
     <div id="bottomPanel" class="mobile-controls hidden">
@@ -193,7 +196,7 @@
       </path>
     </svg>
   </div>
-    <script src="js/game.js"></script>
+  <script src="js/game.js"></script>
 
 </body>
 
