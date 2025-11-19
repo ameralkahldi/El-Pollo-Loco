@@ -28,7 +28,7 @@ class World {
     this.bottleStatusBar = new BottlesStatusBar("bottles");
     this.setWorld();
     this.statusBar.setPercentage(this.character.energy);
-    this.endboss = new Endboss(this.character);
+    //this.endboss = new Endboss(this.character);
     this.audioManager.toggleBackgroundMusic(false);
     this.checkCollisions();
     this.checkThrowObject();
@@ -404,14 +404,7 @@ class World {
         this.endbossStatusBar.height
       );
 
-    if (this.endBoss && !this.endBoss.dead)
-      this.ctx.drawImage(
-        this.endBoss.img,
-        this.endBoss.x,
-        this.endBoss.y,
-        this.endBoss.width,
-        this.endBoss.height
-      );
+   
 
     this.animationFrameId = requestAnimationFrame(() => this.draw());
   }
