@@ -1,29 +1,40 @@
 let canvas;
 let world;
 let keyboard = new Keyboard();
+let audioManager;
 let soundEnabled = true;
 let musicEnabled = true;
 let gameIsPaused = false;
 
+/**
+ * Initializes all game components on page load
+ */
 window.addEventListener("DOMContentLoaded", () => {
   audioManager = new AudioManager();
-  init();
+  updateMuteButtons();
+  setupControlButtons();
+  setupGameNavigationButtons();
+  handleOrientationWarning();
+  setupInfoButton();
+  checkStartMenuOrientation();
+  setupInfoPopups();
+  setupAudioButtons();
+  
+  if (window.innerWidth <= 1400) {
+    showMobileControls();
+  }
 });
 
-
 /**
- * Initializes the game canvas and world.
+ * Initializes the game canvas and world
  */
 function init() {
   canvas = document.getElementById("canvas");
   world = new World(canvas, keyboard, audioManager);
-  if (musicEnabled) {
+  if (audioManager && audioManager.musicEnabled) {
     audioManager.toggleBackgroundMusic(true);
   }
 }
-window.addEventListener("DOMContentLoaded", () => {
-  audioManager = new AudioManager();
-});
 
 /**
  * Starts the game, checks screen orientation, and handles music & controls.
@@ -114,8 +125,10 @@ function updateGameOverImage(won) {
 function playGameOverSoundsIfLost(won) {
   if (won) return;
 
-  audioManager.playSound("chickenDeath");
-  audioManager.playSound("gameOver");
+  if (audioManager) {
+    audioManager.playSound("chickenDeath");
+    audioManager.playSound("gameOver");
+  }
 }
 
 /**
@@ -129,7 +142,6 @@ function showGameOverScreen() {
 /**
  * Stops the game, clears the canvas and resets audio.
  */
-
 function stopGame() {
   if (world) {
     world.stop();
@@ -149,7 +161,6 @@ function stopGame() {
 /**
  * Handles binding of keyboard key down events.
  */
-
 window.addEventListener("keydown", (e) => {
   if (e.keyCode == 39) keyboard.RIGHT = true;
   if (e.keyCode == 37) keyboard.LEFT = true;
@@ -162,7 +173,6 @@ window.addEventListener("keydown", (e) => {
 /**
  * Handles binding of keyboard key up events.
  */
-
 window.addEventListener("keyup", (e) => {
   if (e.keyCode == 39) keyboard.RIGHT = false;
   if (e.keyCode == 37) keyboard.LEFT = false;
@@ -173,19 +183,8 @@ window.addEventListener("keyup", (e) => {
 });
 
 /**
- * Initializes UI and game setup on page load.
+ * Connect the control buttons
  */
-
-window.addEventListener("DOMContentLoaded", () => {
-  setupControlButtons();
-  setupGameNavigationButtons();
-  handleOrientationWarning();
-  setupInfoButton();
-  checkStartMenuOrientation();
-  setupInfoPopups();
-});
-
-//*Connect the control buttons*/
 function setupControlButtons() {
   function bindControlButton(buttonId, key) {
     const button = document.getElementById(buttonId);
@@ -209,8 +208,9 @@ function setupControlButtons() {
   bindControlButton("btnThrow", "D");
 }
 
-//*Preparing the back to menu and restart buttons*/
-
+/**
+ * Preparing the back to menu and restart buttons
+ */
 function setupGameNavigationButtons() {
   setupBackToMenuButton();
   setupRestartButton();
@@ -234,7 +234,6 @@ function setupBackToMenuButton() {
 /**
  * Sets up the restart button functionality.
  */
-
 function setupRestartButton() {
   const restartBtn = document.getElementById("restartButton");
   if (!restartBtn) return;
@@ -249,19 +248,16 @@ function setupRestartButton() {
     }
     document.getElementById("bottomPanel").classList.remove("hidden");
     init();
-    if (musicEnabled) {
-      backgroundMusic
-        .play()
-        .catch((e) => console.warn("Music not started:", e));
+    
+    if (audioManager && audioManager.musicEnabled) {
+      audioManager.toggleBackgroundMusic(true);
     }
   });
 }
 
-
 /**
  * Resizes canvas to fit screen while maintaining aspect ratio.
  */
-
 function resizeCanvasToFullscreen() {
   const canvas = document.getElementById("canvas");
 
@@ -291,10 +287,9 @@ window.addEventListener("resize", () => {
 /**
  * Displays mobile control panel.
  */
- 
 function showMobileControls() {
   const panel = document.getElementById("bottomPanel");
-  panel.classList.remove("hidden");
+  if (panel) panel.classList.remove("hidden");
 }
 
 /**
@@ -302,19 +297,12 @@ function showMobileControls() {
  */
 function hideMobileControls() {
   const panel = document.getElementById("bottomPanel");
-  panel.classList.add("hidden");
+  if (panel) panel.classList.add("hidden");
 }
-
-window.addEventListener("DOMContentLoaded", () => {
-  if (window.innerWidth <= 1400) {
-    showMobileControls();
-  }
-});
 
 /**
  * Displays orientation warning if in portrait mode on small screen.
  */
-
 function handleOrientationWarning() {
   const warning = document.getElementById("orientationWarning");
   const isPortrait = window.innerHeight > window.innerWidth;
@@ -329,7 +317,6 @@ function handleOrientationWarning() {
 /**
  * Automatically starts the game on orientation change to landscape.
  */
-
 function checkStartMenuOrientation() {
   const orientationWarning = document.getElementById("orientationWarning");
   const startMenu = document.getElementById("startMenu");
@@ -351,10 +338,36 @@ window.addEventListener("orientationchange", () => {
   setTimeout(checkStartMenuOrientation, 300);
 });
 
+/**
+ * Setup audio mute/unmute buttons
+ */
 function setupAudioButtons() {
   const muteBtn = document.getElementById("mute");
   const unmuteBtn = document.getElementById("unmute");
   if (!muteBtn || !unmuteBtn) return;
+
+  updateMuteButtons();
+
+  muteBtn.addEventListener("click", () => {
+    audioManager.setSoundEnabled(false);
+    updateMuteButtons();
+  });
+
+  unmuteBtn.addEventListener("click", () => {
+    audioManager.setSoundEnabled(true);
+    updateMuteButtons();
+  });
+}
+
+/**
+ * Updates mute button visibility based on audio state
+ */
+function updateMuteButtons() {
+  const muteBtn = document.getElementById("mute");
+  const unmuteBtn = document.getElementById("unmute");
+  
+  if (!muteBtn || !unmuteBtn || !audioManager) return;
+  
   if (audioManager.soundEnabled) {
     muteBtn.classList.remove("hidden");
     unmuteBtn.classList.add("hidden");
@@ -362,25 +375,11 @@ function setupAudioButtons() {
     muteBtn.classList.add("hidden");
     unmuteBtn.classList.remove("hidden");
   }
-
-  muteBtn.addEventListener("click", () => {
-    audioManager.setSoundEnabled(false);
-    muteBtn.classList.add("hidden");
-    unmuteBtn.classList.remove("hidden");
-  });
-
-  unmuteBtn.addEventListener("click", () => {
-    audioManager.setSoundEnabled(true);
-    muteBtn.classList.remove("hidden");
-    unmuteBtn.classList.add("hidden");
-  });
 }
-window.addEventListener("DOMContentLoaded", setupAudioButtons);
 
 /**
  * Toggles info panel visibility.
  */
-
 function setupInfoButton() {
   const infoButton = document.getElementById("infoButton");
   const controlDiv = document.getElementById("controlDiv");
@@ -392,6 +391,9 @@ function setupInfoButton() {
   });
 }
 
+/**
+ * Setup impressum and datenschutz popups
+ */
 function setupInfoPopups() {
   // Impressum
   const impressumBtn = document.getElementById("impressumButton");

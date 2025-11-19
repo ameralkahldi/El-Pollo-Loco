@@ -1,6 +1,4 @@
 class AudioManager {
-  static soundEnabled;
-
   constructor() {
     this.sounds = {
       chickenDeath: new Audio("audio/audio_chicken_death.mp3"),
@@ -10,46 +8,81 @@ class AudioManager {
       gameOver: new Audio("audio/audio_game_over.wav"),
       background: new Audio("audio/audio_music.mp3"),
       jumpSound: new Audio("audio/audio_jump.wav"),
-    
     };
 
+    // Background music settings
     this.sounds.background.loop = true;
     this.sounds.background.volume = 0.4;
     this.isBackgroundPlaying = false;
 
+    // Retrieve settings from localStorage
     const savedSound = localStorage.getItem("soundEnabled");
+    const savedMusic = localStorage.getItem("musicEnabled");
+    
+    // If no saved value exists, default is true (enabled)
     this.soundEnabled = savedSound !== null ? savedSound === "true" : true;
-
-    //if (this.soundEnabled) this.toggleBackgroundMusic(true);
+    this.musicEnabled = savedMusic !== null ? savedMusic === "true" : true;
   }
 
+  /**
+   * Plays a specific sound effect (excluding background music)
+   * @param {string} name - The name of the sound to play
+   */
   playSound(name) {
+    // Don't play if sound is disabled
     if (!this.soundEnabled) return;
+    
+    // Don't play background music from here
+    if (name === "background") return;
+    
     const sound = this.sounds[name];
     if (!sound) return;
+    
+    // Clone the sound to allow multiple simultaneous playbacks
     const clone = sound.cloneNode();
     clone.volume = sound.volume;
-    clone
-      .play()
+    clone.play()
       .catch((e) => console.warn(`Could not play sound "${name}":`, e));
   }
 
+  /**
+   * Toggles background music on or off
+   * @param {boolean} enable - true to play, false to stop
+   */
   toggleBackgroundMusic(enable) {
     const bg = this.sounds.background;
-    if (enable && !this.isBackgroundPlaying) {
+    
+    if (enable && this.musicEnabled && !this.isBackgroundPlaying) {
       bg.currentTime = 0;
       bg.play()
         .then(() => {
           this.isBackgroundPlaying = true;
         })
         .catch((e) => console.warn("⚠️ Background music playback blocked:", e));
-    } else if (!enable && this.isBackgroundPlaying) {
+    } 
+    else if (!enable && this.isBackgroundPlaying) {
       bg.pause();
       this.isBackgroundPlaying = false;
     }
   }
 
+  /**
+   * Stops all sound effects (excluding background music)
+   */
   stopAllSounds() {
+    Object.keys(this.sounds).forEach((key) => {
+      if (key !== "background") {
+        const sound = this.sounds[key];
+        sound.pause();
+        sound.currentTime = 0;
+      }
+    });
+  }
+
+  /**
+   * Stops everything (sound effects + background music)
+   */
+  stopEverything() {
     Object.values(this.sounds).forEach((sound) => {
       sound.pause();
       sound.currentTime = 0;
@@ -57,10 +90,65 @@ class AudioManager {
     this.isBackgroundPlaying = false;
   }
 
+  /**
+   * Enables or disables all audio (sound effects + music)
+   * @param {boolean} enable - true to enable, false to disable
+   */
   setSoundEnabled(enable) {
     this.soundEnabled = enable;
-    localStorage.setItem("soundEnabled", enable);
+    this.musicEnabled = enable;
+    
+    // Save state to localStorage
+    localStorage.setItem("soundEnabled", enable.toString());
+    localStorage.setItem("musicEnabled", enable.toString());
+    
+    if (!enable) {
+      this.stopEverything();
+    } else {
+      this.toggleBackgroundMusic(true);
+    }
+  }
+
+  /**
+   * Enables or disables music only (without affecting sound effects)
+   * @param {boolean} enable - true to enable, false to disable
+   */
+  setMusicEnabled(enable) {
+    this.musicEnabled = enable;
+    localStorage.setItem("musicEnabled", enable);
     this.toggleBackgroundMusic(enable);
-    if (!enable) this.stopAllSounds();
+  }
+
+  /**
+   * Enables or disables all audio together
+   * @param {boolean} enable - true to enable, false to disable
+   */
+  setAllAudioEnabled(enable) {
+    this.setSoundEnabled(enable);
+    this.setMusicEnabled(enable);
+  }
+
+  /**
+   * Gets the current sound state
+   * @returns {boolean}
+   */
+  isSoundEnabled() {
+    return this.soundEnabled;
+  }
+
+  /**
+   * Gets the current music state
+   * @returns {boolean}
+   */
+  isMusicEnabled() {
+    return this.musicEnabled;
+  }
+
+  /**
+   * Checks if background music is currently playing
+   * @returns {boolean}
+   */
+  isBackgroundMusicPlaying() {
+    return this.isBackgroundPlaying;
   }
 }

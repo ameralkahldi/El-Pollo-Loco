@@ -40,11 +40,11 @@ class World {
     this.draw();
   }
 
-  playSound(name) {
-    if (!this.audioManager.soundEnabled) {
-      this.audioManager.playSound(name);
-    }
+playSound(name) {
+  if (this.audioManager.soundEnabled) {  
+    this.audioManager.playSound(name);
   }
+}
 
   setWorld() {
     this.character.world = this;
