@@ -41,7 +41,7 @@ class World {
   }
 
   playSound(name) {
-    if (!this.muted) {
+    if (!this.audioManager.soundEnabled) {
       this.audioManager.playSound(name);
     }
   }

@@ -1,4 +1,6 @@
 class AudioManager {
+  static soundEnabled;
+
   constructor() {
     this.sounds = {
       chickenDeath: new Audio("audio/audio_chicken_death.mp3"),
