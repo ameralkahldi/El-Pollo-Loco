@@ -50,9 +50,9 @@ class ChickenSmall extends MovableObject {
     this.animate();
     this.x = x; // Set initial x position
     this.offset = {
-      top: -50,
+      top: -30,
       bottom: 0,
-      left: 20,
+      left: 15,
       right: -10,
     };
   }
