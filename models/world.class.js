@@ -113,13 +113,12 @@ class World {
   /**
    * Sets up interval checks for collisions with enemies and the end boss.
    */
-
   checkCollisions() {
     this.intervalIds.push(
       setInterval(() => {
         this.checkEnemyCollisions();
         this.checkEndbossCollision();
-      }, 100)
+      }, 40)
     );
   }
 
