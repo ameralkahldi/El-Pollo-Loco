@@ -29,6 +29,8 @@ class World {
     this.setWorld();
     this.statusBar.setPercentage(this.character.energy);
     //this.endboss = new Endboss(this.character);
+    this.coinsStatusBar.setPercentage(0);
+    this.bottleStatusBar.setPercentage(0);
     this.audioManager.toggleBackgroundMusic(false);
     this.checkCollisions();
     this.checkThrowObject();
@@ -40,11 +42,11 @@ class World {
     this.draw();
   }
 
-playSound(name) {
-  if (this.audioManager.soundEnabled) {  
-    this.audioManager.playSound(name);
+  playSound(name) {
+    if (this.audioManager.soundEnabled) {
+      this.audioManager.playSound(name);
+    }
   }
-}
 
   setWorld() {
     this.character.world = this;
@@ -226,7 +228,7 @@ playSound(name) {
 
     if (this.endBoss.energy <= 0 && !this.endBoss.dead) {
       this.endBoss.die();
-      this.playSound("gameOver"); 
+      this.playSound("gameOver");
     }
   }
 
@@ -248,7 +250,7 @@ playSound(name) {
       setInterval(() => {
         if (this.character.energy <= 0 && !this.character.dead) {
           this.character.die();
-          this.playSound("gameOver"); 
+          this.playSound("gameOver");
         }
       }, 200)
     );
@@ -268,7 +270,7 @@ playSound(name) {
     if (this.character.isAbove(enemy) && !enemy.dead) {
       this.character.smallJump();
       this.killEnemy(enemy);
-      this.playSound("chickenDeath"); 
+      this.playSound("chickenDeath");
       this.removeEnemyAfterDelay(enemy, 200);
     }
   }
@@ -290,7 +292,7 @@ playSound(name) {
     if (this.animationFrameId) cancelAnimationFrame(this.animationFrameId);
     this.intervalIds.forEach((id) => clearInterval(id));
     this.intervalIds = [];
-    this.audioManager.stopAllSounds(); 
+    this.audioManager.stopAllSounds();
     this.gameIsOver = true;
   }
 
@@ -303,7 +305,7 @@ playSound(name) {
     const distance = Math.abs(this.character.x - this.endBoss.x);
     const detectionRange = 400;
     if (distance < detectionRange) {
-      if (this.endBoss.speed === 0) this.playSound("bossMove"); 
+      if (this.endBoss.speed === 0) this.playSound("bossMove");
       this.endBoss.speed = 2;
       this.endBoss.isAttacking = true;
       this.endBoss.moveTowards(this.character);
@@ -403,8 +405,6 @@ playSound(name) {
         this.endbossStatusBar.width,
         this.endbossStatusBar.height
       );
-
-   
 
     this.animationFrameId = requestAnimationFrame(() => this.draw());
   }
