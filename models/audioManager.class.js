@@ -10,17 +10,13 @@ class AudioManager {
       jumpSound: new Audio("audio/audio_jump.wav"),
       pepeHit: new Audio("audio/audio_pepe_death.mp3"),
     };
-
-    // Background music settings
     this.sounds.background.loop = true;
     this.sounds.background.volume = 0.4;
     this.isBackgroundPlaying = false;
 
-    // Retrieve settings from localStorage
     const savedSound = localStorage.getItem("soundEnabled");
     const savedMusic = localStorage.getItem("musicEnabled");
 
-    // If no saved value exists, default is true (enabled)
     this.soundEnabled = savedSound !== null ? savedSound === "true" : true;
     this.musicEnabled = savedMusic !== null ? savedMusic === "true" : true;
   }
@@ -60,7 +56,7 @@ class AudioManager {
         .then(() => {
           this.isBackgroundPlaying = true;
         })
-        .catch((e) => console.warn("⚠️ Background music playback blocked:", e));
+        .catch((e) => console.warn(" Background music playback blocked:", e));
     } else if (!enable && this.isBackgroundPlaying) {
       bg.pause();
       this.isBackgroundPlaying = false;
