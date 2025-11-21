@@ -21,10 +21,10 @@ class Coins extends DrawableObject {
     this.width = 100;
     this.height = 100;
     this.offset = {
-  top: 10,
-  bottom: 10,
-  left: 5,
-  right: 5,
+  top: 30,
+  bottom: 30,
+  left: 30,
+  right: 30,
 };
   }
 }

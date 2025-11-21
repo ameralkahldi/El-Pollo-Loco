@@ -26,10 +26,10 @@ class Bottle extends MovableObject {
     const randomImage = this.getRandomImage(); // Select random image
     this.loadImage(randomImage); // Load selected image
     this.offset = {
-      top: 10,
-      bottom: 10,
-      left: 5,
-      right: 5,
+      top: 50,
+      bottom: 50,
+      left: 50,
+      right: 50,
     };
   }
 
