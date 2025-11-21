@@ -276,6 +276,7 @@ class Character extends MovableObject {
       this.world.keyboard.D
     );
   }
+  
   knockBack() {
     if (this.world?.endBoss && this.world.endBoss.x < this.x) {
       this.x += 20;
