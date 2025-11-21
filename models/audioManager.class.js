@@ -8,6 +8,7 @@ class AudioManager {
       gameOver: new Audio("audio/audio_game_over.wav"),
       background: new Audio("audio/audio_music.mp3"),
       jumpSound: new Audio("audio/audio_jump.wav"),
+      pepeHit: new Audio("audio/audio_pepe_death.mp3"),
     };
 
     // Background music settings
@@ -18,7 +19,7 @@ class AudioManager {
     // Retrieve settings from localStorage
     const savedSound = localStorage.getItem("soundEnabled");
     const savedMusic = localStorage.getItem("musicEnabled");
-    
+
     // If no saved value exists, default is true (enabled)
     this.soundEnabled = savedSound !== null ? savedSound === "true" : true;
     this.musicEnabled = savedMusic !== null ? savedMusic === "true" : true;
@@ -31,17 +32,18 @@ class AudioManager {
   playSound(name) {
     // Don't play if sound is disabled
     if (!this.soundEnabled) return;
-    
+
     // Don't play background music from here
     if (name === "background") return;
-    
+
     const sound = this.sounds[name];
     if (!sound) return;
-    
+
     // Clone the sound to allow multiple simultaneous playbacks
     const clone = sound.cloneNode();
     clone.volume = sound.volume;
-    clone.play()
+    clone
+      .play()
       .catch((e) => console.warn(`Could not play sound "${name}":`, e));
   }
 
@@ -51,7 +53,7 @@ class AudioManager {
    */
   toggleBackgroundMusic(enable) {
     const bg = this.sounds.background;
-    
+
     if (enable && this.musicEnabled && !this.isBackgroundPlaying) {
       bg.currentTime = 0;
       bg.play()
@@ -59,8 +61,7 @@ class AudioManager {
           this.isBackgroundPlaying = true;
         })
         .catch((e) => console.warn("⚠️ Background music playback blocked:", e));
-    } 
-    else if (!enable && this.isBackgroundPlaying) {
+    } else if (!enable && this.isBackgroundPlaying) {
       bg.pause();
       this.isBackgroundPlaying = false;
     }
@@ -97,11 +98,11 @@ class AudioManager {
   setSoundEnabled(enable) {
     this.soundEnabled = enable;
     this.musicEnabled = enable;
-    
+
     // Save state to localStorage
     localStorage.setItem("soundEnabled", enable.toString());
     localStorage.setItem("musicEnabled", enable.toString());
-    
+
     if (!enable) {
       this.stopEverything();
     } else {

@@ -1,4 +1,5 @@
 class Character extends MovableObject {
+  isInvincible = false;
   y = 150;
   height = 200;
   width = 120;
@@ -274,6 +275,38 @@ class Character extends MovableObject {
       this.world.keyboard.SPACE ||
       this.world.keyboard.D
     );
+  }
+  knockBack() {
+    if (this.world?.endBoss && this.world.endBoss.x < this.x) {
+      this.x += 20;
+    }
+    if (this.otherDirection) {
+      this.x += 20;
+    } else {
+      this.x -= 20;
+    }
+  }
+
+  /**
+   * Character takes damage and plays hurt sound
+   */
+  hit(damage = 20) {
+    if (this.dead || this.isInvincible) return;
+
+    this.energy -= damage;
+    if (this.energy < 0) this.energy = 0;
+    if (this.audioManager) {
+      this.audioManager.playSound("pepeHit");
+    }
+    this.knockBack();
+    this.isInvincible = true;
+    setTimeout(() => {
+      this.isInvincible = false;
+    }, 700);
+
+    if (this.energy === 0) {
+      this.die();
+    }
   }
 
   /**
