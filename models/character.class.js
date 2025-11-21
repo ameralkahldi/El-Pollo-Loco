@@ -99,34 +99,38 @@ class Character extends MovableObject {
 
   /**
    * Handles the animation logic of the character including movement and image switching.
+   * This method sets up two intervals:
+   * 1. Movement handling at 60 FPS.
+   * 2. Animation frame switching at ~8 FPS.
    */
   animate() {
-    let levelEnd = 2200;
-
+    setInterval(() => this.handleMovement(), 1000 / 60);
     setInterval(() => {
-      if (gameIsPaused) return;
-      if (this.world.keyboard.RIGHT && this.x < levelEnd) this.moveRight();
-      if (this.world.keyboard.LEFT && this.x > 0) this.moveLeft();
-      if (this.world.keyboard.SPACE && !this.isAboveGround()) this.jump();
-
-      this.lastPressedKey();
-    }, 1000 / 60);
-
-    setInterval(() => {
-      if (this.isDead()) {
-        this.playWalkingAnimation(this.IMAGEs_DEAD);
-      } else if (this.isHurt()) {
-        this.playWalkingAnimation(this.IMAGEs_HURT);
-      } else if (this.isAboveGround()) {
-        this.playWalkingAnimation(this.IMAGEs_JUMPING);
-      } else if (this.world?.keyboard.RIGHT || this.world?.keyboard.LEFT) {
-        this.playWalkingAnimation(this.IMAGE_WALKING);
-      } else if (this.startLongIdle()) {
-        this.playWalkingAnimation(this.IMAGES_LONG_IDLE);
-      } else if (this.speedY == 0 && !this.isAboveGround()) {
-        this.playWalkingAnimation(this.IMAGES_IDLE);
-      }
+      if (this.isDead()) return this.playWalkingAnimation(this.IMAGEs_DEAD);
+      if (this.isHurt()) return this.playWalkingAnimation(this.IMAGEs_HURT);
+      if (this.isAboveGround())
+        return this.playWalkingAnimation(this.IMAGEs_JUMPING);
+      if (this.world?.keyboard.RIGHT || this.world?.keyboard.LEFT)
+        return this.playWalkingAnimation(this.IMAGE_WALKING);
+      if (this.startLongIdle())
+        return this.playWalkingAnimation(this.IMAGES_LONG_IDLE);
+      return this.playWalkingAnimation(this.IMAGES_IDLE);
     }, 120);
+  }
+
+  /**
+   * Handles character movement based on keyboard input.
+   * Moves the character left, right, or makes it jump if conditions are met.
+   * Also updates the last key press timestamp to track idle state.
+   *
+   * @returns {void}
+   */
+  handleMovement() {
+    if (gameIsPaused) return;
+    if (this.world.keyboard.RIGHT && this.x < 2200) this.moveRight();
+    if (this.world.keyboard.LEFT && this.x > 0) this.moveLeft();
+    if (this.world.keyboard.SPACE && !this.isAboveGround()) this.jump();
+    this.lastPressedKey();
   }
 
   /**
@@ -276,7 +280,7 @@ class Character extends MovableObject {
       this.world.keyboard.D
     );
   }
-  
+
   knockBack() {
     if (this.world?.endBoss && this.world.endBoss.x < this.x) {
       this.x += 20;
