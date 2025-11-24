@@ -48,7 +48,7 @@ class ChickenSmall extends MovableObject {
     this.loadImages(this.IMAGE_DEAD);
     this.applyGravity();
     this.animate();
-    this.x = x; // Set initial x position
+    this.x = x;
     this.offset = {
       top: -100,
       bottom: 0,
@@ -79,7 +79,6 @@ class ChickenSmall extends MovableObject {
     this.speed = 0;
     this.img = this.imageCache[this.IMAGE_DEAD[0]];
 
-    // Stop movement and animation intervals
     clearInterval(this.moveInterval);
     clearInterval(this.animationInterval);
   }

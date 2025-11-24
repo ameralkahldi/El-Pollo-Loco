@@ -239,6 +239,12 @@ class World {
     }
   }
 
+  /**
+   * Verarbeitet einen Treffer eines Bottles auf einen Gegner.
+   *
+   * @param {Object} bottle - Getroffenes Bottle.
+   * @param {Object} enemy - Getroffener Gegner.
+   */
   processBottleHit(bottle, enemy) {
     bottle.hit = true;
     bottle.showHitEffect = true;

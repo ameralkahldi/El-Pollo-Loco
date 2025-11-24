@@ -293,6 +293,18 @@ class Character extends MovableObject {
     );
   }
 
+  /**
+   * Applies a knockback effect to the character by shifting its x-position.
+   *
+   * Knockback rules:
+   * - If an end boss exists and is positioned to the left of this entity, the entity is pushed to the right.
+   * - Additionally, the entity is pushed in the direction opposite of `otherDirection`:
+   *    - If `otherDirection` is true, push right.
+   *    - Otherwise, push left.
+   *
+   * @method knockBack
+   * @returns {void}
+   */
   knockBack() {
     if (this.world?.endBoss && this.world.endBoss.x < this.x) {
       this.x += 20;

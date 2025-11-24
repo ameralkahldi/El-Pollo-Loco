@@ -395,7 +395,6 @@ function setupInfoButton() {
  * Setup impressum and datenschutz popups
  */
 function setupInfoPopups() {
-  // Impressum
   const impressumBtn = document.getElementById("impressumButton");
   const impressumPopup = document.getElementById("impressumPopup");
   const impressumClose = impressumPopup?.querySelector(".closePopup");
@@ -409,7 +408,6 @@ function setupInfoPopups() {
     );
   }
 
-  // Datenschutz
   const datenschutzBtn = document.getElementById("datenschutzButton");
   const datenschutzPopup = document.getElementById("datenschutzPopup");
   const datenschutzClose = datenschutzPopup?.querySelector(".closePopup");

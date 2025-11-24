@@ -25,16 +25,16 @@ function createLevel1() {
    * @type {(Chicken|ChickenSmall)[]}
    */
   let chickens = [];
-  let firstChickenX = 600;  // Distance from the character to first chicken
-  let spacing = 300;        // Spacing between chickens
+  let firstChickenX = 600; 
+  let spacing = 300;      
   let numberOfChickens = 10;
 
   for (let i = 0; i < numberOfChickens; i++) {
     let x = firstChickenX + i * spacing;
     if (i % 2 === 0) {
-      chickens.push(new Chicken(x));       // Big chicken
+      chickens.push(new Chicken(x));     
     } else {
-      chickens.push(new ChickenSmall(x));  // Small chicken
+      chickens.push(new ChickenSmall(x)); 
     }
   }
 
