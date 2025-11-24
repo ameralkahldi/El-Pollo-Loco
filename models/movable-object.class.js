@@ -3,11 +3,8 @@ class MovableObject extends DrawableObject {
   otherDirection = false;
   speedY = 0;
   acceleration = 2.5;
-
-
-  soundEnabled = true; // Controls sound on/off for the object
-  volume = 1.0;        // Volume level (0 to 1)
-
+  soundEnabled = true;
+  volume = 1.0;
   lastHit = 0;
   offset = { top: 0, left: 10, right: 30, bottom: 0 };
 
@@ -75,18 +72,17 @@ class MovableObject extends DrawableObject {
    * @param {MovableObject} mo - Another movable object to check collision against.
    * @returns {boolean} True if the two objects are colliding.
    */
-isColliding(mo) {
-  const a = this.offset || { top: 0, bottom: 0, left: 0, right: 0 };
-  const b = mo.offset || { top: 0, bottom: 0, left: 0, right: 0 };
+  isColliding(mo) {
+    const a = this.offset || { top: 0, bottom: 0, left: 0, right: 0 };
+    const b = mo.offset || { top: 0, bottom: 0, left: 0, right: 0 };
 
-  return (
-    this.x + this.width - a.right > mo.x + b.left &&
-    this.y + this.height - a.bottom > mo.y + b.top &&
-    this.x + a.left < mo.x + mo.width - b.right &&
-    this.y + a.top < mo.y + mo.height - b.bottom
-  );
-}
-
+    return (
+      this.x + this.width - a.right > mo.x + b.left &&
+      this.y + this.height - a.bottom > mo.y + b.top &&
+      this.x + a.left < mo.x + mo.width - b.right &&
+      this.y + a.top < mo.y + mo.height - b.bottom
+    );
+  }
 
   /**
    * Checks if the object is currently falling (vertical speed < 0).
@@ -127,8 +123,6 @@ isColliding(mo) {
     }
   }
 
-  // ===================== Sound =====================
-
   /**
    * Plays the hurt sound if sound is enabled.
    */
@@ -136,7 +130,9 @@ isColliding(mo) {
     if (this.hurtSound && this.soundEnabled) {
       this.hurtSound.volume = this.volume;
       this.hurtSound.currentTime = 0;
-      this.hurtSound.play().catch(e => console.warn("Cannot play hurt sound:", e));
+      this.hurtSound
+        .play()
+        .catch((e) => console.warn("Cannot play hurt sound:", e));
     }
   }
 

@@ -143,6 +143,7 @@ class Character extends MovableObject {
     this.img = this.imageCache[path];
     this.currentImage++;
   }
+
   /**
    * Determines whether the character should enter long idle animation
    * based on time since last key press.
@@ -154,11 +155,22 @@ class Character extends MovableObject {
     return timepassed > 2;
   }
 
+  /**
+   * Updates the timestamp of the last key press.
+   *
+   * If a key is currently pressed (as determined by `this.keyIsPressed()`),
+   * this method records the current time in milliseconds since the Unix epoch
+   * in `this.lastKeyPressed`.
+   *
+   * @method lastPressedKey
+   * @returns {void}
+   */
   lastPressedKey() {
     if (this.keyIsPressed()) {
       this.lastKeyPressed = new Date().getTime();
     }
   }
+
   /**
    * Handles overall character movement (left, right, jump) and camera update.
    */

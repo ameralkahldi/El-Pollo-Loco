@@ -26,16 +26,10 @@ class AudioManager {
    * @param {string} name - The name of the sound to play
    */
   playSound(name) {
-    // Don't play if sound is disabled
     if (!this.soundEnabled) return;
-
-    // Don't play background music from here
     if (name === "background") return;
-
     const sound = this.sounds[name];
     if (!sound) return;
-
-    // Clone the sound to allow multiple simultaneous playbacks
     const clone = sound.cloneNode();
     clone.volume = sound.volume;
     clone
@@ -95,7 +89,6 @@ class AudioManager {
     this.soundEnabled = enable;
     this.musicEnabled = enable;
 
-    // Save state to localStorage
     localStorage.setItem("soundEnabled", enable.toString());
     localStorage.setItem("musicEnabled", enable.toString());
 

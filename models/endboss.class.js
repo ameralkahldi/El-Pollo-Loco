@@ -196,15 +196,21 @@ class Endboss extends MovableObject {
     }, 300); 
   }
 
-  die() {
+/**
+ * Handles the death of the character.
+ * 
+ * Sets all relevant state flags, stops movement, plays the death animation,
+ * and triggers the game-over sequence after the animation finishes.
+ */
+die() {
     this.dead = true;
     this.isAttacking = false;
     this.isHurt = false;
     this.speed = 0;
-
     this.playDeadAnimation();
     setTimeout(() => {
-      gameOver(true);
-    }, this.IMAGE_DEAD.length * 300 + 500); 
-  }
+        gameOver(true);
+    }, this.IMAGE_DEAD.length * 300 + 500);
+}
+
 }

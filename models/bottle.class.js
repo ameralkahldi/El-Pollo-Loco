@@ -18,13 +18,13 @@ class Bottle extends MovableObject {
    */
   constructor() {
     super();
-    this.x = 300 + Math.random() * 2000; // Random X position
-    this.y = 350; // Fixed Y position
+    this.x = 300 + Math.random() * 2000; 
+    this.y = 350; 
     this.width = 100;
     this.height = 100;
 
-    const randomImage = this.getRandomImage(); // Select random image
-    this.loadImage(randomImage); // Load selected image
+    const randomImage = this.getRandomImage();
+    this.loadImage(randomImage); 
     this.offset = {
       top: 50,
       bottom: 50,
